@@ -9,13 +9,12 @@
 	
 	<s:states>
 		<s:State name="default"/>
-		<s:State name="browse"/>
 		<s:State name="results"/>
+		<s:State name="videoPlaying"/>
 	</s:states>
 	
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
-		
 	</fx:Declarations>
 	
 	<fx:Script>
@@ -53,7 +52,7 @@
 				createBrowseView();
 				createPlayerView();
 			}
-
+			
 //			private function createSearchView(vm:SearchViewModel):void {
 //				searchView = new SearchView();
 //				searchView.searchViewModel = vm;
@@ -65,55 +64,52 @@
 				searchResultsView.searchViewModel = new SearchViewModel();
 				resultlist.addElement(searchResultsView);
 			}
-						
+			
 			private function createPlayerView():void {
-				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.VIDEO_SELECTED, showPlayerView,
-					false, 0, true);
 				playerView = new PlayerView();
 				playerView.playerViewModel = playerViewModel;
 				playerContainer.addElement(playerView);
 			}
 			
-			private function showPlayerView(e:Event=null):void {
-				container.selectedChild = playerViewStack;
-				//container.addElement(playerView);
-			}
-			
 			private function createBrowseView():void {
 				browseView = new BrowseView();
 				browseView.browseViewModel = new BrowseViewModel();
-				categorylist.addElement(browseView);
+				leftPane.addElement(browseView);
 			}			
 		]]>
 	</fx:Script>
-	
-	<s:BorderContainer id="background"
+	<s:Group id="playerContainer"
+			 depth="1"
+			 visible.videoPlaying="true"
+			 visible.default="false"
+			 visible.results="false"
+			 width="100%" height="100%"/>
+	<s:BorderContainer id="backgroundContainer"
+					   depth="0"
 					   width="1280" height="720"
 					   backgroundAlpha="1"
 					   backgroundImage="@Embed(source='assets/Texture.png')">
-		<mx:ViewStack id="container"
-					  width="100%" height="100%">
-			<s:NavigatorContent id="searchViewStack">
-				<s:layout>
-					<s:HorizontalLayout/>
-				</s:layout>
-				<s:BorderContainer id="categorylist"
-								   width="323" height="720"
-								   borderVisible="false"
-								   backgroundAlpha="1"
-								   backgroundImage="@Embed(source='assets/LeftPanelBackground.png')"/>
-				<s:BorderContainer id="rightpane"
-								   width="100%" height="100%">
-					<s:layout>
-						<s:VerticalLayout/>
-					</s:layout>
-					<s:Group id="searchbar" height="100" width="100%"/>
-					<s:Group id="resultlist" height="100%" width="100%"/>
-				</s:BorderContainer>
-			</s:NavigatorContent>
-			<s:NavigatorContent id="playerViewStack">
-				<s:Group id="playerContainer" width="100%" height="100%"/>
-			</s:NavigatorContent>
-		</mx:ViewStack>
+		<s:layout>
+			<s:HorizontalLayout gap="0"/>
+		</s:layout>
+		<s:BorderContainer id="leftPane"
+						   width="317" height="720"
+						   borderVisible="false"
+						   backgroundAlpha="1"
+						   backgroundImage="@Embed(source='assets/LeftDarker.png')"
+						   backgroundImageFillMode="clip"/>
+		<s:Group id="rightPane"
+				 width="100%" height="100%">
+			<s:BorderContainer id="overlayContainer"
+							   depth="1"
+							   width="100%"
+							   height="100%"
+							   backgroundAlpha="0.7"
+							   visible.default="true"
+							   visible.results="false"
+							   backgroundColor="0x000000"/>
+			<s:Group depth="2" id="searchbar" height="100" width="100%"/>
+			<s:Group depth="0" id="resultlist" height="100%" width="100%"/>
+		</s:Group>
 	</s:BorderContainer>
 </s:Application>

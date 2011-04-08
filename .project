@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <projectDescription>
-	<name>SteamingVideoApp</name>
-	<comment></comment>
+	<name>StreamingVideoApp</name>
+	<comment/>
 	<projects>
 	</projects>
 	<buildSpec>
@@ -19,3 +19,4 @@
 		
 	</linkedResources>
 </projectDescription>
+

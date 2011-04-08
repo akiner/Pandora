@@ -9,10 +9,10 @@
 	</s:states>
 	
 	<s:BorderContainer id="categoryContainer"
-					   width="316" height="35"
+					   width="315"
+					   height="35"
 					   backgroundImage.selected="@Embed(source='assets/CategoryHL.jpg')"
 					   backgroundAlpha.selected="1">
-		
 		<s:Label text="{data.name}" left="20"/>
 	</s:BorderContainer>
 </s:ItemRenderer>

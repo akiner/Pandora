@@ -39,6 +39,11 @@ global {
 	font-family: helvetica;
 }
 
+s|BorderContainer {
+	background-alpha: 0;
+	border-visible: false;
+}
+
 s|Button:over {
 }
 
