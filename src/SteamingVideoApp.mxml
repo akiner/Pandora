@@ -19,6 +19,7 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import com.demonsters.debugger.MonsterDebugger;
 			import com.lnet.streamingvideo.data.CategoriesXMLLoader;
 			import com.lnet.streamingvideo.events.ApplicationEvent;
 			import com.lnet.streamingvideo.events.ApplicationEventBus;
@@ -51,6 +52,7 @@
 				createSearchResultsView();
 				createBrowseView();
 				createPlayerView();
+				initMonsterDebugger();
 			}
 			
 //			private function createSearchView(vm:SearchViewModel):void {
@@ -76,6 +78,10 @@
 				browseView.browseViewModel = new BrowseViewModel();
 				leftPane.addElement(browseView);
 			}			
+
+			private function initMonsterDebugger():void {
+				MonsterDebugger.initialize(this);
+			}
 		]]>
 	</fx:Script>
 	<s:Group id="playerContainer"
