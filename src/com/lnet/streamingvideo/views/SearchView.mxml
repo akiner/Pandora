@@ -13,8 +13,6 @@
 			import com.lnet.streamingvideo.services.VideoService;
 			import com.lnet.streamingvideo.viewmodels.SearchViewModel;
 			
-			import nl.demonsters.debugger.MonsterDebugger;
-			
 			private var _searchViewModel:SearchViewModel;
 			
 			private function getSearchResults():void {

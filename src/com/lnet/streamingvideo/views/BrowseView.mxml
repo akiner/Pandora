@@ -16,8 +16,6 @@
 			
 			import mx.core.FlexGlobals;
 			
-			import nl.demonsters.debugger.MonsterDebugger;
-			
 			private var _browseViewModel:BrowseViewModel;
 			
 			[Bindable]
