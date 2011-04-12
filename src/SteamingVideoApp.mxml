@@ -44,7 +44,7 @@
 			private var categoriesXML:CategoriesXMLLoader;
 			
 			private function init():void {
-//				Security.allowDomain("www.youtube.com");
+				Security.allowDomain("www.youtube.com");
 				focusHandler = new FocusHandler();
 				videoService = new VideoService();
 				categoriesXML = new CategoriesXMLLoader();

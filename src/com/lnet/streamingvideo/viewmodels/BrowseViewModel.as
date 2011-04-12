@@ -1,14 +1,14 @@
 package com.lnet.streamingvideo.viewmodels {
 	import com.demonsters.debugger.MonsterDebugger;
+	import com.lnet.streamingvideo.data.VideoResultObject;
 	import com.lnet.streamingvideo.events.ApplicationEvent;
 	import com.lnet.streamingvideo.events.ApplicationEventBus;
 	
 	import flash.events.EventDispatcher;
 	
-	import flashx.textLayout.formats.Category;
-	
 	import mx.collections.ArrayCollection;
 	import mx.collections.IList;
+	import mx.core.Application;
 	
 	[Bindable]
 	public class BrowseViewModel extends EventDispatcher{
@@ -34,19 +34,20 @@ package com.lnet.streamingvideo.viewmodels {
 		
 		private function createCategoryList(event:ApplicationEvent):void {
 			ApplicationEventBus.getInstance().removeEventListener(ApplicationEvent.CATEGORIES_LOADED, createCategoryList);
-			MonsterDebugger.trace("BrowseViewModel::createCategoryList","Categories loaded...construct list");
+			var tempCategoryList:ArrayCollection = new ArrayCollection();
 			for each(var category:Object in event.data) {
-				MonsterDebugger.trace("BrowseViewModel::createCategoryList","Category::"+category.name);
-				categoryList.addItem(category);
+				tempCategoryList.addItem(category);
 			}
+			categoryList = tempCategoryList;
 		}
 		
 		private function createTopCategoryList(event:ApplicationEvent):void {
 			ApplicationEventBus.getInstance().removeEventListener(ApplicationEvent.TOP_CATEGORIES_LOADED, createTopCategoryList);
-			MonsterDebugger.trace("BrowseViewModel::createTopCategoryList","Top Categories loaded...construct list");
+			var tempCategoryList:ArrayCollection = new ArrayCollection();
 			for each(var category:Object in event.data) {
-				topCategoryList.addItem(category);
+				tempCategoryList.addItem(category);
 			}
+			topCategoryList = tempCategoryList;
 		}
 		
 		public function get categoryList():IList {
@@ -55,6 +56,8 @@ package com.lnet.streamingvideo.viewmodels {
 		
 		public function set categoryList(value:IList):void {
 			_categoryList = value;
+			MonsterDebugger.trace("BrowseViewModel::categoryList","categoryList has been set...dispatching setInitialFocus event...");
+			ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.SET_INITIAL_CATEGORY_FOCUS, categoryList[0]));
 		}
 		
 		public function get topCategoryList():IList {
@@ -64,6 +67,5 @@ package com.lnet.streamingvideo.viewmodels {
 		public function set topCategoryList(value:IList):void {
 			_topCategoryList = value;
 		}
-		
 	}
 }
