@@ -1,5 +1,6 @@
 package com.lnet.streamingvideo.viewmodels {
 	
+	import com.demonsters.debugger.MonsterDebugger;
 	import com.lnet.streamingvideo.events.ApplicationEvent;
 	import com.lnet.streamingvideo.events.ApplicationEventBus;
 	
@@ -7,8 +8,6 @@ package com.lnet.streamingvideo.viewmodels {
 	
 	import mx.collections.ArrayCollection;
 	import mx.collections.IList;
-	
-	import nl.demonsters.debugger.MonsterDebugger;
 	
 	[Bindable]
 	public class SearchViewModel extends EventDispatcher {

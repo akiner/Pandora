@@ -8,9 +8,8 @@
 	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
+			import com.demonsters.debugger.MonsterDebugger;
 			import com.lnet.streamingvideo.viewmodels.PlayerViewModel;
-			
-			import nl.demonsters.debugger.MonsterDebugger;
 			
 			private var _player:Object;
 			private var _playerViewModel:PlayerViewModel;

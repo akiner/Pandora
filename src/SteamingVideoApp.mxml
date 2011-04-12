@@ -23,7 +23,7 @@
 			import com.lnet.streamingvideo.events.ApplicationEvent;
 			import com.lnet.streamingvideo.events.ApplicationEventBus;
 			import com.lnet.streamingvideo.services.VideoService;
-			import com.lnet.streamingvideo.utils.KeyHandler;
+			import com.lnet.streamingvideo.utils.FocusHandler;
 			import com.lnet.streamingvideo.viewmodels.BrowseViewModel;
 			import com.lnet.streamingvideo.viewmodels.PlayerViewModel;
 			import com.lnet.streamingvideo.viewmodels.SearchViewModel;
@@ -38,13 +38,13 @@
 			private var playerView:PlayerView;
 			private var playerViewModel:PlayerViewModel;
 			private var browseView:BrowseView;
-			private var keyHandler:KeyHandler;
+			private var focusHandler:FocusHandler;
 			private var videoService:VideoService;
 			private var categoriesXML:CategoriesXMLLoader;
 			
 			private function init():void {
 //				Security.allowDomain("www.youtube.com");
-//				keyHandler = new KeyHandler();
+				focusHandler = new FocusHandler();
 				videoService = new VideoService();
 				categoriesXML = new CategoriesXMLLoader();
 				playerViewModel = new PlayerViewModel();

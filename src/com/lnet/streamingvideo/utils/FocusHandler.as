@@ -1,9 +1,7 @@
-package com.lnet.streamingvideo.utils
-{
-	public class FocusHandler
-	{
-		public function FocusHandler()
-		{
+package com.lnet.streamingvideo.utils {
+	public class FocusHandler {
+		public function FocusHandler() {
+			
 		}
 	}
 }

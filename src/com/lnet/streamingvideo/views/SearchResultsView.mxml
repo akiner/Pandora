@@ -10,14 +10,13 @@
 	</s:states>
 	<fx:Script>
 		<![CDATA[
+			import com.demonsters.debugger.MonsterDebugger;
 			import com.lnet.streamingvideo.events.ApplicationEvent;
 			import com.lnet.streamingvideo.events.ApplicationEventBus;
 			import com.lnet.streamingvideo.utils.KeyHandler;
 			import com.lnet.streamingvideo.viewmodels.SearchViewModel;
 			
 			import mx.core.FlexGlobals;
-			
-			import nl.demonsters.debugger.MonsterDebugger;
 			
 			private var _searchViewModel:SearchViewModel;
 			

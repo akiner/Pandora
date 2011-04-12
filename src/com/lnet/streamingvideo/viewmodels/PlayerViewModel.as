@@ -1,12 +1,11 @@
 package com.lnet.streamingvideo.viewmodels {
+	import com.demonsters.debugger.MonsterDebugger;
 	import com.lnet.streamingvideo.data.VideoResultObject;
 	import com.lnet.streamingvideo.events.ApplicationEvent;
 	import com.lnet.streamingvideo.events.ApplicationEventBus;
 	
 	import flash.events.EventDispatcher;
 	
-	import nl.demonsters.debugger.MonsterDebugger;
-
 	[Bindable]
 	public class PlayerViewModel extends EventDispatcher {
 		private static const CHROMELESS_PLAYER_URL:String = "http://www.youtube.com/apiplayer?version=3";
