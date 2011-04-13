@@ -9,12 +9,15 @@
 	<fx:Script>
 		<![CDATA[
 			import com.demonsters.debugger.MonsterDebugger;
+			import com.lnet.streamingvideo.events.ApplicationEvent;
+			import com.lnet.streamingvideo.events.ApplicationEventBus;
 			import com.lnet.streamingvideo.viewmodels.PlayerViewModel;
 			
 			private var _player:Object;
 			private var _playerViewModel:PlayerViewModel;
 			
 			private function onLoaderInit(event:Event):void {
+//				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.PLAY_SELECTED_VIDEO, playSelectedVideo, false, 0, true);
 				loader.content.addEventListener("onReady", onPlayerReady);
 				loader.content.addEventListener("onError", onPlayerError);
 				loader.content.addEventListener("onStateChange", onPlayerStateChange);
@@ -32,6 +35,12 @@
 				player = loader.content;
 				// Set appropriate player dimensions for your application
 				player.setSize(1280, 720);
+			}
+			
+			private function playSelectedVideo(e:Event):void {
+				MonsterDebugger.trace("PlayerView::playSelectedVideo","Playing video::"+playerViewModel.selectedVideo.videoID);
+				player.loadVideoById(playerViewModel.selectedVideo.videoID, 0, "default");
+//				player.playVideo();
 			}
 			
 			private function onPlayerError(event:Event):void {
@@ -65,22 +74,9 @@
 			public function set player(value:Object):void {
 				_player = value;
 			}
-
 		]]>
 	</fx:Script>
 	<mx:SWFLoader id="loader"
-				  source="http://www.youtube.com/apiplayer?version=3"
+				  source="{playerViewModel.playerSource}"
 				  init="onLoaderInit(event)"/>
-	<!--<s:HGroup>
-		<s:Label text="Author:"/>
-		<s:Label text="{playerViewModel.author}" />
-	</s:HGroup>
-	<s:HGroup>
-		<s:Label text="Views:"/>		
-		<s:Label text="{playerViewModel.selectedVideo.views}" />
-	</s:HGroup>
-	<s:HGroup>
-		<s:Label text="Added:"/>		
-		<s:Label text="{playerViewModel.selectedVideo.published}" />
-	</s:HGroup>-->
 </s:Group>

@@ -13,7 +13,7 @@
       <libraryPathEntry kind="1" linkType="1" path="libs"/>
       <libraryPathEntry kind="3" linkType="1" path="linked-swc/as3corelib.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="linked-swc/swiz-framework-v1.0.0.swc" useDefaultLinkType="false"/>
-      <libraryPathEntry kind="3" linkType="1" path="E:/FlashBuilderProjects/MonsterDebugger.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="1" path="${DOCUMENTS}/AS3 Shared Resources/MonsterDebugger.swc" useDefaultLinkType="false"/>
     </libraryPath>
     <sourceAttachmentPath/>
   </compiler>

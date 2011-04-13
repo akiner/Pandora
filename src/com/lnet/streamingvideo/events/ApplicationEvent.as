@@ -12,6 +12,7 @@ package com.lnet.streamingvideo.events {
 		public static const NAVIGATE_CATEGORIES:String = "navigateCategories";
 		public static const SET_FOCUS_TO_RESULTS:String = "setFocusToResults";
 		public static const SET_INITIAL_CATEGORY_FOCUS:String = "setInitialCategoryFocus";
+		public static const PLAY_SELECTED_VIDEO:String = "playSelectedVideo";
 		
 		public var data:Object;
 		public var optionalData:Object;

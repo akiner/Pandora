@@ -33,8 +33,9 @@
 			
 			private function keyEventHandler(event:KeyboardEvent):void {
 				MonsterDebugger.trace("SearchResultsView.loadVideoContent","videoList.selectedItem::"+videoList.selectedItem.videoID);
-				if(KeyHandler.keyPressed(event.keyCode) == "enter"){
-					FlexGlobals.topLevelApplication.currentState = "videoPlaying"
+				if(KeyHandler.keyPressed(event.keyCode) == "select"){
+					FlexGlobals.topLevelApplication.currentState = "videoPlaying";
+					ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.VIDEO_SELECTED, videoList.selectedItem));
 				}
 			}
 
