@@ -8,7 +8,7 @@ package com.lnet.streamingvideo.viewmodels {
 	
 	[Bindable]
 	public class PlayerViewModel extends EventDispatcher {
-		private static const CHROMELESS_PLAYER_URL:String = "http://www.youtube.com/apiplayer";
+		private static const CHROMELESS_PLAYER_URL:String = "http://www.youtube.com/apiplayer?version=3";
 		private static const EMBEDDED_PLAYER_URL:String = "http://www.youtube.com/v/";
 		private var _selectedVideo:VideoResultObject;
 		private var _playerSource:String;
@@ -22,8 +22,7 @@ package com.lnet.streamingvideo.viewmodels {
 		public function updatePlayerSource(e:ApplicationEvent):void {
 			selectedVideo = e.data as VideoResultObject;
 //			playerSource = "EMBEDDED_PLAYER_URL"+selectedVideo.videoID+"?version=3";
-			playerSource = "CHROMELESS_PLAYER_URL?video_id="+selectedVideo.videoID+"?version=3";
-			ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.PLAY_SELECTED_VIDEO));
+			playerSource = CHROMELESS_PLAYER_URL+"&video_id="+selectedVideo.videoID+"&autoplay=1";
 		}
 
 		public function get playerSource():String {

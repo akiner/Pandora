@@ -65,18 +65,21 @@
 				searchResultsView = new SearchResultsView();
 				searchResultsView.searchViewModel = new SearchViewModel();
 				resultlist.addElement(searchResultsView);
+				focusHandler.searchResultsView = searchResultsView;
 			}
 			
 			private function createPlayerView():void {
 				playerView = new PlayerView();
 				playerView.playerViewModel = playerViewModel;
 				playerContainer.addElement(playerView);
+				focusHandler.playerView = playerView;
 			}
 			
 			private function createBrowseView():void {
 				browseView = new BrowseView();
 				browseView.browseViewModel = new BrowseViewModel();
 				leftPane.addElement(browseView);
+				focusHandler.browseView = browseView;
 			}			
 
 			private function initMonsterDebugger():void {

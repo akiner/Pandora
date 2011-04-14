@@ -17,12 +17,21 @@
 			private var _playerViewModel:PlayerViewModel;
 			
 			private function onLoaderInit(event:Event):void {
-//				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.PLAY_SELECTED_VIDEO, playSelectedVideo, false, 0, true);
 				loader.content.addEventListener("onReady", onPlayerReady);
 				loader.content.addEventListener("onError", onPlayerError);
 				loader.content.addEventListener("onStateChange", onPlayerStateChange);
 				loader.content.addEventListener("onPlaybackQualityChange", 
 					onVideoPlaybackQualityChange);
+				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.PLAY_VIDEO, playVideo, false, 0, true);
+				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.PAUSE_VIDEO, pauseVideo, false, 0, true);
+			}
+
+			private function pauseVideo(event:ApplicationEvent):void {
+				player.pauseVideo();
+			}
+
+			private function playVideo(event:ApplicationEvent):void {
+				player.playVideo();
 			}
 			
 			private function onPlayerReady(event:Event):void {
