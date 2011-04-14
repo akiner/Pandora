@@ -19,23 +19,46 @@
 			private function onLoaderInit(event:Event):void {
 				loader.content.addEventListener("onReady", onPlayerReady);
 				loader.content.addEventListener("onError", onPlayerError);
-				loader.content.addEventListener("onStateChange", onPlayerStateChange);
-				loader.content.addEventListener("onPlaybackQualityChange", 
-					onVideoPlaybackQualityChange);
+				loader.content.addEventListener("onStateChange", onStateChange);
+				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.VIDEO_SELECTED, cueNewVideo, false, 0, true);
 				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.PLAY_VIDEO, playVideo, false, 0, true);
 				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.PAUSE_VIDEO, pauseVideo, false, 0, true);
+				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.STOP_VIDEO, pauseVideo, false, 0, true);
 			}
 
-			private function pauseVideo(event:ApplicationEvent):void {
+			private function cueNewVideo(event:ApplicationEvent):void {
+				MonsterDebugger.trace("PlayerView::cueNewVideo","Cueing video id::"+playerViewModel.selectedVideo.videoID);
+				player.cueVideoById(playerViewModel.selectedVideo.videoID, 0, "hd720");
+			}
+			
+			private function stopVideo(event:ApplicationEvent=null):void {
+				player.stopVideo();
+			}
+
+			private function pauseVideo(event:ApplicationEvent=null):void {
 				player.pauseVideo();
 			}
 
-			private function playVideo(event:ApplicationEvent):void {
+			private function playVideo(event:ApplicationEvent=null):void {
 				player.playVideo();
 			}
 			
+			private function onStateChange(event:Event):void {
+				switch(Object(event).data) {
+					case 5:
+						MonsterDebugger.trace("PlayerView::onStateChange","The video is cued and ready to play");
+						playVideo();
+						break;
+					case 0:
+						MonsterDebugger.trace("PlayerView::onStateChange","The video has finished playing");
+						break;
+					default:
+						MonsterDebugger.trace("PlayerView::onStateChange","Didn't catch this player state::"+Object(event).data);
+						break;
+				}
+			}
+			
 			private function onPlayerReady(event:Event):void {
-				// Event.data contains the event parameter, which is the Player API ID 
 				MonsterDebugger.trace("player ready:", Object(event).data);
 				
 				// Once this event has been dispatched by the player, we can use
@@ -46,25 +69,8 @@
 				player.setSize(1280, 720);
 			}
 			
-			private function playSelectedVideo(e:Event):void {
-				MonsterDebugger.trace("PlayerView::playSelectedVideo","Playing video::"+playerViewModel.selectedVideo.videoID);
-				player.loadVideoById(playerViewModel.selectedVideo.videoID, 0, "default");
-//				player.playVideo();
-			}
-			
 			private function onPlayerError(event:Event):void {
-				// Event.data contains the event parameter, which is the error code
 				MonsterDebugger.trace("player error:", Object(event).data);
-			}
-			
-			private function onPlayerStateChange(event:Event):void {
-				// Event.data contains the event parameter, which is the new player state
-				MonsterDebugger.trace("player state:", Object(event).data);
-			}
-			
-			private function onVideoPlaybackQualityChange(event:Event):void {
-				// Event.data contains the event parameter, which is the new video quality
-				MonsterDebugger.trace("video quality:", Object(event).data);
 			}
 			
 			[Bindable]

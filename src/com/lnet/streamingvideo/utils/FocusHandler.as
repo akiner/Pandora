@@ -77,6 +77,7 @@ package com.lnet.streamingvideo.utils {
 			switch(currentKey) {
 				case "back":
 					FlexGlobals.topLevelApplication.currentState = "results";
+					ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.STOP_VIDEO));
 					break;
 				case "pause":
 					ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.PAUSE_VIDEO));

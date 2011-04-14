@@ -1,4 +1,5 @@
 package com.lnet.streamingvideo.utils {
+	import com.demonsters.debugger.MonsterDebugger;
 	
 	public class KeyHandler	{
 		public static function keyPressed(keyCode:uint):String {
@@ -38,6 +39,7 @@ package com.lnet.streamingvideo.utils {
 					keyToReturn = "skipForward";
 					break;
 				default:
+					MonsterDebugger.trace("KeyHandler::keyPressed","Key not currently being handled::"+keyCode);
 					keyToReturn = "undefined";
 					break;
 			}

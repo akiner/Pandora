@@ -15,14 +15,14 @@ package com.lnet.streamingvideo.viewmodels {
 		
 		public function PlayerViewModel() {
 			_playerSource = CHROMELESS_PLAYER_URL;
-			ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.VIDEO_SELECTED, updatePlayerSource,
+			ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.VIDEO_SELECTED, updateSelectedVideo,
 				false, 0, true);
 		}
 
-		public function updatePlayerSource(e:ApplicationEvent):void {
+		public function updateSelectedVideo(e:ApplicationEvent):void {
 			selectedVideo = e.data as VideoResultObject;
 //			playerSource = "EMBEDDED_PLAYER_URL"+selectedVideo.videoID+"?version=3";
-			playerSource = CHROMELESS_PLAYER_URL+"&video_id="+selectedVideo.videoID+"&autoplay=1";
+//			playerSource = CHROMELESS_PLAYER_URL;
 		}
 
 		public function get playerSource():String {
