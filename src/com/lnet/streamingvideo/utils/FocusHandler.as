@@ -5,6 +5,7 @@ package com.lnet.streamingvideo.utils {
 	import com.lnet.streamingvideo.views.BrowseView;
 	import com.lnet.streamingvideo.views.PlayerView;
 	import com.lnet.streamingvideo.views.SearchResultsView;
+	import com.lnet.streamingvideo.views.SearchView;
 	
 	import flash.events.KeyboardEvent;
 	
@@ -14,6 +15,7 @@ package com.lnet.streamingvideo.utils {
 		private var currentKey:String;
 		
 		private var _browseView:BrowseView;
+		private var _searchView:SearchView;
 		private var _searchResultsView:SearchResultsView;
 		private var _playerView:PlayerView;
 		
@@ -97,6 +99,14 @@ package com.lnet.streamingvideo.utils {
 
 		public function set browseView(value:BrowseView):void {
 			_browseView = value;
+		}
+
+		public function get searchView():SearchView {
+			return _searchView;
+		}
+
+		public function set searchView(value:SearchView):void {
+			_searchView = value;
 		}
 
 		public function get searchResultsView():SearchResultsView {

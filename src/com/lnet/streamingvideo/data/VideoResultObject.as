@@ -10,6 +10,7 @@ package com.lnet.streamingvideo.data {
 		private var _views:String;
 		private var _thumbnail:String;
 		private var _videoID:String;
+		private var _rating:String;
 		
 		public function VideoResultObject(video:Object) {
 			try {_title = video.media$group.media$title.$t}
@@ -18,7 +19,7 @@ package com.lnet.streamingvideo.data {
 				catch(e:Error) {_description = ""}
 			try {_author = video.author[0].name.$t}
 				catch(e:Error) {_author = ""}
-			try {_views = video.yt$statistics.viewCount}
+			try {_views = formatViewsText(video.yt$statistics.viewCount)}
 				catch(e:Error) {_views = ""}
 			try {_published = video.published.$t}
 				catch(e:Error) {_published = ""}
@@ -26,64 +27,76 @@ package com.lnet.streamingvideo.data {
 				catch(e:Error) {}
 			try {_thumbnail = video.media$group.media$thumbnail[0].url}
 				catch(e:Error) {}
+			try {_rating = video.gd$rating.average}
+				catch(e:Error) {}
+		}
+
+		private function formatViewsText(numViews:String):String {
+				var num:String = numViews;
+				var results:Array = num.split(/\./);
+				num = results[0];
+				if (num.length>3) {
+					var mod:Number = num.length%3;
+					var output:String = num.substr(0, mod);
+					for (var i:Number = mod; i<num.length; i += 3) {
+						output += ((mod == 0 && i == 0) ? "" : ",")+num.substr(i, 3);
+					}
+					if(results.length > 1){
+						if(results[1].length == 1){
+							return output+"."+results[1]+"0";
+							
+						}else{
+							return output+"."+results[1];
+						}
+					}else{
+						return output;
+					}
+				}
+				
+				if(results.length > 1){
+					if(results[1].length == 1){
+						return num+"."+results[1]+"0";
+						
+					}else{
+						return num+"."+results[1];
+					}
+				}else{
+					return num;
+				}
+			
+			return num;
 		}
 		
 		public function get title():String {
 			return _title;
 		}
 
-		public function set title(value:String):void {
-			_title = value;
-		}
-
 		public function get published():String {
 			return _published;
-		}
-
-		public function set published(value:String):void {
-			_published = value;
 		}
 
 		public function get author():String {
 			return _author;
 		}
 
-		public function set author(value:String):void {
-			_author = value;
-		}
-
 		public function get thumbnail():String {
 			return _thumbnail;
-		}
-
-		public function set thumbnail(value:String):void {
-			_thumbnail = value;
 		}
 
 		public function get description():String {
 			return _description;
 		}
 
-		public function set description(value:String):void {
-			_description = value;
-		}
-
-
 		public function get videoID():String {
 			return _videoID;
-		}
-
-		public function set videoID(value:String):void {
-			_videoID = value;
 		}
 
 		public function get views():String {
 			return _views;
 		}
-
-		public function set views(value:String):void {
-			_views = value;
+		
+		public function get rating():String {
+			return _rating;
 		}
-
 	}
 }

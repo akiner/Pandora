@@ -1,5 +1,6 @@
 package com.lnet.streamingvideo.services {
 	import com.adobe.serialization.json.JSON;
+	import com.demonsters.debugger.MonsterDebugger;
 	import com.lnet.streamingvideo.data.VideoResultObject;
 	import com.lnet.streamingvideo.events.ApplicationEvent;
 	import com.lnet.streamingvideo.events.ApplicationEventBus;
@@ -8,8 +9,6 @@ package com.lnet.streamingvideo.services {
 	import mx.rpc.events.FaultEvent;
 	import mx.rpc.events.ResultEvent;
 	import mx.rpc.http.HTTPService;
-	
-	import nl.demonsters.debugger.MonsterDebugger;
 	
 	public class VideoService extends HTTPService{
 		private var params:Object;

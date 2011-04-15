@@ -31,19 +31,19 @@
 		<s:layout>
 			<s:VerticalLayout paddingTop="15" paddingLeft="35"/>
 		</s:layout>
-		<s:BorderContainer width="158" height="120" backgroundAlpha="1">
-			<mx:Image width="190" height="110" source="{data.thumbnail}" left="5" top="5"/>
+		<s:BorderContainer width="130" height="100" backgroundAlpha="1" left="10">
+			<mx:Image width="120" height="90" source="{data.thumbnail}" left="5" top="5"/>
 		</s:BorderContainer>
 		<s:Label text="{data.title}"
 				 maxWidth="170"
 				 maxDisplayedLines="1"/>
-		<s:Label text="By:{data.author}"
+		<s:Label text="By: {data.author}"
 				 maxWidth="170"
 				 maxDisplayedLines="1"/>
-		<s:Label text="Views:{data.views}"
+		<s:Label text="Views: {data.views}"
 				 maxWidth="170"
 				 maxDisplayedLines="1"/>
-		<s:Label text="Ranking:"
+		<s:Label text="Ranking: {data.rating}"
 				 maxWidth="170"
 				 maxDisplayedLines="1"/>
 	</s:BorderContainer>
