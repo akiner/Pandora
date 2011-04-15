@@ -5,7 +5,7 @@
 				autoDrawBackground="false">
 	
 	<s:states> 
-		<s:State name="normal"/> 
+		<s:State name="default"/> 
 		<s:State name="selected"/>
 	</s:states> 
 
@@ -23,40 +23,44 @@
 	</fx:Script>
 	
 	<s:BorderContainer id="container"
-					   backgroundAlpha="0.15"
-					   backgroundColor="0x000000"
+					   backgroundAlpha.selected="1"
+					   backgroundAlpha="1"
 					   width="225" height="256"
-					   backgroundImage.normal="{videoUH}"
+					   backgroundImage="{videoUH}"
 					   backgroundImage.selected="{videoHL}">
 		<s:layout>
-			<s:VerticalLayout paddingTop="25" paddingLeft="35"/>
+			<s:VerticalLayout paddingTop="25" horizontalAlign="center"/>
 		</s:layout>
 		<s:BorderContainer id="thumbnailContainer"
 						   horizontalCenter="0"
-						   width.selected="130"
-						   height.selected="100"
-						   width.normal="124"
-						   height.normal="94"
-						   backgroundAlpha="1">
+						   cornerRadius="4"
+						   width="124"
+						   height="94"
+						   backgroundAlpha.selected="1"
+						   backgroundAlpha="0">
 			<mx:Image id="thumbnail"
 					  width="120" height="90"
 					  source="{data.thumbnail}"
-					  left.selected="5" top.selected="5"
-					  left.normal="2" top.normal="2"/>
+					  top="2"
+					  left="2"/>
 		</s:BorderContainer>
-		<s:Label text="{data.title}"
-				 maxWidth="170"
-				 paddingTop.normal="10"
-				 paddingTop.selected="4"
-				 maxDisplayedLines="1"/>
-		<s:Label text="By: {data.author}"
-				 maxWidth="170" top="0" paddingTop="0"
-				 maxDisplayedLines="1"/>
-		<s:Label text="Views: {data.views}"
-				 maxWidth="170" top="0" paddingTop="0"
-				 maxDisplayedLines="1"/>
-		<s:Label text="Ranking: {data.rating}"
-				 maxWidth="170"
-				 maxDisplayedLines="1"/>
+		<s:VGroup id="resultText"
+				  horizontalCenter="left"
+				  left="35"
+				  gap="2">
+			<s:Label text="{data.title}"
+					 maxWidth="170"
+					 paddingTop="10"
+					 maxDisplayedLines="1"/>
+			<s:Label text="By: {data.author}"
+					 maxWidth="170" top="0" paddingTop="0"
+					 maxDisplayedLines="1"/>
+			<s:Label text="Views: {data.views}"
+					 maxWidth="170" top="0" paddingTop="0"
+					 maxDisplayedLines="1"/>
+			<s:Label text="Ranking: {data.rating}"
+					 maxWidth="170"
+					 maxDisplayedLines="1"/>
+		</s:VGroup>
 	</s:BorderContainer>
 </s:ItemRenderer>
