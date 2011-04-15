@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:HGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
 		  xmlns:s="library://ns.adobe.com/flex/spark"
 		  xmlns:mx="library://ns.adobe.com/flex/mx">
+	<s:layout>
+		<s:HorizontalLayout/>
+	</s:layout>
 	<fx:Script>
 		<![CDATA[
 			import com.lnet.streamingvideo.events.ApplicationEvent;
@@ -26,6 +29,5 @@
 			
 		]]>
 	</fx:Script>
-	<s:Label text="Search"/>
-	<s:TextInput id="searchTxt" enter="getSearchResults()" width="500" height="30"/>
-</s:HGroup>
+	<s:TextInput id="searchTxt" text="begin typing to search" enter="getSearchResults()" width="320" height="30"/>
+</s:BorderContainer>

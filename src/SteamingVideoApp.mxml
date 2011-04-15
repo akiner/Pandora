@@ -51,7 +51,7 @@
 				playerViewModel = new PlayerViewModel();
 				createSearchResultsView();
 				createBrowseView();
-//				createSearchView();
+				createSearchView();
 				createPlayerView();
 				initMonsterDebugger();
 			}
@@ -112,9 +112,8 @@
 		<s:Group id="rightPane"
 				 width="100%" height="100%">
 			<s:Group id="searchContainer"
-					 width="100%"
 					 height="100%"
-					 depth="2"/>
+					 depth="2" height.default="40" right.default="40" width.results="100%" width.videoPlaying="100%" width.default="320" top.default="50"/>
 			<s:BorderContainer id="overlayContainer"
 							   depth="1"
 							   width="100%"
