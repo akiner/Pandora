@@ -29,5 +29,8 @@
 			
 		]]>
 	</fx:Script>
-	<s:TextInput id="searchTxt" text="begin typing to search" enter="getSearchResults()" width="320" height="30"/>
+	<s:TextInput id="searchTxt"
+				 text="begin typing to search"
+				 width="320" height="30"
+				 skinClass="com.lnet.streamingvideo.views.SearchTextInputSkin"/>
 </s:BorderContainer>
