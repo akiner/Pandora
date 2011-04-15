@@ -13,6 +13,6 @@
 					   height="35"
 					   backgroundImage.selected="@Embed(source='assets/CategoryHL.jpg')"
 					   backgroundAlpha.selected="1">
-		<s:Label text="{data.name}" left="20"/>
+		<s:Label text="{data.name}" left="50" top="2"/>
 	</s:BorderContainer>
 </s:ItemRenderer>

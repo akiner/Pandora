@@ -49,8 +49,8 @@
 	</fx:Script>
 	<mx:Image source="@Embed('assets/YouTubeLogo.png')"
 			  depth="2"
-			  top="30"
-			  left="30"/>
+			  top="60"
+			  horizontalCenter="0"/>
 	<s:BorderContainer id="overlayContainer"
 					   depth="1"
 					   width="316"

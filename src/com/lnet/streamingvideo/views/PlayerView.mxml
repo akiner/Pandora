@@ -2,7 +2,7 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 width="100%" height="100%" x="0" y="0">
+		 width="1280" height="720" x="0" y="0">
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
@@ -60,12 +60,7 @@
 			
 			private function onPlayerReady(event:Event):void {
 				MonsterDebugger.trace("player ready:", Object(event).data);
-				
-				// Once this event has been dispatched by the player, we can use
-				// cueVideoById, loadVideoById, cueVideoByUrl and loadVideoByUrl
-				// to load a particular YouTube video.
 				player = loader.content;
-				// Set appropriate player dimensions for your application
 				player.setSize(1280, 720);
 			}
 			
@@ -91,7 +86,10 @@
 			}
 		]]>
 	</fx:Script>
+	<!--<s:ScrubBar depth="1"/>-->
+	<!--<mx:Image source="assets/progressToMask.png" bottom="10" depth="1"/>-->
 	<mx:SWFLoader id="loader"
+				  depth="0"
 				  source="{playerViewModel.playerSource}"
 				  init="onLoaderInit(event)"/>
 </s:Group>

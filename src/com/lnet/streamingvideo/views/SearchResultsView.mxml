@@ -2,7 +2,7 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 width="100%" height="100%" top="138">
+		 width="100%" height="100%" top="80">
 	<fx:Script>
 		<![CDATA[
 			import com.lnet.streamingvideo.viewmodels.SearchViewModel;
@@ -43,7 +43,7 @@
 				<s:TileLayout
 					requestedColumnCount="4"
 					requestedRowCount="2"
-					horizontalGap="4"
+					horizontalGap="2"
 					verticalGap="20"/>
 			</s:layout>
 		</s:List>

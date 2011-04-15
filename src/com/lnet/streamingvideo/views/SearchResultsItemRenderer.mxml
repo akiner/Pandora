@@ -29,19 +29,31 @@
 					   backgroundImage.normal="{videoUH}"
 					   backgroundImage.selected="{videoHL}">
 		<s:layout>
-			<s:VerticalLayout paddingTop="15" paddingLeft="35"/>
+			<s:VerticalLayout paddingTop="25" paddingLeft="35"/>
 		</s:layout>
-		<s:BorderContainer width="130" height="100" backgroundAlpha="1" left="10">
-			<mx:Image width="120" height="90" source="{data.thumbnail}" left="5" top="5"/>
+		<s:BorderContainer id="thumbnailContainer"
+						   horizontalCenter="0"
+						   width.selected="130"
+						   height.selected="100"
+						   width.normal="124"
+						   height.normal="94"
+						   backgroundAlpha="1">
+			<mx:Image id="thumbnail"
+					  width="120" height="90"
+					  source="{data.thumbnail}"
+					  left.selected="5" top.selected="5"
+					  left.normal="2" top.normal="2"/>
 		</s:BorderContainer>
 		<s:Label text="{data.title}"
 				 maxWidth="170"
+				 paddingTop.normal="10"
+				 paddingTop.selected="4"
 				 maxDisplayedLines="1"/>
 		<s:Label text="By: {data.author}"
-				 maxWidth="170"
+				 maxWidth="170" top="0" paddingTop="0"
 				 maxDisplayedLines="1"/>
 		<s:Label text="Views: {data.views}"
-				 maxWidth="170"
+				 maxWidth="170" top="0" paddingTop="0"
 				 maxDisplayedLines="1"/>
 		<s:Label text="Ranking: {data.rating}"
 				 maxWidth="170"

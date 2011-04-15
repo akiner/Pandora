@@ -29,7 +29,7 @@
 			
 		]]>
 	</fx:Script>
-	<s:TextInput id="searchTxt"
+	<s:TextInput id="searchTxt" styleName="searchText"
 				 text="begin typing to search"
 				 width="320" height="30"
 				 skinClass="com.lnet.streamingvideo.views.SearchTextInputSkin"/>

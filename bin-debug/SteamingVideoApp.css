@@ -60,6 +60,12 @@ s|TextInput {
 	font-size: 24px;
 }
 
+.searchText {
+	font-weight: bold;
+	font-style: italic;
+	font-size: 16px;
+}
+
 .categoryTitle {
 	font-size: 23px;
 	font-weight: normal;
