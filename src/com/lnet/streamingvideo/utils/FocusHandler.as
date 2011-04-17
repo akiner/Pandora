@@ -67,9 +67,14 @@ package com.lnet.streamingvideo.utils {
 			switch(currentKey) {
 				case "select":
 					MonsterDebugger.trace("FocusHandler::handleKeyPressInBrowseView","Handling select button");
-					browseView.currentState = "lostFocus";
-					FlexGlobals.topLevelApplication.currentState = "results";
-					FlexGlobals.topLevelApplication.focusManager.setFocus(searchResultsView.videoList);
+					MonsterDebugger.trace("FocusHandler::handleKeyPressInBrowseView","Current Category::"+browseView.categoryList.selectedItem.name);
+					if (browseView.categoryList.selectedItem.name == "All Categories") {
+						
+					} else {
+						browseView.currentState = "lostFocus";
+						FlexGlobals.topLevelApplication.currentState = "results";
+						FlexGlobals.topLevelApplication.focusManager.setFocus(searchResultsView.videoList);
+					}
 					break;
 				default:
 					MonsterDebugger.trace("FocusHandler::handleKeyPressInBrowseView","Key not found!!!");

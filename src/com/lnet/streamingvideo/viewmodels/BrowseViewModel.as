@@ -43,11 +43,9 @@ package com.lnet.streamingvideo.viewmodels {
 		
 		private function createAllCategoryList(event:ApplicationEvent):void {
 			ApplicationEventBus.getInstance().removeEventListener(ApplicationEvent.ALL_CATEGORIES_LOADED, createAllCategoryList);
-			var tempCategoryList:ArrayCollection = new ArrayCollection();
-			for each(var category:Object in event.data) {
-				tempCategoryList.addItem(category);
-			}
-			allCategoryList = tempCategoryList;
+			MonsterDebugger.trace("BrowseViewModel::createAllCategoryList","CategoryList.length::"+event.data.length);
+			allCategoryList = event.data as ArrayCollection;
+			MonsterDebugger.trace("BrowseViewModel::createAllCategoryList","First Category::"+allCategoryList[0]);
 		}
 		
 		public function get defaultCategoryList():IList {

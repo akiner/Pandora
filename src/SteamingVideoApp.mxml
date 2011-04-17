@@ -51,6 +51,7 @@
 				focusHandler = new FocusHandler();
 				videoService = new VideoService();
 				defaultCategoriesXML = new DefaultCategoriesLoader();
+				allCategoriesXML = new AllCategoriesLoader();
 				playerViewModel = new PlayerViewModel();
 				createSearchResultsView();
 				createBrowseView();
