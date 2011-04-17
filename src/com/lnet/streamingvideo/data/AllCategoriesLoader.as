@@ -1,4 +1,5 @@
 package com.lnet.streamingvideo.data {
+	import com.demonsters.debugger.MonsterDebugger;
 	import com.lnet.streamingvideo.events.ApplicationEvent;
 	import com.lnet.streamingvideo.events.ApplicationEventBus;
 	
@@ -6,14 +7,12 @@ package com.lnet.streamingvideo.data {
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
 	
-	import nl.demonsters.debugger.MonsterDebugger;
-
-	public class CategoriesLoader extends URLLoader {
+	public class AllCategoriesLoader extends URLLoader {
 		
 		private var urlToLoad:String;
 		private var completionEvent:String;
 		
-		public function CategoriesLoader(url:String, eventString:String) {
+		public function AllCategoriesLoader(url:String, eventString:String) {
 			urlToLoad = url;
 			completionEvent = eventString;
 			loadXML();

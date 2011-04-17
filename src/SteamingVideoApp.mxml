@@ -11,6 +11,7 @@
 		<s:State name="default"/>
 		<s:State name="results"/>
 		<s:State name="videoPlaying"/>
+		<s:State name="search"/>
 	</s:states>
 	
 	<fx:Declarations>
@@ -20,7 +21,8 @@
 	<fx:Script>
 		<![CDATA[
 			import com.demonsters.debugger.MonsterDebugger;
-			import com.lnet.streamingvideo.data.CategoriesXMLLoader;
+			import com.lnet.streamingvideo.data.AllCategoriesLoader;
+			import com.lnet.streamingvideo.data.DefaultCategoriesLoader;
 			import com.lnet.streamingvideo.events.ApplicationEvent;
 			import com.lnet.streamingvideo.events.ApplicationEventBus;
 			import com.lnet.streamingvideo.services.VideoService;
@@ -41,13 +43,14 @@
 			private var browseView:BrowseView;
 			private var focusHandler:FocusHandler;
 			private var videoService:VideoService;
-			private var categoriesXML:CategoriesXMLLoader;
+			private var defaultCategoriesXML:DefaultCategoriesLoader;
+			private var allCategoriesXML:AllCategoriesLoader;
 			
 			private function init():void {
 				Security.allowDomain("www.youtube.com");
 				focusHandler = new FocusHandler();
 				videoService = new VideoService();
-				categoriesXML = new CategoriesXMLLoader();
+				defaultCategoriesXML = new DefaultCategoriesLoader();
 				playerViewModel = new PlayerViewModel();
 				createSearchResultsView();
 				createBrowseView();
@@ -93,6 +96,7 @@
 			 depth="3"
 			 visible.videoPlaying="true"
 			 visible.default="false"
+			 visible.search="false"
 			 visible.results="false"
 			 width="100%" height="100%"/>
 	<s:BorderContainer id="backgroundContainer"

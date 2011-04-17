@@ -60,4 +60,10 @@
 		<url>http://gdata.youtube.com/feeds/api/standardfeeds/on_the_web</url>
 		<description>This feed lists trending videos as seen on YouTube Trends, which surfaces popular videos as their popularity is increasing and also analyzes broader trends developing within the YouTube community. This feed is available as an experimental feature.</description>
 	</category>
+	<category>
+		<name>All Categories</name>
+		<id>all_categories</id>
+		<url>none</url>
+		<description>This will change the standard feed categories to view all categories.</description>
+	</category>
 </data>

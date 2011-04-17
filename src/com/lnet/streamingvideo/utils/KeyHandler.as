@@ -45,5 +45,21 @@ package com.lnet.streamingvideo.utils {
 			}
 			return keyToReturn;
 		}
+		public static function isNumericKey(keyCode:uint):Boolean {
+			if (keyCode >=48 && keyCode <=57) {
+				MonsterDebugger.trace("KeyHandler::isNumericKey","A numeric key was pressed");
+				return true;
+			} else {
+				return false;
+			}
+		}
+		public static function isAlphaKey(keyCode:uint):Boolean {
+			if ((keyCode >=65 && keyCode <=90) || (keyCode >=97 && keyCode <=122)) {
+				MonsterDebugger.trace("KeyHandler::isAlphaKey","An alpha key was pressed");
+				return true;
+			} else {
+				return false;
+			}
+		}
 	}
 }

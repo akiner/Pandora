@@ -8,8 +8,10 @@ package com.lnet.streamingvideo.utils {
 	import com.lnet.streamingvideo.views.SearchView;
 	
 	import flash.events.KeyboardEvent;
+	import flash.ui.Keyboard;
 	
 	import mx.core.FlexGlobals;
+	import mx.core.UIComponent;
 
 	public class FocusHandler {
 		private var currentKey:String;
@@ -18,26 +20,46 @@ package com.lnet.streamingvideo.utils {
 		private var _searchView:SearchView;
 		private var _searchResultsView:SearchResultsView;
 		private var _playerView:PlayerView;
+		private var isTyping:Boolean;
 		
 		public function FocusHandler() {
+			isTyping = false;
 			FlexGlobals.topLevelApplication.addEventListener(KeyboardEvent.KEY_UP, handleKeyPress, false, 0, true);
 		}
 
 		private function handleKeyPress(event:KeyboardEvent):void {
-			currentKey = KeyHandler.keyPressed(event.keyCode);
-			switch(FlexGlobals.topLevelApplication.currentState) {
-				case "default":
-					handleKeyPressInBrowseView();
-					break;
-				case "results":
-					handleKeyPressInResultsView();
-					break;
-				case "videoPlaying":
-					handleKeyPressInVideoPlayerView();
-					break;
-				default:
-					MonsterDebugger.trace("FocusHandler::constructor","Keyboard event not handled!!!");
-					break;
+			// Check if key pressed was a letter or a number
+			if (KeyHandler.isNumericKey(event.keyCode) || KeyHandler.isAlphaKey(event.keyCode)) {
+				var searchTerm:String = "";
+				if(!isTyping) {
+					isTyping = true;
+//					FlexGlobals.topLevelApplication.focusManager.setFocus(searchView.searchTxt);
+					FlexGlobals.topLevelApplication.currentState = "search";
+					searchView.searchTxt.text = searchTerm;
+					searchTerm.concat("a");
+					searchView.searchTxt.text = searchTerm;
+	//				ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.SEARCH_INITIATED, event.keyCode));
+				} else {
+					searchTerm.concat("a");
+					searchView.searchTxt.text = searchTerm;
+				}
+			} else {
+				// If it isn't - check what other function key was pressed
+				currentKey = KeyHandler.keyPressed(event.keyCode);
+				switch(FlexGlobals.topLevelApplication.currentState) {
+					case "default":
+						handleKeyPressInBrowseView();
+						break;
+					case "results":
+						handleKeyPressInResultsView();
+						break;
+					case "videoPlaying":
+						handleKeyPressInVideoPlayerView();
+						break;
+					default:
+						MonsterDebugger.trace("FocusHandler::constructor","Keyboard event not handled!!!");
+						break;
+				}
 			}
 		}
 

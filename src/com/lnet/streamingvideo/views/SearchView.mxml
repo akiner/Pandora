@@ -13,6 +13,10 @@
 			import com.lnet.streamingvideo.viewmodels.SearchViewModel;
 			
 			private var _searchViewModel:SearchViewModel;
+
+			private function handleSearchEntry(event:ApplicationEvent):void {
+				
+			}
 			
 			private function getSearchResults():void {
 				searchViewModel.getSearchResults(searchTxt.text);

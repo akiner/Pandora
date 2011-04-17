@@ -1,4 +1,5 @@
 package com.lnet.streamingvideo.data {
+	import com.demonsters.debugger.MonsterDebugger;
 	import com.lnet.streamingvideo.events.ApplicationEvent;
 	import com.lnet.streamingvideo.events.ApplicationEventBus;
 	
@@ -6,27 +7,24 @@ package com.lnet.streamingvideo.data {
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
 	
-	import nl.demonsters.debugger.MonsterDebugger;
 
-	public class CategoriesXMLLoader extends URLLoader {
-		private static const CATEGORY_URL:String = "Categories.xml";
+	public class DefaultCategoriesLoader extends URLLoader {
+		private static const DEFAULT_CATEGORY_URL:String = "DefaultCategories.xml";
 		
-		public function CategoriesXMLLoader() {
+		public function DefaultCategoriesLoader() {
 			addEventListener(Event.COMPLETE, xmlReturned, false, 0, true);
-			load(new URLRequest(CATEGORY_URL));
+			load(new URLRequest(DEFAULT_CATEGORY_URL));
 		}
 		
 		private function xmlReturned(e:Event):void {
 			removeEventListener(Event.COMPLETE, xmlReturned);
 			var xmlData:XML = new XML(e.target.data);
 			parseXML(xmlData);
-			MonsterDebugger.trace("CategoriesXMLLoader::LoadXML","Category XML loaded::"+xmlData);
 		}
 
 		private function parseXML(xmlData:XML):void {
 			var categoryList:XMLList = xmlData.category;
-			MonsterDebugger.trace("CategoriesXMLLoader::parseXML","category::"+categoryList.length());
-			ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.CATEGORIES_LOADED, categoryList));
+			ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.DEFAULT_CATEGORIES_LOADED, categoryList));
 		}
 	}
 }

@@ -12,19 +12,19 @@ package com.lnet.streamingvideo.viewmodels {
 	
 	[Bindable]
 	public class BrowseViewModel extends EventDispatcher{
-		private var _categoryList:IList;
-		private var _topCategoryList:IList;
+		private var _defaultCategoryList:IList;
+		private var _allCategoryList:IList;
 		
 		public function BrowseViewModel() {
-			_categoryList = new ArrayCollection();
-			_topCategoryList = new ArrayCollection();
+			_defaultCategoryList = new ArrayCollection();
+			_allCategoryList = new ArrayCollection();
 			addEventListeners();
 		}
 		
 		private function addEventListeners():void {
-			ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.CATEGORIES_LOADED, createCategoryList,
+			ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.DEFAULT_CATEGORIES_LOADED, createDefaultCategoryList,
 				false, 0, true);
-			ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.TOP_CATEGORIES_LOADED, createTopCategoryList,
+			ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.ALL_CATEGORIES_LOADED, createAllCategoryList,
 				false, 0, true);
 		}
 		
@@ -32,40 +32,40 @@ package com.lnet.streamingvideo.viewmodels {
 			ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.CATEGORY_SELECTED, category, url));
 		}
 		
-		private function createCategoryList(event:ApplicationEvent):void {
-			ApplicationEventBus.getInstance().removeEventListener(ApplicationEvent.CATEGORIES_LOADED, createCategoryList);
+		private function createDefaultCategoryList(event:ApplicationEvent):void {
+			ApplicationEventBus.getInstance().removeEventListener(ApplicationEvent.DEFAULT_CATEGORIES_LOADED, createDefaultCategoryList);
 			var tempCategoryList:ArrayCollection = new ArrayCollection();
 			for each(var category:Object in event.data) {
 				tempCategoryList.addItem(category);
 			}
-			categoryList = tempCategoryList;
+			defaultCategoryList = tempCategoryList;
 		}
 		
-		private function createTopCategoryList(event:ApplicationEvent):void {
-			ApplicationEventBus.getInstance().removeEventListener(ApplicationEvent.TOP_CATEGORIES_LOADED, createTopCategoryList);
+		private function createAllCategoryList(event:ApplicationEvent):void {
+			ApplicationEventBus.getInstance().removeEventListener(ApplicationEvent.ALL_CATEGORIES_LOADED, createAllCategoryList);
 			var tempCategoryList:ArrayCollection = new ArrayCollection();
 			for each(var category:Object in event.data) {
 				tempCategoryList.addItem(category);
 			}
-			topCategoryList = tempCategoryList;
+			allCategoryList = tempCategoryList;
 		}
 		
-		public function get categoryList():IList {
-			return _categoryList;
+		public function get defaultCategoryList():IList {
+			return _defaultCategoryList;
 		}
 		
-		public function set categoryList(value:IList):void {
-			_categoryList = value;
+		public function set defaultCategoryList(value:IList):void {
+			_defaultCategoryList = value;
 			MonsterDebugger.trace("BrowseViewModel::categoryList","categoryList has been set...dispatching setInitialFocus event...");
-			ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.SET_INITIAL_CATEGORY_FOCUS, categoryList[0]));
+			ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.SET_INITIAL_CATEGORY_FOCUS, defaultCategoryList[0]));
 		}
 		
-		public function get topCategoryList():IList {
-			return _topCategoryList;
+		public function get allCategoryList():IList {
+			return _allCategoryList;
 		}
 		
-		public function set topCategoryList(value:IList):void {
-			_topCategoryList = value;
+		public function set allCategoryList(value:IList):void {
+			_allCategoryList = value;
 		}
 	}
 }

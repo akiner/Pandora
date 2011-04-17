@@ -2,11 +2,12 @@ package com.lnet.streamingvideo.events {
 	import flash.events.Event;
 	
 	public class ApplicationEvent extends Event {
+		public static const SEARCH_INITIATED:String = "searchInitiated";
 		public static const SEARCH_REQUESTED:String = "searchRequested";
 		public static const SEARCH_RESULTS_RETURNED:String = "searchResultsReturned";
 		
-		public static const CATEGORIES_LOADED:String = "categoriesLoaded";
-		public static const TOP_CATEGORIES_LOADED:String = "topCategoriesLoaded";
+		public static const DEFAULT_CATEGORIES_LOADED:String = "defaultCategoriesLoaded";
+		public static const ALL_CATEGORIES_LOADED:String = "allCategoriesLoaded";
 		public static const SET_INITIAL_CATEGORY_FOCUS:String = "setInitialCategoryFocus";
 		public static const CATEGORY_SELECTED:String = "categorySelected";
 		
