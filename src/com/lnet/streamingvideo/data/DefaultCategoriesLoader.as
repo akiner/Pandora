@@ -9,11 +9,11 @@ package com.lnet.streamingvideo.data {
 	
 
 	public class DefaultCategoriesLoader extends URLLoader {
-		private static const DEFAULT_CATEGORY_URL:String = "DefaultCategories.xml";
+		private static const CATEGORY_URL:String = "DefaultCategories.xml";
 		
 		public function DefaultCategoriesLoader() {
 			addEventListener(Event.COMPLETE, xmlReturned, false, 0, true);
-			load(new URLRequest(DEFAULT_CATEGORY_URL));
+			load(new URLRequest(CATEGORY_URL));
 		}
 		
 		private function xmlReturned(e:Event):void {

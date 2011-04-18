@@ -38,6 +38,11 @@ global {
 	font-family: helvetica;
 }
 
+s|List s|Scroller {
+	horizontalScrollPolicy: off;
+	verticalScrollPolicy: off;
+}
+
 s|BorderContainer {
 	background-alpha: 0;
 	border-visible: false;

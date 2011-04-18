@@ -78,7 +78,9 @@ package com.lnet.streamingvideo.utils {
 		private function handleCategorySelect():void {
 			MonsterDebugger.trace("FocusHandler::handleKeyPressInBrowseView","Current Category::"+browseView.categoryList.selectedItem.name);
 			if (browseView.categoryList.selectedItem.name == "All Categories") {
-				browseView.browseViewModel
+				MonsterDebugger.trace("FocusHandler::handleCategorySelect","Attempting to load all categories");
+				browseView.browseViewModel.currentCategoryList = browseView.browseViewModel.allCategoryList;
+				browseView.categoryList.selectedIndex = 0;
 			} else {
 				browseView.currentState = "lostFocus";
 				FlexGlobals.topLevelApplication.currentState = "results";

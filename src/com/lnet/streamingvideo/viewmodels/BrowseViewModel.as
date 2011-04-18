@@ -1,6 +1,5 @@
 package com.lnet.streamingvideo.viewmodels {
 	import com.demonsters.debugger.MonsterDebugger;
-	import com.lnet.streamingvideo.data.VideoResultObject;
 	import com.lnet.streamingvideo.events.ApplicationEvent;
 	import com.lnet.streamingvideo.events.ApplicationEventBus;
 	
@@ -8,12 +7,12 @@ package com.lnet.streamingvideo.viewmodels {
 	
 	import mx.collections.ArrayCollection;
 	import mx.collections.IList;
-	import mx.core.Application;
 	
 	[Bindable]
 	public class BrowseViewModel extends EventDispatcher{
 		private var _defaultCategoryList:IList;
 		private var _allCategoryList:IList;
+		private var _currentCategoryList:IList;
 		
 		public function BrowseViewModel() {
 			_defaultCategoryList = new ArrayCollection();
@@ -43,9 +42,11 @@ package com.lnet.streamingvideo.viewmodels {
 		
 		private function createAllCategoryList(event:ApplicationEvent):void {
 			ApplicationEventBus.getInstance().removeEventListener(ApplicationEvent.ALL_CATEGORIES_LOADED, createAllCategoryList);
-			MonsterDebugger.trace("BrowseViewModel::createAllCategoryList","CategoryList.length::"+event.data.length);
-			allCategoryList = event.data as ArrayCollection;
-			MonsterDebugger.trace("BrowseViewModel::createAllCategoryList","First Category::"+allCategoryList[0]);
+			var tempCategoryList:ArrayCollection = new ArrayCollection();
+			for each(var category:Object in event.data) {
+				tempCategoryList.addItem(category);
+			}
+			allCategoryList = tempCategoryList;
 		}
 		
 		public function get defaultCategoryList():IList {
@@ -54,6 +55,7 @@ package com.lnet.streamingvideo.viewmodels {
 		
 		public function set defaultCategoryList(value:IList):void {
 			_defaultCategoryList = value;
+			currentCategoryList = _defaultCategoryList;
 			MonsterDebugger.trace("BrowseViewModel::categoryList","categoryList has been set...dispatching setInitialFocus event...");
 			ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.SET_INITIAL_CATEGORY_FOCUS, defaultCategoryList[0]));
 		}
@@ -65,5 +67,14 @@ package com.lnet.streamingvideo.viewmodels {
 		public function set allCategoryList(value:IList):void {
 			_allCategoryList = value;
 		}
+
+		public function get currentCategoryList():IList {
+			return _currentCategoryList;
+		}
+
+		public function set currentCategoryList(value:IList):void {
+			_currentCategoryList = value;
+		}
+
 	}
 }

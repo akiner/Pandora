@@ -64,7 +64,7 @@
 			top="138"
 			itemRenderer="com.lnet.streamingvideo.views.CategoryListItemRenderer"
 			change="selectionChangeHandler()"
-			dataProvider="{browseViewModel.defaultCategoryList}"
+			dataProvider="{browseViewModel.currentCategoryList}"
 			labelField="name"
 			styleName="categoryTitle"
 			lineHeight="64"

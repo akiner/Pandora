@@ -54,7 +54,7 @@ package com.lnet.streamingvideo.utils {
 			}
 		}
 		public static function isAlphaKey(keyCode:uint):Boolean {
-			if ((keyCode >=65 && keyCode <=90) || (keyCode >=97 && keyCode <=122)) {
+			if (keyCode >=65 && keyCode <=90) {
 				MonsterDebugger.trace("KeyHandler::isAlphaKey","An alpha key was pressed");
 				return true;
 			} else {
