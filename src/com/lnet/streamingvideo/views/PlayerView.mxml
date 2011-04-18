@@ -87,7 +87,7 @@
 		]]>
 	</fx:Script>
 	<!--<s:ScrubBar depth="1"/>-->
-	<!--<mx:Image source="assets/progressToMask.png" bottom="10" depth="1"/>-->
+	<mx:Image source="assets/ProgressBkg.png" bottom="10" depth="1" horizontalCenter="0"/>
 	<mx:SWFLoader id="loader"
 				  depth="0"
 				  source="{playerViewModel.playerSource}"

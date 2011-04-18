@@ -8,10 +8,10 @@ package com.lnet.streamingvideo.utils {
 	import com.lnet.streamingvideo.views.SearchView;
 	
 	import flash.events.KeyboardEvent;
-	import flash.ui.Keyboard;
 	
 	import mx.core.FlexGlobals;
-	import mx.core.UIComponent;
+	import mx.core.IUIComponent;
+	import mx.managers.IFocusManagerComponent;
 
 	public class FocusHandler {
 		private var currentKey:String;
@@ -21,27 +21,27 @@ package com.lnet.streamingvideo.utils {
 		private var _searchResultsView:SearchResultsView;
 		private var _playerView:PlayerView;
 		private var isTyping:Boolean;
+		private var preSearchState:String;
+		
+		public static const SEARCH_DEFAULT_TEXT:String = "Begin Typing to Search";
 		
 		public function FocusHandler() {
+			init();
+		}
+
+		private function init():void {
 			isTyping = false;
 			FlexGlobals.topLevelApplication.addEventListener(KeyboardEvent.KEY_UP, handleKeyPress, false, 0, true);
 		}
 
 		private function handleKeyPress(event:KeyboardEvent):void {
+			preSearchState = FlexGlobals.topLevelApplication.currentState;
 			// Check if key pressed was a letter or a number
-			if (KeyHandler.isNumericKey(event.keyCode) || KeyHandler.isAlphaKey(event.keyCode)) {
-				var searchTerm:String = "";
-				if(!isTyping) {
-					isTyping = true;
-//					FlexGlobals.topLevelApplication.focusManager.setFocus(searchView.searchTxt);
-					FlexGlobals.topLevelApplication.currentState = "search";
-					searchView.searchTxt.text = searchTerm;
-					searchTerm.concat("a");
-					searchView.searchTxt.text = searchTerm;
-	//				ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.SEARCH_INITIATED, event.keyCode));
-				} else {
-					searchTerm.concat("a");
-					searchView.searchTxt.text = searchTerm;
+			if (userIsTyping(event)) {
+				MonsterDebugger.trace("FocusHandler::handleKeyPress","Accepting a search character::"+KeyHandler.keyPressed(event.keyCode));
+				if (!isTyping){
+					FlexGlobals.topLevelApplication.focusManager.setFocus(searchView.searchTxt);
+					initSearch(event);
 				}
 			} else {
 				// If it isn't - check what other function key was pressed
@@ -56,11 +56,30 @@ package com.lnet.streamingvideo.utils {
 					case "videoPlaying":
 						handleKeyPressInVideoPlayerView();
 						break;
+					case "search":
+						handleKeyPressInSearchView();
+						break;
 					default:
 						MonsterDebugger.trace("FocusHandler::constructor","Keyboard event not handled!!!");
 						break;
 				}
 			}
+		}
+
+		private function userIsTyping(event:KeyboardEvent):Boolean {
+			if(KeyHandler.isAlphaKey(event.keyCode) || KeyHandler.isNumericKey(event.keyCode)) { // what other keys do we need to catch??
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+		private function initSearch(event:KeyboardEvent):void {
+			isTyping = true;
+			FlexGlobals.topLevelApplication.currentState = "search";
+			searchView.searchTxt.text = "";
+			searchView.searchTxt.insertText(KeyHandler.keyPressed(event.keyCode));
+			searchView.searchTxt.cursorManager.showCursor();
 		}
 
 		private function handleKeyPressInBrowseView():void {
@@ -83,7 +102,6 @@ package com.lnet.streamingvideo.utils {
 		private function handleCategorySelect():void {
 			MonsterDebugger.trace("FocusHandler::handleKeyPressInBrowseView","Current Category::"+browseView.categoryList.selectedItem.name);
 			if (browseView.categoryList.selectedItem.name == "All Categories") {
-				MonsterDebugger.trace("FocusHandler::handleCategorySelect","Attempting to load all categories");
 				browseView.browseViewModel.currentCategoryList = browseView.browseViewModel.allCategoryList;
 			} else {
 				browseView.currentState = "lostFocus";
@@ -101,16 +119,45 @@ package com.lnet.streamingvideo.utils {
 					break;
 				case "back":
 					MonsterDebugger.trace("FocusHandler::handleKeyPressInResultsView","Handling back button");
-					browseView.currentState = "hasFocus";
-					searchResultsView.videoList.selectedIndex = 0;
-					FlexGlobals.topLevelApplication.currentState = "default";
-					FlexGlobals.topLevelApplication.focusManager.setFocus(browseView.categoryList);
+					returnToBrowseView();
 					break;
 				default:
 					MonsterDebugger.trace("FocusHandler::handleKeyPressInResultsView","Key not found!!!");
 					break;
 			}
 		}
+		
+		private function handleKeyPressInSearchView():void {
+			switch(currentKey) {
+				case "select":
+					isTyping = false;
+					MonsterDebugger.trace("FocusHandler::handleKeyPressInSearchView","Handling search request");
+					browseView.currentState = "lostFocus";
+					FlexGlobals.topLevelApplication.currentState = "results";
+					FlexGlobals.topLevelApplication.focusManager.setFocus(searchResultsView.videoList);
+					ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.SEARCH_REQUESTED, searchView.searchTxt.text));
+					searchView.searchTxt.text = SEARCH_DEFAULT_TEXT;
+					break;
+				case "back":
+					isTyping = false;
+					MonsterDebugger.trace("FocusHandler::handleKeyPressInSearchView","Escaping search view");
+					searchView.searchTxt.text = SEARCH_DEFAULT_TEXT;
+					returnToBrowseView();
+					break;
+				default:
+					MonsterDebugger.trace("FocusHandler::handleKeyPressInResultsView","Key not found!!!");
+					break;
+			}
+		}
+
+		private function returnToBrowseView():void {
+			browseView.currentState = "hasFocus";
+			searchResultsView.videoList.selectedIndex = 0;
+			browseView.browseViewModel.getCategoryResults(browseView.categoryList.selectedItem.name, browseView.categoryList.selectedItem.url);
+			FlexGlobals.topLevelApplication.currentState = "default";
+			FlexGlobals.topLevelApplication.focusManager.setFocus(browseView.categoryList);
+		}
+
 		
 		private function handleKeyPressInVideoPlayerView():void {
 			switch(currentKey) {

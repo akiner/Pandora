@@ -48,6 +48,7 @@
 			
 			private function init():void {
 				Security.allowDomain("www.youtube.com");
+				Security.allowDomain("www.u4ikinteractive.com");
 				focusHandler = new FocusHandler();
 				videoService = new VideoService();
 				defaultCategoriesXML = new DefaultCategoriesLoader();
@@ -128,6 +129,7 @@
 							   height="100%"
 							   backgroundAlpha="0.7"
 							   visible.default="true"
+							   visible.search="true"
 							   visible.results="false"
 							   backgroundColor="0x000000"/>
 			<s:Group depth="0" id="resultlist" height="100%" width="100%"/>

@@ -12,9 +12,11 @@ package com.lnet.streamingvideo.services {
 	
 	public class VideoService extends HTTPService{
 		private var params:Object;
+		private var resultsLabel:String;
 		private var _searchTerm:String;
 		
 		private static const BROWSE_CATEGORIES_URL:String = "http://gdata.youtube.com/schemas/2007/categories.cat";
+		private static const SEARCH_URL:String = "http://gdata.youtube.com/feeds/api/videos";
 		private static const API_VERSION:String = "2";
 		
 		public function VideoService() {
@@ -37,6 +39,7 @@ package com.lnet.streamingvideo.services {
 		private function getCategoryResults(event:ApplicationEvent):void {
 			MonsterDebugger.trace("VideoService::getCategoryResults","Getting results for::"+event.data);
 			searchTerm = event.data as String;
+			resultsLabel = searchTerm;
 			url = event.optionalData as String;
 			params = new Object();
 			params["v"] = API_VERSION;
@@ -48,7 +51,8 @@ package com.lnet.streamingvideo.services {
 		private function getSearchResults(event:ApplicationEvent):void {
 			MonsterDebugger.trace("VideoService::getSearchResults","Getting search results for::"+event.data);
 			searchTerm = event.data as String;
-			url = event.optionalData as String;
+			resultsLabel = "Search Results for '"+searchTerm+"'";
+			url = SEARCH_URL;
 			params = new Object();
 			params["q"] = _searchTerm;
 			params["v"] = API_VERSION;
@@ -67,7 +71,7 @@ package com.lnet.streamingvideo.services {
 				resultObjects.push(resultObj);
 			}
 			ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.SEARCH_RESULTS_RETURNED,
-				new ArrayCollection(resultObjects), searchTerm));
+				new ArrayCollection(resultObjects), resultsLabel));
 		}	
 		
 		private function onServiceFault(e:FaultEvent):void {

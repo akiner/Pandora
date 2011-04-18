@@ -64,6 +64,7 @@
 					   backgroundAlpha.lostFocus="0.5"
 					   backgroundColor="0x000000"/>
 	<s:List id="categoryList"
+			focusAlpha="0"
 			depth="0"
 			top="138"
 			requireSelection="true"
