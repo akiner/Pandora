@@ -13,6 +13,8 @@ package com.lnet.streamingvideo.viewmodels {
 		private var _defaultCategoryList:IList;
 		private var _allCategoryList:IList;
 		private var _currentCategoryList:IList;
+		private var _allCategoriesActive:Boolean;
+		private var _defaultCategoriesActive:Boolean;
 		
 		public function BrowseViewModel() {
 			_defaultCategoryList = new ArrayCollection();
@@ -56,8 +58,6 @@ package com.lnet.streamingvideo.viewmodels {
 		public function set defaultCategoryList(value:IList):void {
 			_defaultCategoryList = value;
 			currentCategoryList = _defaultCategoryList;
-			MonsterDebugger.trace("BrowseViewModel::categoryList","categoryList has been set...dispatching setInitialFocus event...");
-			ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.SET_INITIAL_CATEGORY_FOCUS, defaultCategoryList[0]));
 		}
 		
 		public function get allCategoryList():IList {
@@ -74,7 +74,23 @@ package com.lnet.streamingvideo.viewmodels {
 
 		public function set currentCategoryList(value:IList):void {
 			_currentCategoryList = value;
+			ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.SET_INITIAL_CATEGORY_FOCUS, _currentCategoryList[0]));
 		}
 
+		public function get allCategoriesActive():Boolean {
+			return _allCategoriesActive;
+		}
+
+		public function set allCategoriesActive(value:Boolean):void {
+			_allCategoriesActive = value;
+		}
+
+		public function get defaultCategoriesActive():Boolean {
+			return _defaultCategoriesActive;
+		}
+
+		public function set defaultCategoriesActive(value:Boolean):void {
+			_defaultCategoriesActive = value;
+		}
 	}
 }

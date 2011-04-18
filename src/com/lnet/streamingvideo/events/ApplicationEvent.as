@@ -9,6 +9,7 @@ package com.lnet.streamingvideo.events {
 		public static const DEFAULT_CATEGORIES_LOADED:String = "defaultCategoriesLoaded";
 		public static const ALL_CATEGORIES_LOADED:String = "allCategoriesLoaded";
 		public static const SET_INITIAL_CATEGORY_FOCUS:String = "setInitialCategoryFocus";
+		public static const SET_ALL_CATEGORY_FOCUS:String = "setAllCategoryFocus";
 		public static const CATEGORY_SELECTED:String = "categorySelected";
 		
 		public static const PAUSE_VIDEO:String = "pauseVideo";
