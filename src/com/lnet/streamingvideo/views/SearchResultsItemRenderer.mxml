@@ -3,7 +3,6 @@
 				xmlns:s="library://ns.adobe.com/flex/spark" 
 				xmlns:mx="library://ns.adobe.com/flex/mx" 
 				autoDrawBackground="false">
-	
 	<s:states> 
 		<s:State name="default"/> 
 		<s:State name="selected"/>
@@ -11,7 +10,11 @@
 
 	<fx:Script>
 		<![CDATA[
+			import com.adobe.utils.NumberFormatter;
+			import com.demonsters.debugger.MonsterDebugger;
+			
 			import mx.core.BitmapAsset;
+			import mx.formatters.NumberFormatter;
 			[Embed(source="assets/smallVideoUH.png")]
 			[Bindable]
 			private var videoUH:Class;
@@ -19,6 +22,27 @@
 			[Embed(source="assets/smallVideoHL.png")]
 			[Bindable]
 			private var videoHL:Class;
+			
+			[Embed(source="assets/star.png")]
+			[Bindable]
+			private var star:Class;
+			
+			[Embed(source="assets/halfStar.png")]
+			[Bindable]
+			private var halfStar:Class;
+			
+			private function calculateStars():void {
+				var rating:String = data.rating;
+				var digits:Array = rating.split(".");
+				
+				var ratingNum:Number = Number(digits[0]);
+				var ratingRemainder:Number = Number(digits[1]);
+				
+				MonsterDebugger.trace("SearchResultsItemRenderer::calculateStars","CALCULATING STARS FOR RATING::"+ratingNum+"/"+ratingRemainder);
+//				if(rating.Num > 0 && rating.Num <= 0.6) {
+//				
+//				}
+			}
 		]]>
 	</fx:Script>
 	
@@ -58,9 +82,20 @@
 			<s:Label text="Views: {data.views}"
 					 maxWidth="170" top="0" paddingTop="0"
 					 maxDisplayedLines="1"/>
-			<s:Label text="Ranking: {data.rating}"
-					 maxWidth="170"
-					 maxDisplayedLines="1"/>
+			<s:HGroup gap="0" creationComplete="calculateStars()">
+				<s:Label text="Rating: "
+						 top="0" paddingTop="0"/>
+				<!--<mx:Image id="halfStar1" depth="0" source="{star}" visible="false"/>
+				<mx:Image id="star1" depth="1" source="{star}" visible="false"/>
+				<mx:Image id="halfStar2" depth="0" source="{star}" visible="false"/>
+				<mx:Image id="star2" depth="1" source="{star}" visible="false"/>
+				<mx:Image id="halfStar3" depth="0" source="{star}" visible="false"/>
+				<mx:Image id="star3" depth="1" source="{star}" visible="false"/>
+				<mx:Image id="halfStar4" source="{star}" visible="false"/>
+				<mx:Image id="star4" source="{star}" visible="false"/>
+				<mx:Image id="halfStar5" source="{star}" visible="false"/>
+				<mx:Image id="star5" source="{star}" visible="false"/>-->
+			</s:HGroup>
 		</s:VGroup>
 	</s:BorderContainer>
 </s:ItemRenderer>
