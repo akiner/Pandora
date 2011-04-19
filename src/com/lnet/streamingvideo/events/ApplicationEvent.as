@@ -19,16 +19,17 @@ package com.lnet.streamingvideo.events {
 		
 		public var data:Object;
 		public var optionalData:Object;
+		public var optionalData2:Object;
 		
-		public function ApplicationEvent(type:String, eventData:Object=null, optionalDataField:Object=null, 
+		public function ApplicationEvent(type:String, eventData:Object=null, optionalDataField:Object=null, optionalDataField2:Object=null, 
 										 bubbles:Boolean=false, cancelable:Boolean=false) {
 			super(type, bubbles, cancelable);
 			data = eventData;
 			if(optionalDataField != null) {
 				optionalData = optionalDataField;
 			}
-			if(optionalDataField != null) {
-				optionalData = optionalDataField;
+			if(optionalDataField2 != null) {
+				optionalData2 = optionalDataField2;
 			}
 		}
 	}

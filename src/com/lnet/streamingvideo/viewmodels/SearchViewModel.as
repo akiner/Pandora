@@ -1,6 +1,5 @@
 package com.lnet.streamingvideo.viewmodels {
 	
-	import com.demonsters.debugger.MonsterDebugger;
 	import com.lnet.streamingvideo.events.ApplicationEvent;
 	import com.lnet.streamingvideo.events.ApplicationEventBus;
 	
@@ -21,7 +20,6 @@ package com.lnet.streamingvideo.viewmodels {
 		}
 		
 		private function updateSearchResults(event:ApplicationEvent):void {
-			MonsterDebugger.trace("SearchViewModel::updateSearchResults","Search Results Returned...update bindable var");
 			searchResultList = event.data as IList;
 			searchTerm = event.optionalData as String;
 		}
@@ -35,7 +33,6 @@ package com.lnet.streamingvideo.viewmodels {
 		}
 
 		public function set searchResultList(value:IList):void {
-			MonsterDebugger.trace("SearchViewModel::searchResultList","Updating setter...");
 			_searchResultList = value;
 		}
 

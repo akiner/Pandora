@@ -23,11 +23,16 @@
 			  width="100%"
 			  height="100%"
 			  left="10" focusRect="false">
-		<s:Label id="resultsLabel"
-				 styleName="searchResultLabel"
-				 paddingLeft="20" paddingBottom="10"
-				 visible="{searchViewModel.searchResultList.length > 0}"
-				 text="{searchViewModel.searchTerm}"/>
+		<s:HGroup width="100%">
+			<s:Label id="resultsLabel"
+					 styleName="searchResultLabel"
+					 paddingLeft="20" paddingBottom="10"
+					 visible="{searchViewModel.searchResultList.length > 0}"
+					 text="{searchViewModel.searchTerm}"/>
+			<!--<s:Label id="numResultsLabel"
+					 styleName="numrResultsLabel"
+					 text="About {searchViewModel.numResults} results" right="0"/>-->
+		</s:HGroup>
 		<s:List id="videoList"
 				focusAlpha="0"
 				requireSelection="true"

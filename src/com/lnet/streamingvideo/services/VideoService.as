@@ -4,6 +4,7 @@ package com.lnet.streamingvideo.services {
 	import com.lnet.streamingvideo.data.VideoResultObject;
 	import com.lnet.streamingvideo.events.ApplicationEvent;
 	import com.lnet.streamingvideo.events.ApplicationEventBus;
+	import com.lnet.streamingvideo.utils.TextFormatter;
 	
 	import mx.collections.ArrayCollection;
 	import mx.rpc.events.FaultEvent;
@@ -13,7 +14,8 @@ package com.lnet.streamingvideo.services {
 	public class VideoService extends HTTPService{
 		private var params:Object;
 		private var resultsLabel:String;
-		private var _searchTerm:String;
+		private var searchTerm:String;
+		private var resultsType:String;
 		
 		private static const BROWSE_CATEGORIES_URL:String = "http://gdata.youtube.com/schemas/2007/categories.cat";
 		private static const SEARCH_URL:String = "http://gdata.youtube.com/feeds/api/videos";
@@ -37,9 +39,8 @@ package com.lnet.streamingvideo.services {
 		}
 		
 		private function getCategoryResults(event:ApplicationEvent):void {
-			MonsterDebugger.trace("VideoService::getCategoryResults","Getting results for::"+event.data);
+			resultsType = "browse";
 			searchTerm = event.data as String;
-			resultsLabel = searchTerm;
 			url = event.optionalData as String;
 			params = new Object();
 			params["v"] = API_VERSION;
@@ -49,12 +50,11 @@ package com.lnet.streamingvideo.services {
 		}
 		
 		private function getSearchResults(event:ApplicationEvent):void {
-			MonsterDebugger.trace("VideoService::getSearchResults","Getting search results for::"+event.data);
+			resultsType = "search"
 			searchTerm = event.data as String;
-			resultsLabel = "Search Results for '"+searchTerm+"'";
 			url = SEARCH_URL;
 			params = new Object();
-			params["q"] = _searchTerm;
+			params["q"] = searchTerm;
 			params["v"] = API_VERSION;
 			params["alt"] = "json";
 			params["max-results"] = "8";
@@ -65,7 +65,7 @@ package com.lnet.streamingvideo.services {
 			var feed:Object = JSON.decode(e.result as String).feed;
 			var videoList:Array = feed.entry;
 			var resultObjects:Array = [];
-			MonsterDebugger.trace("VideoService::onServiceResult","Results returned::"+videoList.length);
+			resultsLabel = configureLabel(feed.openSearch$totalResults.$t);
 			for each(var video:Object in videoList) {
 				var resultObj:Object = new VideoResultObject(video);
 				resultObjects.push(resultObj);
@@ -73,17 +73,17 @@ package com.lnet.streamingvideo.services {
 			ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.SEARCH_RESULTS_RETURNED,
 				new ArrayCollection(resultObjects), resultsLabel));
 		}	
+
+		private function configureLabel(numResults:String):String {
+			if(resultsType == "search") {
+				return TextFormatter.FormatNumWithCommas(numResults) +" search results for '"+searchTerm+"'";
+			} else {
+				return searchTerm;
+			}
+		}
 		
 		private function onServiceFault(e:FaultEvent):void {
 			MonsterDebugger.trace("VideoService::onServiceFault","Fault: " + e.fault.faultString);
-		}
-		
-		public function get searchTerm():String {
-			return _searchTerm;
-		}
-		
-		public function set searchTerm(value:String):void {
-			_searchTerm = value;
 		}
 	}
 }

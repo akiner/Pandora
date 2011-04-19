@@ -1,4 +1,6 @@
 package com.lnet.streamingvideo.data {
+	import com.lnet.streamingvideo.utils.TextFormatter;
+	
 	import nl.demonsters.debugger.MonsterDebugger;
 	
 	[Bindable]
@@ -19,7 +21,7 @@ package com.lnet.streamingvideo.data {
 				catch(e:Error) {_description = ""}
 			try {_author = video.author[0].name.$t}
 				catch(e:Error) {_author = ""}
-			try {_views = formatViewsText(video.yt$statistics.viewCount)}
+			try {_views = TextFormatter.FormatNumWithCommas(video.yt$statistics.viewCount)}
 				catch(e:Error) {_views = ""}
 			try {_published = video.published.$t}
 				catch(e:Error) {_published = ""}
@@ -31,42 +33,6 @@ package com.lnet.streamingvideo.data {
 				catch(e:Error) {}
 		}
 
-		private function formatViewsText(numViews:String):String {
-				var num:String = numViews;
-				var results:Array = num.split(/\./);
-				num = results[0];
-				if (num.length>3) {
-					var mod:Number = num.length%3;
-					var output:String = num.substr(0, mod);
-					for (var i:Number = mod; i<num.length; i += 3) {
-						output += ((mod == 0 && i == 0) ? "" : ",")+num.substr(i, 3);
-					}
-					if(results.length > 1){
-						if(results[1].length == 1){
-							return output+"."+results[1]+"0";
-							
-						}else{
-							return output+"."+results[1];
-						}
-					}else{
-						return output;
-					}
-				}
-				
-				if(results.length > 1){
-					if(results[1].length == 1){
-						return num+"."+results[1]+"0";
-						
-					}else{
-						return num+"."+results[1];
-					}
-				}else{
-					return num;
-				}
-			
-			return num;
-		}
-		
 		public function get title():String {
 			return _title;
 		}
