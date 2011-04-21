@@ -86,12 +86,6 @@
 			}
 		]]>
 	</fx:Script>
-	<mx:Image depth="1"  source="@Embed(source='assets/ProgressBkg.png')" bottom="0" horizontalCenter="0"/>
-	<s:HGroup id="PlayerControls"
-			  depth="2" gap="10" left="10" bottom="0">
-		<mx:Image source="@Embed(source='assets/play_on.png')"/>
-		<mx:Image source="@Embed(source='assets/pause_off.png')"/>
-	</s:HGroup>
 	<mx:SWFLoader id="loader"
 				  depth="0"
 				  source="{playerViewModel.playerSource}"
