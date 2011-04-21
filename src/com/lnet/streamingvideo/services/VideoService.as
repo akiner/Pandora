@@ -45,7 +45,7 @@ package com.lnet.streamingvideo.services {
 			params = new Object();
 			params["v"] = API_VERSION;
 			params["alt"] = "json";
-			params["max-results"] = "8";
+			params["max-results"] = "32";
 			send(params);
 		}
 		
@@ -57,7 +57,7 @@ package com.lnet.streamingvideo.services {
 			params["q"] = searchTerm;
 			params["v"] = API_VERSION;
 			params["alt"] = "json";
-			params["max-results"] = "8";
+			params["max-results"] = "32";
 			send(params);
 		}
 		

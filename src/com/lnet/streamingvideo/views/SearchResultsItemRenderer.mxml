@@ -82,7 +82,7 @@
 			<s:Label text="Views: {data.views}"
 					 maxWidth="170" top="0" paddingTop="0"
 					 maxDisplayedLines="1"/>
-			<s:HGroup gap="1" creationComplete="calculateStars()">
+			<s:HGroup gap="0" creationComplete="calculateStars()">
 				<s:Label text="Rating: "
 						 top="0" paddingTop="0"/>
 				<!--<mx:Image id="halfStar1" depth="0" source="{star}" visible="false"/>
