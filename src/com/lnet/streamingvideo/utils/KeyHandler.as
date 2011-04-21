@@ -38,9 +38,6 @@ package com.lnet.streamingvideo.utils {
 				case 120:
 					keyToReturn = "skipForward";
 					break;
-				case 120:
-					keyToReturn = "skipForward";
-					break;
 				case 48:
 					keyToReturn = "0";
 					break;

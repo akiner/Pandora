@@ -21,10 +21,33 @@
 			
 			private var _player:Object;
 			private var _playerViewModel:PlayerViewModel;
+			private var resetTimer:Timer;
+			private var playheadTimer:Timer;
+			
 			[Bindable]
 			private var currentTimeLabel:String;
 			
+			[Embed(source="assets/skipBack_off.png")]
+			[Bindable]
+			private var skipBack:Class;
+			
+			[Embed(source="assets/skipBack_on.png")]
+			[Bindable]
+			private var skipBackOn:Class;
+			
+			[Embed(source="assets/skipFwd_off.png")]
+			[Bindable]
+			private var skipForward:Class;
+			
+			[Embed(source="assets/skipFwd_on.png")]
+			[Bindable]
+			private var skipForwardOn:Class;
+			
+			private static const SEEK_INTERVAL:Number = 15;
+			
 			private function onLoaderInit(event:Event):void {
+				resetTimer = new Timer(250, 1);
+				playheadTimer = new Timer(1000);
 				loader.content.addEventListener("onReady", onPlayerReady);
 				loader.content.addEventListener("onError", onPlayerError);
 				loader.content.addEventListener("onStateChange", onStateChange);
@@ -32,15 +55,18 @@
 				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.PLAY_VIDEO, playVideo, false, 0, true);
 				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.PAUSE_VIDEO, pauseVideo, false, 0, true);
 				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.STOP_VIDEO, pauseVideo, false, 0, true);
+				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.SKIP_BACK_VIDEO, skipBackVideo, false, 0, true);
+				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.SKIP_FORWARD_VIDEO, skipForwardVideo, false, 0, true);
 			}
 
 			private function cueNewVideo(event:ApplicationEvent):void {
 				MonsterDebugger.trace("PlayerView::cueNewVideo","Cueing video id::"+playerViewModel.selectedVideo.videoID);
-				player.cueVideoById(playerViewModel.selectedVideo.videoID, 0, "hd720");
+				player.cueVideoById(playerViewModel.selectedVideo.videoID, 0, "default");
 			}
 			
 			private function stopVideo(event:ApplicationEvent=null):void {
 				player.stopVideo();
+				playheadTimer.removeEventListener(TimerEvent.TIMER, updatePlayhead);
 			}
 
 			private function pauseVideo(event:ApplicationEvent=null):void {
@@ -53,10 +79,38 @@
 				player.playVideo();
 			}
 			
+			private function skipBackVideo(event:ApplicationEvent):void {
+				skipBackButton.source = skipBackOn;
+				var seekToTime:Number = player.getCurrentTime() - SEEK_INTERVAL;
+				player.seekTo(seekToTime, true);
+				resetTimer.addEventListener(TimerEvent.TIMER, resetSkipBackButton, false, 0, true);
+				resetTimer.start();
+			}
+			
+			private function resetSkipBackButton(event:TimerEvent):void {
+				resetTimer.removeEventListener(TimerEvent.TIMER, resetSkipBackButton);
+				skipBackButton.source = skipBack;
+			}
+
+			private function skipForwardVideo(event:ApplicationEvent):void {
+				skipForwardButton.source = skipForwardOn;
+				var seekToTime:Number = player.getCurrentTime() + SEEK_INTERVAL;
+				player.seekTo(seekToTime, true);
+				resetTimer.addEventListener(TimerEvent.TIMER, resetSkipFwdButton, false, 0, true);
+				resetTimer.start();
+			}
+			
+			private function resetSkipFwdButton(event:TimerEvent):void {
+				resetTimer.removeEventListener(TimerEvent.TIMER, resetSkipFwdButton);
+				skipForwardButton.source = skipForward;
+			}
+			
 			private function onStateChange(event:Event):void {
 				switch(Object(event).data) {
 					case 5:
 						MonsterDebugger.trace("PlayerView::onStateChange","The video is cued and ready to play");
+						playheadTimer.addEventListener(TimerEvent.TIMER, updatePlayhead, false, 0, true);
+						playheadTimer.start();
 						playVideo();
 						break;
 					case 0:
@@ -66,6 +120,12 @@
 						MonsterDebugger.trace("PlayerView::onStateChange","Didn't catch this player state::"+Object(event).data);
 						break;
 				}
+			}
+
+			private function updatePlayhead(event:TimerEvent):void {
+				var currentTime:Number = player.getCurrentTime();
+				var label:String = "00:"+currentTime;
+				MonsterDebugger.trace("PlayerView::updatePlayhead","Playhead Label::"+label);
 			}
 			
 			private function onPlayerReady(event:Event):void {
@@ -108,13 +168,21 @@
 					   backgroundAlpha="1"
 					   backgroundColor="0x000000">
 		<s:HGroup id="playerControls"
-				  width="300" right="0">
-			<mx:Image source.default="@Embed(source='assets/play_on.png')"
+				  width="300" right="0" verticalAlign="middle">
+			<s:Label id="timeLabel"
+					 text="00:30/00:55"
+					 width="120"
+					 styleName="videoPlayerLabel"/>
+			<mx:Image id="playButton"
+					  source="@Embed(source='assets/play_on.png')"
 					  source.paused="@Embed(source='assets/play_off.png')"/>
-			<mx:Image source.default="@Embed(source='assets/pause_off.png')"
+			<mx:Image id="pauseButton"
+					  source="@Embed(source='assets/pause_off.png')"
 					  source.paused="@Embed(source='assets/pause_on.png')"/>
-			<mx:Image source="@Embed(source='assets/skipBack_off.png')"/>
-			<mx:Image source="@Embed(source='assets/skipFwd_off.png')"/>
+			<mx:Image id="skipBackButton"
+					  source="{skipBack}"/>
+			<mx:Image id="skipForwardButton"
+					  source="{skipForward}"/>
 		</s:HGroup>
 	</s:BorderContainer>
 </s:BorderContainer>

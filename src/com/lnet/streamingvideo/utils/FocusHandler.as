@@ -171,6 +171,12 @@ package com.lnet.streamingvideo.utils {
 				case "play":
 					ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.PLAY_VIDEO));
 					break;
+				case "skipBack":
+					ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.SKIP_BACK_VIDEO));
+					break;
+				case "skipForward":
+					ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.SKIP_FORWARD_VIDEO));
+					break;
 				default:
 					MonsterDebugger.trace("FocusHandler::handleKeyPressInVideoPlayerView","Key not found!!!");
 					break;

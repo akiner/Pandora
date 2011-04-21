@@ -15,6 +15,8 @@ package com.lnet.streamingvideo.events {
 		public static const PAUSE_VIDEO:String = "pauseVideo";
 		public static const PLAY_VIDEO:String = "playVideo";
 		public static const STOP_VIDEO:String = "stopVideo";
+		public static const SKIP_FORWARD_VIDEO:String = "skipForwardVideo";
+		public static const SKIP_BACK_VIDEO:String = "skipBackVideo";
 		public static const VIDEO_SELECTED:String = "videoSelected";
 		
 		public var data:Object;

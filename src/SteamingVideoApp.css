@@ -38,6 +38,11 @@ global {
 	font-family: helvetica;
 }
 
+.videoPlayerLabel {
+	font-size: 18px;
+	font-weight: bold;
+}
+
 s|List s|Scroller {
 	horizontalScrollPolicy: off;
 	verticalScrollPolicy: off;
