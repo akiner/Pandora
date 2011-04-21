@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 width="1280" height="720" x="0" y="0">
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   width="1280" height="720"
+				   backgroundImage="@Embed(source='assets/Texture.png')"
+				   backgroundAlpha="1">
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
+	<s:states>
+		<s:State name="default"/>
+		<s:State name="paused"/>
+	</s:states>
 	<fx:Script>
 		<![CDATA[
 			import com.demonsters.debugger.MonsterDebugger;
@@ -15,6 +21,8 @@
 			
 			private var _player:Object;
 			private var _playerViewModel:PlayerViewModel;
+			[Bindable]
+			private var currentTimeLabel:String;
 			
 			private function onLoaderInit(event:Event):void {
 				loader.content.addEventListener("onReady", onPlayerReady);
@@ -36,10 +44,12 @@
 			}
 
 			private function pauseVideo(event:ApplicationEvent=null):void {
+				currentState = "paused";
 				player.pauseVideo();
 			}
 
 			private function playVideo(event:ApplicationEvent=null):void {
+				currentState = "default";
 				player.playVideo();
 			}
 			
@@ -61,7 +71,7 @@
 			private function onPlayerReady(event:Event):void {
 				MonsterDebugger.trace("player ready:", Object(event).data);
 				player = loader.content;
-				player.setSize(1280, 720);
+				player.setSize(1080, 608);
 			}
 			
 			private function onPlayerError(event:Event):void {
@@ -88,6 +98,23 @@
 	</fx:Script>
 	<mx:SWFLoader id="loader"
 				  depth="0"
+				  top="43" left="98"
 				  source="{playerViewModel.playerSource}"
 				  init="onLoaderInit(event)"/>
-</s:Group>
+	<s:BorderContainer id="footerBar"
+					   depth="1"
+					   bottom="34" left="98"
+					   width="1080" height="37"
+					   backgroundAlpha="1"
+					   backgroundColor="0x000000">
+		<s:HGroup id="playerControls"
+				  width="300" right="0">
+			<mx:Image source.default="@Embed(source='assets/play_on.png')"
+					  source.paused="@Embed(source='assets/play_off.png')"/>
+			<mx:Image source.default="@Embed(source='assets/pause_off.png')"
+					  source.paused="@Embed(source='assets/pause_on.png')"/>
+			<mx:Image source="@Embed(source='assets/skipBack_off.png')"/>
+			<mx:Image source="@Embed(source='assets/skipFwd_off.png')"/>
+		</s:HGroup>
+	</s:BorderContainer>
+</s:BorderContainer>

@@ -13,6 +13,7 @@ package com.lnet.streamingvideo.data {
 		private var _thumbnail:String;
 		private var _videoID:String;
 		private var _rating:String;
+		private var _duration:String;
 		
 		public function VideoResultObject(video:Object) {
 			try {_title = video.media$group.media$title.$t}
@@ -30,6 +31,8 @@ package com.lnet.streamingvideo.data {
 			try {_thumbnail = video.media$group.media$thumbnail[0].url}
 				catch(e:Error) {}
 			try {_rating = video.gd$rating.average}
+				catch(e:Error) {}
+			try {_duration = video.yt$duration}
 				catch(e:Error) {}
 		}
 
@@ -64,5 +67,15 @@ package com.lnet.streamingvideo.data {
 		public function get rating():String {
 			return _rating;
 		}
+
+
+		public function get duration():String {
+			return _duration;
+		}
+
+		public function set duration(value:String):void {
+			_duration = value;
+		}
+
 	}
 }
