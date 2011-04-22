@@ -23,6 +23,8 @@
 			private var _playerViewModel:PlayerViewModel;
 			private var resetTimer:Timer;
 			private var playheadTimer:Timer;
+			private var scrubBarTimer:Timer;
+			private var scrubBarMC:MovieClip;
 			
 			[Bindable]
 			private var currentTimeLabel:String;
@@ -48,6 +50,7 @@
 			private function onLoaderInit(event:Event):void {
 				resetTimer = new Timer(250, 1);
 				playheadTimer = new Timer(1000);
+				scrubBarTimer = new Timer(250);
 				loader.content.addEventListener("onReady", onPlayerReady);
 				loader.content.addEventListener("onError", onPlayerError);
 				loader.content.addEventListener("onStateChange", onStateChange);
@@ -85,6 +88,8 @@
 				player.seekTo(seekToTime, true);
 				resetTimer.addEventListener(TimerEvent.TIMER, resetSkipBackButton, false, 0, true);
 				resetTimer.start();
+//				var currentScrubTime:int = scrubBarMC.currentFrame;
+//				scrubBarMC.gotoAndStop((currentScrubTime - SEEK_INTERVAL)*5);
 			}
 			
 			private function resetSkipBackButton(event:TimerEvent):void {
@@ -98,6 +103,8 @@
 				player.seekTo(seekToTime, true);
 				resetTimer.addEventListener(TimerEvent.TIMER, resetSkipFwdButton, false, 0, true);
 				resetTimer.start();
+//				var currentScrubTime:int = scrubBarMC.currentFrame;
+//				scrubBarMC.gotoAndStop((currentScrubTime + SEEK_INTERVAL)*5);
 			}
 			
 			private function resetSkipFwdButton(event:TimerEvent):void {
@@ -111,6 +118,8 @@
 						MonsterDebugger.trace("PlayerView::onStateChange","The video is cued and ready to play");
 						playheadTimer.addEventListener(TimerEvent.TIMER, updatePlayhead, false, 0, true);
 						playheadTimer.start();
+						scrubBarTimer.addEventListener(TimerEvent.TIMER, udpateScrubber, false, 0, true);
+						scrubBarTimer.start();
 						playVideo();
 						break;
 					case 0:
@@ -123,9 +132,17 @@
 			}
 
 			private function updatePlayhead(event:TimerEvent):void {
-				var currentTime:Number = player.getCurrentTime();
-				var label:String = "00:"+currentTime;
-				MonsterDebugger.trace("PlayerView::updatePlayhead","Playhead Label::"+label);
+				var videoLength:String = formatVideoTime(playerViewModel.selectedVideo.duration);
+				var currentTime:String = formatVideoTime(player.getCurrentTime());
+				var label:String = currentTime + "/" + videoLength;
+				timeLabel.text = label;
+			}
+			
+			private function udpateScrubber(event:TimerEvent):void {
+				var currentTimeNum:Number = player.getCurrentTime() as Number;
+				var pctPlayed:Number = Math.round((currentTimeNum / Number(playerViewModel.selectedVideo.duration)) * 100);
+				MonsterDebugger.trace("PlayerView::udpateScrubber","pctPlayed::"+pctPlayed * 5);
+				scrubBarMC.gotoAndStop(pctPlayed*5);
 			}
 			
 			private function onPlayerReady(event:Event):void {
@@ -154,6 +171,35 @@
 			public function set player(value:Object):void {
 				_player = value;
 			}
+
+			private function formatVideoTime(time:String):String {
+				var timeNum:Number = Number(time);
+				timeNum = Math.round(timeNum);
+				var minutes:int = timeNum / 60;
+				var seconds:int = timeNum % 60; 
+				var timeString:String;
+				var formattedMinutes:String;
+				var formattedSeconds:String;
+				
+				if(seconds < 10) {
+					formattedSeconds = "0" + seconds;
+				} else {
+					formattedSeconds = String(seconds);
+				}
+				
+				if(minutes < 10) {
+					formattedMinutes = "0" + minutes;
+				} else {
+					formattedMinutes = String(minutes);
+				}
+				
+				timeString = formattedMinutes + ":" + formattedSeconds;
+				return timeString;
+			}
+
+			private function initScrubber():void {
+				scrubBarMC = scrubBarLoader.content as MovieClip;
+			}
 		]]>
 	</fx:Script>
 	<mx:SWFLoader id="loader"
@@ -168,11 +214,15 @@
 					   backgroundAlpha="1"
 					   backgroundColor="0x000000">
 		<s:HGroup id="playerControls"
-				  width="300" right="0" verticalAlign="middle">
+				  width="1080" right="0" verticalAlign="middle" paddingLeft.default="10" paddingTop.default="4">
+			<mx:SWFLoader id="scrubBarLoader"
+						  complete="initScrubber()"
+						  source="assets/scrubBar.swf"
+						  left="50"
+						  width="675" height="15"/>
 			<s:Label id="timeLabel"
-					 text="00:30/00:55"
 					 width="120"
-					 styleName="videoPlayerLabel"/>
+					 styleName="videoPlayerLabel" width.default="180" paddingLeft.default="50"/>
 			<mx:Image id="playButton"
 					  source="@Embed(source='assets/play_on.png')"
 					  source.paused="@Embed(source='assets/play_off.png')"/>

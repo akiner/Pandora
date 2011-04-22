@@ -135,6 +135,7 @@ package com.lnet.streamingvideo.utils {
 					browseView.currentState = "lostFocus";
 					FlexGlobals.topLevelApplication.currentState = "results";
 					FlexGlobals.topLevelApplication.focusManager.setFocus(searchResultsView.videoList);
+					searchResultsView.videoList.selectedIndex = 0;
 					ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.SEARCH_REQUESTED, searchView.searchTxt.text));
 					searchView.searchTxt.text = SEARCH_DEFAULT_TEXT;
 					break;

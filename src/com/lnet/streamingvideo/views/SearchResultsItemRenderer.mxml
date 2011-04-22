@@ -7,7 +7,7 @@
 		<s:State name="default"/> 
 		<s:State name="selected"/>
 	</s:states> 
-
+	
 	<fx:Script>
 		<![CDATA[
 			import com.adobe.utils.NumberFormatter;
@@ -31,17 +31,56 @@
 			[Bindable]
 			private var halfStar:Class;
 			
+			[Embed(source="assets/noStar.png")]
+			[Bindable]
+			private var noStar:Class;
+			
 			private function calculateStars():void {
-				var rating:String = data.rating;
-				var digits:Array = rating.split(".");
-				
-				var ratingNum:Number = Number(digits[0]);
-				var ratingRemainder:Number = Number(digits[1]);
-				
-				MonsterDebugger.trace("SearchResultsItemRenderer::calculateStars","CALCULATING STARS FOR RATING::"+ratingNum+"/"+ratingRemainder);
-//				if(rating.Num > 0 && rating.Num <= 0.6) {
-//				
-//				}
+				MonsterDebugger.trace("SearchResultsItemRenderer::calculateStars","Rating::"+data.rating);
+				try {
+					var rating:Number = Number(data.rating);
+					
+					MonsterDebugger.trace("SearchResultsItemRenderer::calculateStars","CALCULATING STARS FOR RATING::"+rating);
+					if(rating >= 4.65) {
+						star1.source = star2.source = star3.source = star4.source = star5.source = star;
+					} else if(rating >= 4.25) {
+						star1.source = star2.source = star3.source = star4.source = star;
+						star5.source = halfStar;
+					} else if(rating >= 3.65) {
+						star1.source = star2.source = star3.source = star4.source = star;
+						star5.source = noStar;
+					} else if(rating >= 3.25) {
+						star1.source = star2.source = star3.source = star;
+						star4.source = halfStar;
+						star5.source = noStar;
+					} else if(rating >= 2.65) {
+						star1.source = star2.source = star;
+						star3.source = star;
+						star4.source = star5.source = noStar;
+					} else if(rating >= 2.25) {
+						star1.source = star2.source = star;
+						star3.source = halfStar;
+						star4.source = star5.source = noStar;
+					} else if(rating >= 1.65) {
+						star1.source = star2.source = star;
+						star3.source = star4.source = star5.source = noStar;
+					} else if(rating >= 1.25) {
+						star1.source = star;
+						star2.source = halfStar;
+						star3.source = star4.source = star5.source = noStar;
+					} else if(rating >= 0.65) {
+						star1.source = star;
+						star2.source = star3.source = star4.source = star5.source = noStar;
+					} else if(rating >= 0.25) {
+						star1.source = halfStar;
+						star2.source = star3.source = star4.source = star5.source = noStar;
+					} else {
+						star1.source = star2.source = star3.source = star4.source = star5.source = noStar;
+					}
+					updateDisplayList(width, height);
+				} catch(e:Error) {
+					MonsterDebugger.trace("SearchResultsItemRenderer::calculateStars","ERROR::Rating could not be calculated");
+				}
 			}
 		]]>
 	</fx:Script>
@@ -82,19 +121,14 @@
 			<s:Label text="Views: {data.views}"
 					 maxWidth="170" top="0" paddingTop="0"
 					 maxDisplayedLines="1"/>
-			<s:HGroup gap="0" creationComplete="calculateStars()">
+			<s:HGroup id="starContainer" creationComplete="calculateStars()">
 				<s:Label text="Rating: "
 						 top="0" paddingTop="0"/>
-				<!--<mx:Image id="halfStar1" depth="0" source="{star}" visible="false"/>
-				<mx:Image id="star1" depth="1" source="{star}" visible="false"/>
-				<mx:Image id="halfStar2" depth="0" source="{star}" visible="false"/>
-				<mx:Image id="star2" depth="1" source="{star}" visible="false"/>
-				<mx:Image id="halfStar3" depth="0" source="{star}" visible="false"/>-->
-				<mx:Image id="star3" depth="1" source="{star}" visible="true"/>
-				<mx:Image id="halfStar4" source="{star}" visible="true"/>
-				<mx:Image id="star4" source="{star}" visible="true"/>
-				<mx:Image id="halfStar5" source="{star}" visible="true"/>
-				<mx:Image id="star5" source="{star}" visible="true"/>
+				<mx:Image id="star1"/>
+				<mx:Image id="star2"/>
+				<mx:Image id="star3"/>
+				<mx:Image id="star4"/>
+				<mx:Image id="star5"/>
 			</s:HGroup>
 		</s:VGroup>
 	</s:BorderContainer>

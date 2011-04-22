@@ -32,7 +32,7 @@ package com.lnet.streamingvideo.data {
 				catch(e:Error) {}
 			try {_rating = video.gd$rating.average}
 				catch(e:Error) {}
-			try {_duration = video.yt$duration}
+			try {_duration = video.media$group.yt$duration.seconds}
 				catch(e:Error) {}
 		}
 
@@ -68,14 +68,8 @@ package com.lnet.streamingvideo.data {
 			return _rating;
 		}
 
-
 		public function get duration():String {
 			return _duration;
 		}
-
-		public function set duration(value:String):void {
-			_duration = value;
-		}
-
 	}
 }

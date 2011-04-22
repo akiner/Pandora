@@ -46,6 +46,7 @@ package com.lnet.streamingvideo.services {
 			params["v"] = API_VERSION;
 			params["alt"] = "json";
 			params["max-results"] = "32";
+			params["format"] = "5";
 			send(params);
 		}
 		
@@ -58,6 +59,7 @@ package com.lnet.streamingvideo.services {
 			params["v"] = API_VERSION;
 			params["alt"] = "json";
 			params["max-results"] = "32";
+			params["format"] = "5";
 			send(params);
 		}
 		
@@ -72,7 +74,7 @@ package com.lnet.streamingvideo.services {
 			}
 			ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.SEARCH_RESULTS_RETURNED,
 				new ArrayCollection(resultObjects), resultsLabel));
-		}	
+		}
 
 		private function configureLabel(numResults:String):String {
 			if(resultsType == "search") {
