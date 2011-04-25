@@ -68,7 +68,11 @@
 				endOfVideoOverlay.visible = false;
 				currentState = "default";
 				MonsterDebugger.trace("PlayerView::cueNewVideo","Cueing video id::"+playerViewModel.selectedVideo.videoID);
-				player.cueVideoById(playerViewModel.selectedVideo.videoID, 0, "default");
+				try {
+					player.cueVideoById(playerViewModel.selectedVideo.videoID, 0, "default");
+				} catch(error:Error) {
+					errorTxt.text = "An internal error has occurred. Please try again.";
+				}
 			}
 			
 			private function stopVideo(event:ApplicationEvent=null):void {

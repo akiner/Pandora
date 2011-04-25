@@ -16,6 +16,8 @@
 	
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<fx:XML id="DefaultCategories" source="DefaultCategories.xml" />
+		<fx:XML id="AllCategories" source="AllCategories.xml" />
 	</fx:Declarations>
 	
 	<fx:Script>
@@ -43,22 +45,21 @@
 			private var browseView:BrowseView;
 			private var focusHandler:FocusHandler;
 			private var videoService:VideoService;
-			private var defaultCategoriesXML:DefaultCategoriesLoader;
-			private var allCategoriesXML:AllCategoriesLoader;
+//			private var defaultCategoriesXML:DefaultCategoriesLoader;
+//			private var allCategoriesXML:AllCategoriesLoader;
 			
 			private function init():void {
+				initMonsterDebugger();
 				Security.allowDomain("www.youtube.com");
-				Security.allowDomain("www.u4ikinteractive.com");
 				focusHandler = new FocusHandler();
 				videoService = new VideoService();
-				defaultCategoriesXML = new DefaultCategoriesLoader();
-				allCategoriesXML = new AllCategoriesLoader();
+//				defaultCategoriesXML = new DefaultCategoriesLoader();
+//				allCategoriesXML = new AllCategoriesLoader();
 				playerViewModel = new PlayerViewModel();
 				createSearchResultsView();
 				createBrowseView();
 				createSearchView();
 				createPlayerView();
-				initMonsterDebugger();
 			}
 			
 			private function createSearchView():void {
@@ -84,16 +85,28 @@
 			
 			private function createBrowseView():void {
 				browseView = new BrowseView();
-				browseView.browseViewModel = new BrowseViewModel();
 				leftPane.addElement(browseView);
+				browseView.browseViewModel = new BrowseViewModel();
+				browseView.browseViewModel.defaultCategoryList = DefaultCategories;
+				browseView.browseViewModel.allCategoryList = AllCategories;
 				focusHandler.browseView = browseView;
 			}			
 
 			private function initMonsterDebugger():void {
 				MonsterDebugger.initialize(this);
 			}
+
+			private function catchGoogleErrors():void {
+				addEventListener(ErrorEvent.ERROR, handleGeneralErrors, false, 0, true);
+			}
+
+			private function handleGeneralErrors(event:ErrorEvent):void {
+				MonsterDebugger.trace("SteamingVideoApp::handleGeneralErrors","!!!!!!!!!!!!!!!!!!!!!!!!!!!! AN ERROR HAS OCCURRED !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+				MonsterDebugger.trace("SteamingVideoApp::handleGeneralErrors", event.text);
+			}
 		]]>
 	</fx:Script>
+	
 	<s:Group id="playerContainer"
 			 depth="3"
 			 visible.videoPlaying="true"

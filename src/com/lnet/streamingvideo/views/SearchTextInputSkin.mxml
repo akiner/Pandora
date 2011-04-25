@@ -21,7 +21,7 @@
         <s:State name="disabled"/>
     </s:states>
     
-    <mx:Image source="assets/searchBox.png"/>    
+    <mx:Image source="@Embed(source='assets/searchBox.png')"/>    
     <s:RichEditableText id="textDisplay"
               verticalAlign="middle"
               widthInChars="10"

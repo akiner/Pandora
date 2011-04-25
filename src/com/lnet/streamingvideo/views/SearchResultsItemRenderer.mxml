@@ -40,7 +40,7 @@
 				try {
 					var rating:Number = Number(data.rating);
 					
-					MonsterDebugger.trace("SearchResultsItemRenderer::calculateStars","CALCULATING STARS FOR RATING::"+rating);
+//					MonsterDebugger.trace("SearchResultsItemRenderer::calculateStars","CALCULATING STARS FOR RATING::"+rating);
 					if(rating >= 4.65) {
 						star1.source = star2.source = star3.source = star4.source = star5.source = star;
 					} else if(rating >= 4.25) {

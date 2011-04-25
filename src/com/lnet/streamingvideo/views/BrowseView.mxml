@@ -19,10 +19,12 @@
 			private var _browseViewModel:BrowseViewModel;
 			
 			private function init():void {
+				MonsterDebugger.trace("BrowseView::init","???");
 				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.SET_INITIAL_CATEGORY_FOCUS, setInitialFocus, false, 0, true);
 			}
 
 			private function setInitialFocus(event:ApplicationEvent):void {
+				MonsterDebugger.trace("BrowseView::setInitialFocus","Setting inital focus!!");
 				var initialResultObj:Object = event.data;
 				currentState = "hasFocus";
 				FlexGlobals.topLevelApplication.focusManager.setFocus(categoryList);
@@ -68,12 +70,15 @@
 			requireSelection="true"
 			itemRenderer="com.lnet.streamingvideo.views.CategoryListItemRenderer"
 			change="selectionChangeHandler()"
-			dataProvider="{browseViewModel.currentCategoryList}"
 			labelField="name"
 			styleName="categoryTitle"
 			lineHeight="64"
 			width="100%"
 			height="100%"
 			contentBackgroundAlpha="0"
-			borderAlpha="0"/>
+			borderAlpha="0">
+		<s:dataProvider>
+			<s:XMLListCollection source="{browseViewModel.currentCategoryList.children()}" />
+		</s:dataProvider>
+	</s:List>
 </s:BorderContainer>

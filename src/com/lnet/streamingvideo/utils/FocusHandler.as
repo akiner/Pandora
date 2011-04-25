@@ -115,8 +115,12 @@ package com.lnet.streamingvideo.utils {
 			switch(currentKey) {
 				case "select":
 					MonsterDebugger.trace("FocusHandler::handleKeyPressInResultsView","Handling select button");
-					FlexGlobals.topLevelApplication.currentState = "videoPlaying";
-					ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.VIDEO_SELECTED, searchResultsView.videoList.selectedItem));
+					try{
+						FlexGlobals.topLevelApplication.currentState = "videoPlaying";
+						ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.VIDEO_SELECTED, searchResultsView.videoList.selectedItem));
+					}catch(e:Error){
+						MonsterDebugger.trace("FocusHandler::handleKeyPressInResultsView","An error has occurred::"+e.message);
+					}
 					break;
 				case "back":
 					MonsterDebugger.trace("FocusHandler::handleKeyPressInResultsView","Handling back button");
