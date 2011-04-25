@@ -23,10 +23,6 @@
 	<fx:Script>
 		<![CDATA[
 			import com.demonsters.debugger.MonsterDebugger;
-			import com.lnet.streamingvideo.data.AllCategoriesLoader;
-			import com.lnet.streamingvideo.data.DefaultCategoriesLoader;
-			import com.lnet.streamingvideo.events.ApplicationEvent;
-			import com.lnet.streamingvideo.events.ApplicationEventBus;
 			import com.lnet.streamingvideo.services.VideoService;
 			import com.lnet.streamingvideo.utils.FocusHandler;
 			import com.lnet.streamingvideo.viewmodels.BrowseViewModel;
@@ -45,16 +41,12 @@
 			private var browseView:BrowseView;
 			private var focusHandler:FocusHandler;
 			private var videoService:VideoService;
-//			private var defaultCategoriesXML:DefaultCategoriesLoader;
-//			private var allCategoriesXML:AllCategoriesLoader;
 			
 			private function init():void {
 				initMonsterDebugger();
 				Security.allowDomain("www.youtube.com");
 				focusHandler = new FocusHandler();
 				videoService = new VideoService();
-//				defaultCategoriesXML = new DefaultCategoriesLoader();
-//				allCategoriesXML = new AllCategoriesLoader();
 				playerViewModel = new PlayerViewModel();
 				createSearchResultsView();
 				createBrowseView();
@@ -94,15 +86,6 @@
 
 			private function initMonsterDebugger():void {
 				MonsterDebugger.initialize(this);
-			}
-
-			private function catchGoogleErrors():void {
-				addEventListener(ErrorEvent.ERROR, handleGeneralErrors, false, 0, true);
-			}
-
-			private function handleGeneralErrors(event:ErrorEvent):void {
-				MonsterDebugger.trace("SteamingVideoApp::handleGeneralErrors","!!!!!!!!!!!!!!!!!!!!!!!!!!!! AN ERROR HAS OCCURRED !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-				MonsterDebugger.trace("SteamingVideoApp::handleGeneralErrors", event.text);
 			}
 		]]>
 	</fx:Script>
