@@ -14,6 +14,7 @@ package com.lnet.streamingvideo.data {
 		private var _videoID:String;
 		private var _rating:String;
 		private var _duration:String;
+		private var _relatedVideoURL:String;
 		
 		public function VideoResultObject(video:Object) {
 			try {_title = video.media$group.media$title.$t}
@@ -34,6 +35,15 @@ package com.lnet.streamingvideo.data {
 				catch(e:Error) {}
 			try {_duration = video.media$group.yt$duration.seconds}
 				catch(e:Error) {}
+			try {
+				var linksList:Array = video.link;
+				for each(var link:Object in linksList) {
+					if(link.rel == "http://gdata.youtube.com/schemas/2007#video.related"){
+						_relatedVideoURL = link.href;
+					}
+				}
+				MonsterDebugger.trace("VideoResultObject::VideoResultObject","Related Vid URL::"+_relatedVideoURL);
+			}catch(e:Error){}
 		}
 
 		public function get title():String {
@@ -71,5 +81,11 @@ package com.lnet.streamingvideo.data {
 		public function get duration():String {
 			return _duration;
 		}
+
+
+		public function get relatedVideoURL():String {
+			return _relatedVideoURL;
+		}
+
 	}
 }

@@ -33,14 +33,9 @@
 global {
 	content-background-color: #D9D9D9;
 	color: #ffffff;
-	font-size: 16px;
+	font-size: 16;
 	vertical-align: middle;
 	font-family: helvetica;
-}
-
-.videoPlayerLabel {
-	font-size: 18px;
-	font-weight: bold;
 }
 
 s|List s|Scroller {
@@ -63,18 +58,27 @@ s|TextInput {
 	color: #525252;
 }
 
+.videoPlayerLabel {
+	font-size: 18;
+	font-weight: bold;
+}
 .searchResultLabel {
 	font-weight: bold;
 	font-style: italic;
-	font-size: 24px;
+	font-size: 24;
 }
 
 .searchText {
 	font-style: italic;
-	font-size: 16px;
+	font-size: 16;
 }
 
 .categoryTitle {
-	font-size: 23px;
+	font-size: 23;
 	font-weight: normal;
+}
+
+.errorTxt {
+	font-size: 28;
+	font-weight: bold;
 }

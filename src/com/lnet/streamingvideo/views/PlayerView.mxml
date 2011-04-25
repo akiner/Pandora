@@ -11,6 +11,7 @@
 	<s:states>
 		<s:State name="default"/>
 		<s:State name="paused"/>
+		<s:State name="finished"/>
 	</s:states>
 	<fx:Script>
 		<![CDATA[
@@ -88,8 +89,6 @@
 				player.seekTo(seekToTime, true);
 				resetTimer.addEventListener(TimerEvent.TIMER, resetSkipBackButton, false, 0, true);
 				resetTimer.start();
-//				var currentScrubTime:int = scrubBarMC.currentFrame;
-//				scrubBarMC.gotoAndStop((currentScrubTime - SEEK_INTERVAL)*5);
 			}
 			
 			private function resetSkipBackButton(event:TimerEvent):void {
@@ -103,8 +102,6 @@
 				player.seekTo(seekToTime, true);
 				resetTimer.addEventListener(TimerEvent.TIMER, resetSkipFwdButton, false, 0, true);
 				resetTimer.start();
-//				var currentScrubTime:int = scrubBarMC.currentFrame;
-//				scrubBarMC.gotoAndStop((currentScrubTime + SEEK_INTERVAL)*5);
 			}
 			
 			private function resetSkipFwdButton(event:TimerEvent):void {
@@ -116,14 +113,17 @@
 				switch(Object(event).data) {
 					case 5:
 						MonsterDebugger.trace("PlayerView::onStateChange","The video is cued and ready to play");
+						displayRelatedVideos();
+						errorTxt.text = "";
 						playheadTimer.addEventListener(TimerEvent.TIMER, updatePlayhead, false, 0, true);
 						playheadTimer.start();
-						scrubBarTimer.addEventListener(TimerEvent.TIMER, udpateScrubber, false, 0, true);
+						scrubBarTimer.addEventListener(TimerEvent.TIMER, updateScrubber, false, 0, true);
 						scrubBarTimer.start();
 						playVideo();
 						break;
 					case 0:
 						MonsterDebugger.trace("PlayerView::onStateChange","The video has finished playing");
+						displayRelatedVideos();
 						break;
 					default:
 						MonsterDebugger.trace("PlayerView::onStateChange","Didn't catch this player state::"+Object(event).data);
@@ -138,7 +138,7 @@
 				timeLabel.text = label;
 			}
 			
-			private function udpateScrubber(event:TimerEvent):void {
+			private function updateScrubber(event:TimerEvent):void {
 				var currentTimeNum:Number = player.getCurrentTime() as Number;
 				var pctPlayed:Number = Math.round((currentTimeNum / Number(playerViewModel.selectedVideo.duration)) * 100);
 				MonsterDebugger.trace("PlayerView::udpateScrubber","pctPlayed::"+pctPlayed * 5);
@@ -152,26 +152,33 @@
 			}
 			
 			private function onPlayerError(event:Event):void {
+				playheadTimer.removeEventListener(TimerEvent.TIMER, updatePlayhead);
+				scrubBarTimer.removeEventListener(TimerEvent.TIMER, updateScrubber);
 				MonsterDebugger.trace("player error:", Object(event).data);
+				var errorMsg:String;
+				scrubBarMC.gotoAndStop(0);
+				timeLabel.text = "";
+				switch(Object(event).data) {
+					case 150:
+					case 101:
+						errorMsg = "Syndication of this video was restricted by the content owner.";
+						break;
+					case 100:
+						errorMsg = "Video not found. This video has either been removed or marked private.";
+					default:
+						errorMsg = "An unknown error has occurred. Please press back to return to the results list";
+						break;
+				}
+				errorTxt.text = errorMsg;
 			}
 			
-			[Bindable]
-			public function get playerViewModel():PlayerViewModel {
-				return _playerViewModel;
+			private function displayRelatedVideos():void {
+				currentState = "finished";
+				ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.RELATED_VIDEOS_REQUESTED,
+					playerViewModel.selectedVideo.relatedVideoURL));
+				relatedVideosList.selectedIndex = 0;
 			}
-
-			public function set playerViewModel(value:PlayerViewModel):void {
-				_playerViewModel = value;
-			}
-
-			public function get player():Object {
-				return _player;
-			}
-
-			public function set player(value:Object):void {
-				_player = value;
-			}
-
+			
 			private function formatVideoTime(time:String):String {
 				var timeNum:Number = Number(time);
 				timeNum = Math.round(timeNum);
@@ -196,12 +203,65 @@
 				timeString = formattedMinutes + ":" + formattedSeconds;
 				return timeString;
 			}
-
+			
 			private function initScrubber():void {
 				scrubBarMC = scrubBarLoader.content as MovieClip;
 			}
+			
+			[Bindable]
+			public function get playerViewModel():PlayerViewModel {
+				return _playerViewModel;
+			}
+
+			public function set playerViewModel(value:PlayerViewModel):void {
+				_playerViewModel = value;
+			}
+
+			public function get player():Object {
+				return _player;
+			}
+
+			public function set player(value:Object):void {
+				_player = value;
+			}
+
 		]]>
 	</fx:Script>
+	<s:BorderContainer id="endOfVideoOverlay"
+					   depth="1"
+					   visible="false"
+					   visible.finished="true"
+					   width="1025" height="580"
+					   horizontalCenter="0" top="60"
+					   backgroundColor="0x000000" backgroundAlpha=".75"
+					   cornerRadius="20">
+		<mx:Image source="@Embed(source='assets/replay.png')" top="40" left="40"/>
+		<s:Label text="Similar Videos" top="165" left="90"/>
+		<s:List id="relatedVideosList"
+				dataProvider="{playerViewModel.relatedVideos}"
+				focusAlpha="0"
+				requireSelection="true"
+				width="100%"
+				borderVisible="false"
+				contentBackgroundAlpha="0"
+				top="195" left="60"
+				itemRenderer="com.lnet.streamingvideo.views.SearchResultsItemRenderer">
+			<s:layout>
+				<s:TileLayout
+					requestedColumnCount="4"
+					requestedRowCount="1"
+					horizontalGap="0"
+					verticalGap="2"/>
+			</s:layout>
+		</s:List>
+	</s:BorderContainer>
+	<s:BorderContainer depth="1" width="1080" height="620" horizontalCenter="0">
+		<s:Label id="errorTxt"
+				 verticalCenter="0"
+				 horizontalCenter="0"
+				 styleName="errorTxt"
+				 textAlign="center"/>
+	</s:BorderContainer>
 	<mx:SWFLoader id="loader"
 				  depth="0"
 				  top="43" left="98"
@@ -214,15 +274,14 @@
 					   backgroundAlpha="1"
 					   backgroundColor="0x000000">
 		<s:HGroup id="playerControls"
-				  width="1080" right="0" verticalAlign="middle" paddingLeft.default="10" paddingTop.default="4">
+				  width="1080" right="0" verticalAlign="middle" paddingLeft="10" paddingTop="4">
 			<mx:SWFLoader id="scrubBarLoader"
 						  complete="initScrubber()"
 						  source="assets/scrubBar.swf"
 						  left="50"
-						  width="675" height="15"/>
+						  width="693" height="17"/>
 			<s:Label id="timeLabel"
-					 width="120"
-					 styleName="videoPlayerLabel" width.default="180" paddingLeft.default="50"/>
+					 styleName="videoPlayerLabel" width="180" paddingLeft="50"/>
 			<mx:Image id="playButton"
 					  source="@Embed(source='assets/play_on.png')"
 					  source.paused="@Embed(source='assets/play_off.png')"/>

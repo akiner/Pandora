@@ -18,6 +18,8 @@ package com.lnet.streamingvideo.events {
 		public static const SKIP_FORWARD_VIDEO:String = "skipForwardVideo";
 		public static const SKIP_BACK_VIDEO:String = "skipBackVideo";
 		public static const VIDEO_SELECTED:String = "videoSelected";
+		public static const RELATED_VIDEOS_REQUESTED:String = "relatedVideosRequested";
+		public static const RELATED_VIDEOS_RETURNED:String = "relatedVideosReturned";
 		
 		public var data:Object;
 		public var optionalData:Object;

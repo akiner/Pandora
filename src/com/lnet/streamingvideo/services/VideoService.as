@@ -36,6 +36,8 @@ package com.lnet.streamingvideo.services {
 				false, 0, true);
 			ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.CATEGORY_SELECTED, getCategoryResults,
 				false, 0, true);
+			ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.RELATED_VIDEOS_REQUESTED, getRelatedVideos,
+				false, 0, true);
 		}
 		
 		private function getCategoryResults(event:ApplicationEvent):void {
@@ -63,17 +65,33 @@ package com.lnet.streamingvideo.services {
 			send(params);
 		}
 		
+		private function getRelatedVideos(event:ApplicationEvent):void {
+			resultsType = "relatedVideos"
+			url = event.data.toString();
+			MonsterDebugger.trace("VideoService::getRelatedVideos","Attempting to load related videos::"+url);
+			params = new Object();
+			params["alt"] = "json";
+			params["max-results"] = "6";
+			params["format"] = "5";
+			send(params);
+		}
+		
 		private function onServiceResult(e:ResultEvent): void {
 			var feed:Object = JSON.decode(e.result as String).feed;
 			var videoList:Array = feed.entry;
 			var resultObjects:Array = [];
-			resultsLabel = configureLabel(feed.openSearch$totalResults.$t);
 			for each(var video:Object in videoList) {
 				var resultObj:Object = new VideoResultObject(video);
 				resultObjects.push(resultObj);
 			}
-			ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.SEARCH_RESULTS_RETURNED,
-				new ArrayCollection(resultObjects), resultsLabel));
+			if (resultsType != "relatedVideos") {
+				resultsLabel = configureLabel(feed.openSearch$totalResults.$t);
+				ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.SEARCH_RESULTS_RETURNED,
+					new ArrayCollection(resultObjects), resultsLabel));
+			} else {
+				ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.RELATED_VIDEOS_RETURNED,
+					new ArrayCollection(resultObjects)));
+			}
 		}
 
 		private function configureLabel(numResults:String):String {
