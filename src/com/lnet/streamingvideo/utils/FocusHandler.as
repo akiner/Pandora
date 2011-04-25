@@ -35,6 +35,7 @@ package com.lnet.streamingvideo.utils {
 		}
 
 		private function handleKeyPress(event:KeyboardEvent):void {
+			MonsterDebugger.trace("FocusHandler::handleKeyPress","KeyPress in ::"+FlexGlobals.topLevelApplication.currentState);
 			preSearchState = FlexGlobals.topLevelApplication.currentState;
 			// Check if key pressed was a letter or a number
 			if (userIsTyping(event)) {
@@ -164,19 +165,32 @@ package com.lnet.streamingvideo.utils {
 			switch(currentKey) {
 				case "back":
 					FlexGlobals.topLevelApplication.currentState = "results";
+					FlexGlobals.topLevelApplication.focusManager.setFocus(searchResultsView.videoList);
+					playerView.endOfVideoOverlay.visible = false;
 					ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.STOP_VIDEO));
 					break;
 				case "pause":
 					ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.PAUSE_VIDEO));
 					break;
 				case "play":
-					ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.PLAY_VIDEO));
+					if(!playerView.endOfVideoOverlay.visible) {
+						ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.PLAY_VIDEO));
+					} else {
+						ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.VIDEO_SELECTED, searchResultsView.videoList.selectedItem));
+					}
+					FlexGlobals.topLevelApplication.focusManager.setFocus(searchResultsView.videoList);//?
 					break;
 				case "skipBack":
 					ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.SKIP_BACK_VIDEO));
 					break;
 				case "skipForward":
 					ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.SKIP_FORWARD_VIDEO));
+					break;
+				case "select":
+					if(playerView.endOfVideoOverlay.visible) {
+						FlexGlobals.topLevelApplication.focusManager.setFocus(searchResultsView.videoList);//?
+						ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.VIDEO_SELECTED, playerView.relatedVideosList.selectedItem));
+					}
 					break;
 				default:
 					MonsterDebugger.trace("FocusHandler::handleKeyPressInVideoPlayerView","Key not found!!!");
