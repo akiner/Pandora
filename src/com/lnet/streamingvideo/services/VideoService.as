@@ -71,7 +71,7 @@ package com.lnet.streamingvideo.services {
 			MonsterDebugger.trace("VideoService::getRelatedVideos","Attempting to load related videos::"+url);
 			params = new Object();
 			params["alt"] = "json";
-			params["max-results"] = "6";
+			params["max-results"] = "8";
 			params["format"] = "5";
 			send(params);
 		}
