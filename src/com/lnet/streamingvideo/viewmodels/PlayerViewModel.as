@@ -1,12 +1,10 @@
 package com.lnet.streamingvideo.viewmodels {
-	import com.demonsters.debugger.MonsterDebugger;
 	import com.lnet.streamingvideo.data.VideoResultObject;
 	import com.lnet.streamingvideo.events.ApplicationEvent;
 	import com.lnet.streamingvideo.events.ApplicationEventBus;
 	
 	import flash.events.EventDispatcher;
 	
-	import mx.collections.ArrayCollection;
 	import mx.collections.IList;
 	
 	[Bindable]
@@ -31,7 +29,6 @@ package com.lnet.streamingvideo.viewmodels {
 
 		public function updateSelectedVideo(e:ApplicationEvent):void {
 			selectedVideo = e.data as VideoResultObject;
-//			playerSource = "EMBEDDED_PLAYER_URL"+selectedVideo.videoID+"?version=3";
 		}
 
 		public function get playerSource():String {

@@ -20,6 +20,7 @@ package com.lnet.streamingvideo.services {
 		private static const BROWSE_CATEGORIES_URL:String = "http://gdata.youtube.com/schemas/2007/categories.cat";
 		private static const SEARCH_URL:String = "http://gdata.youtube.com/feeds/api/videos";
 		private static const API_VERSION:String = "2";
+		private static const NUM_RESULTS:String = "32";
 		
 		public function VideoService() {
 			addServiceEventListeners();
@@ -47,7 +48,7 @@ package com.lnet.streamingvideo.services {
 			params = new Object();
 			params["v"] = API_VERSION;
 			params["alt"] = "json";
-			params["max-results"] = "32";
+			params["max-results"] = NUM_RESULTS;
 			params["format"] = "5";
 			send(params);
 		}
@@ -60,7 +61,7 @@ package com.lnet.streamingvideo.services {
 			params["q"] = searchTerm;
 			params["v"] = API_VERSION;
 			params["alt"] = "json";
-			params["max-results"] = "32";
+			params["max-results"] = NUM_RESULTS;
 			params["format"] = "5";
 			send(params);
 		}

@@ -50,18 +50,26 @@
 			private static const SEEK_INTERVAL:Number = 15;
 			
 			private function onLoaderInit(event:Event):void {
-				resetTimer = new Timer(250, 1);
-				playheadTimer = new Timer(1000);
-				scrubBarTimer = new Timer(250);
+				initTimers();
+				addEventListeners();
+			}
+
+			private function addEventListeners():void {
 				loader.content.addEventListener("onReady", onPlayerReady);
 				loader.content.addEventListener("onError", onPlayerError);
 				loader.content.addEventListener("onStateChange", onStateChange);
 				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.VIDEO_SELECTED, cueNewVideo, false, 0, true);
 				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.PLAY_VIDEO, playVideo, false, 0, true);
 				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.PAUSE_VIDEO, pauseVideo, false, 0, true);
-				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.STOP_VIDEO, pauseVideo, false, 0, true);
+				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.STOP_VIDEO, stopVideo, false, 0, true);
 				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.SKIP_BACK_VIDEO, skipBackVideo, false, 0, true);
 				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.SKIP_FORWARD_VIDEO, skipForwardVideo, false, 0, true);
+			}
+
+			private function initTimers():void {
+				resetTimer = new Timer(250, 1);
+				playheadTimer = new Timer(1000);
+				scrubBarTimer = new Timer(250);
 			}
 
 			private function cueNewVideo(event:ApplicationEvent):void {
@@ -144,9 +152,6 @@
 			private function removeEventListeners():void {
 				playheadTimer.removeEventListener(TimerEvent.TIMER, updatePlayhead);
 				scrubBarTimer.removeEventListener(TimerEvent.TIMER, updateScrubber);
-//				player.removeEventListener("onReady", onPlayerReady);
-//				player.removeEventListener("onError", onPlayerError);
-//				player.removeEventListener("onStateChange", onStateChange);
 			}
 
 			private function updatePlayhead(event:TimerEvent):void {
@@ -159,18 +164,15 @@
 			private function updateScrubber(event:TimerEvent):void {
 				var currentTimeNum:Number = player.getCurrentTime() as Number;
 				var pctPlayed:Number = Math.round((currentTimeNum / Number(playerViewModel.selectedVideo.duration)) * 100);
-//				MonsterDebugger.trace("PlayerView::udpateScrubber","pctPlayed::"+pctPlayed * 5);
 				scrubBarMC.gotoAndStop(pctPlayed*5);
 			}
 			
 			private function onPlayerReady(event:Event):void {
-				MonsterDebugger.trace("player ready:", Object(event).data);
 				player = loader.content;
 				player.setSize(1080, 608);
 			}
 			
 			private function onPlayerError(event:Event):void {
-				MonsterDebugger.trace("player error:", Object(event).data);
 				removeEventListeners();
 				var errorMsg:String;
 				scrubBarMC.gotoAndStop(0);
