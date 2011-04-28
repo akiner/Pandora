@@ -75,7 +75,6 @@
 			private function cueNewVideo(event:ApplicationEvent):void {
 				endOfVideoOverlay.visible = false;
 				currentState = "default";
-				MonsterDebugger.trace("PlayerView::cueNewVideo","Cueing video id::"+playerViewModel.selectedVideo.videoID);
 				try {
 					player.cueVideoById(playerViewModel.selectedVideo.videoID, 0, "default");
 				} catch(error:Error) {
@@ -249,14 +248,12 @@
 		]]>
 	</fx:Script>
 	<s:BorderContainer id="endOfVideoOverlay"
-					   depth="1"
+					   depth="2"
 					   visible="false"
-					   width="1025" height="580"
-					   horizontalCenter="0" top="60"
-					   backgroundColor="0x000000" backgroundAlpha=".75"
-					   cornerRadius="20">
-		<mx:Image source="@Embed(source='assets/replay.png')" top="40" left="40"/>
-		<s:Label text="Similar Videos" top="165" left="90" styleName="videoPlayerLabel"/>
+					   width="100%" height="100%"
+					   horizontalCenter="0" top="0"
+					   backgroundColor="0x000000" backgroundAlpha=".8">
+		<s:Label text="Similar Videos" top="163" left="186" styleName="videoPlayerLabel"/>
 		<s:List id="relatedVideosList"
 				dataProvider="{playerViewModel.relatedVideos}"
 				focusAlpha="0"
@@ -264,7 +261,7 @@
 				width="100%"
 				borderVisible="false"
 				contentBackgroundAlpha="0"
-				top="195" left="60"
+				top="200" left="176"
 				itemRenderer="com.lnet.streamingvideo.views.SearchResultsItemRenderer">
 			<s:layout>
 				<s:TileLayout
@@ -274,6 +271,7 @@
 					verticalGap="2"/>
 			</s:layout>
 		</s:List>
+		<mx:Image source="@Embed(source='assets/replay.png')" top="486" left="186"/>
 	</s:BorderContainer>
 	<s:BorderContainer depth="1" width="1080" height="620" horizontalCenter="0">
 		<s:Label id="errorTxt"
@@ -294,7 +292,7 @@
 					   backgroundAlpha="1"
 					   backgroundColor="0x000000">
 		<s:HGroup id="playerControls"
-				  width="1080" right="0" verticalAlign="middle" paddingLeft="10" paddingTop="4">
+				  width="1080" depth="0" right="0" verticalAlign="middle" paddingLeft="10" paddingTop="4">
 			<mx:SWFLoader id="scrubBarLoader"
 						  complete="initScrubber()"
 						  source="assets/scrubBar.swf"
