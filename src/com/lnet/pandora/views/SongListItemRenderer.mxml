@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				autoDrawBackground="false">
+	
+	<s:states> 
+		<s:State name="default"/> 
+		<s:State name="selected"/>
+	</s:states>
+	
+	<fx:Script>
+		<![CDATA[
+			[Embed(source="assets/bkgd_song_off.png")]
+			[Bindable]
+			private var backgroundOff:Class;
+			
+			[Embed(source="assets/bkgd_song_on.png")]
+			[Bindable]
+			private var backgroundOn:Class;
+		]]>
+	</fx:Script>
+	
+	<s:BorderContainer id="container"
+					   backgroundAlpha="1"
+					   backgroundImage.default="{backgroundOff}"
+					   backgroundImage.selected="{backgroundOn}"
+					   width.default="446" height.default="312"
+					   width.selected="596" height.selected="312">
+		<s:VGroup paddingTop="36" paddingLeft="31">
+			<s:Label id="songTitle" styleName="whiteLabelLg" text="{data.songName}"
+					 maxWidth.default="375" maxWidth.selected="525" maxDisplayedLines="1"/>
+			<s:HGroup>
+				<s:Label styleName="blueLabelMed" text="by:" left="5"/>
+				<s:Label styleName="whiteLabelMed" text="{data.artistName}"
+						 maxWidth.default="340" maxWidth.selected="485" maxDisplayedLines="1"/>
+			</s:HGroup>
+			<s:HGroup>
+				<s:Label styleName="blueLabelMed" text="on:" left="5"/>
+				<s:Label styleName="whiteLabelMed" text="{data.albumName}"
+						 maxWidth.default="340" maxWidth.selected="485" maxDisplayedLines="1"/>
+			</s:HGroup>
+			<s:HGroup gap="0" width="359">
+				<mx:Image id="albumArt" height="187" width="187" source="{data.albumArtUrl}" styleName="albumArt"/>
+				<s:VGroup horizontalAlign="center" paddingTop="10">
+					<mx:Image depth="1" height="43" source="@Embed(source='assets/selectBanner.png')"
+							  visible.default="false" visible.selected="true"/>
+					<mx:Spacer height="32" width="1"/>
+					<mx:Image source="@Embed(source='assets/controls.png')" horizontalCenter="0"
+							  visible.default="false" visible.selected="true"/>
+				</s:VGroup>
+			</s:HGroup>
+		</s:VGroup>
+	</s:BorderContainer>
+	
+</s:ItemRenderer>

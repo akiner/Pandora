@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="422" height="310">
+	<s:states>
+		<s:State name="default"/>
+		<s:State name="playing"/>
+	</s:states>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:BorderContainer id="container"
+					   backgroundAlpha="1"
+					   backgroundImage="@Embed(source='assets/bkgd_song_off.png')">
+		<s:VGroup>
+			<s:Label id="songTitle" styleName="whiteLabelLg" text="Song Title"/>
+			<s:HGroup>
+				<s:Label styleName="blueLabelMed" text="by:"/>
+				<s:Label styleName="whiteLabelMed" text="artist"/>
+			</s:HGroup>
+			<s:HGroup>
+				<s:Label styleName="blueLabelMed" text="on:"/>
+				<s:Label styleName="whiteLabelMed" text="album"/>
+			</s:HGroup>
+		</s:VGroup>
+	</s:BorderContainer>
+</s:Group>

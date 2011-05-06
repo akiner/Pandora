@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  xmlns:views="com.lnet.pandora.views.*"
+		  creationComplete="init()">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import com.demonsters.debugger.MonsterDebugger;
+			import com.lnet.pandora.events.ApplicationEvent;
+			import com.lnet.pandora.events.ApplicationEventBus;
+			import com.lnet.pandora.viewmodels.SongListViewModel;
+			
+			private var _songListViewModel:SongListViewModel;
+			
+			private function init():void {
+				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.SONG_LOADED, updateSelectedIndex,
+					false, 0, true);
+			}
+
+			private function updateSelectedIndex(event:ApplicationEvent):void {
+				songList.selectedItem = event.data;
+				MonsterDebugger.trace("SongListView::updateSelectedIndex","Updating index to::"+songList.selectedIndex);
+			}
+
+			[Bindable]
+			public function get songListViewModel():SongListViewModel {
+				return _songListViewModel;
+			}
+
+			public function set songListViewModel(value:SongListViewModel):void {
+				_songListViewModel = value;
+			}
+
+		]]>
+	</fx:Script>
+	<s:List id="songList" maxWidth="1280"
+			dataProvider="{songListViewModel.songList}"
+			itemRenderer="com.lnet.pandora.views.SongListItemRenderer"
+			borderAlpha="0" borderVisible="false"
+			contentBackgroundAlpha="0"
+			requireSelection="true" right="0">
+		<s:layout>
+			<s:HorizontalLayout/>
+		</s:layout>
+	</s:List>
+</s:Group>

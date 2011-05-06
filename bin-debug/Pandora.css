@@ -1,0 +1,52 @@
+/* CSS file */
+@namespace s "library://ns.adobe.com/flex/spark";
+@namespace mx "library://ns.adobe.com/flex/mx";
+
+@font-face {
+	src:url("assets/fonts/arial.ttf");
+	font-family: arial;
+	embed-as-cff: true;
+}
+
+@font-face {
+	src:url("assets/fonts/arialbd.ttf");
+	font-family: arial;
+	font-weight: bold;
+	embed-as-cff: true;
+}
+
+@font-face {
+	src:url("assets/fonts/arialbi.ttf");
+	font-family: arial;
+	font-weight: bold;
+	font-style: italic;
+	embed-as-cff: true;
+}
+
+global {
+	content-background-color: #D9D9D9;
+	color: #ffffff;
+	font-size: 16;
+	vertical-align: middle;
+	font-family: arial;
+}
+
+s|BorderContainer {
+	background-alpha: 0;
+	border-visible: false;
+	background-color: #000000;
+}
+
+.searchLabel {
+	font-family: arial;
+	font-weight: bold;
+	font-style: italic;
+	color: #728eb6;
+}
+
+.searchText {
+	font-family: arial;
+	font-weight: bold;
+	color: #000000;
+	font-size: 18;
+}
