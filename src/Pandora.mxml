@@ -11,6 +11,7 @@
 	<fx:Style source="Pandora.css"/>
 	<s:states>
 		<s:State name="default"/>
+		<s:State name="login"/>
 		<s:State name="createStation"/>
 	</s:states>
 	<fx:Declarations>
@@ -20,43 +21,9 @@
 	<fx:Script>
 		<![CDATA[
 			import com.demonsters.debugger.MonsterDebugger;
-			import com.hurlant.crypto.Crypto;
-			import com.hurlant.crypto.symmetric.BlowFishKey;
-			import com.hurlant.crypto.symmetric.ECBMode;
-			import com.hurlant.crypto.symmetric.ICipher;
-			import com.hurlant.crypto.symmetric.IPad;
-			import com.hurlant.crypto.symmetric.IVMode;
-			import com.hurlant.crypto.symmetric.PKCS5;
-			import com.hurlant.util.Hex;
 			import com.lnet.pandora.Session;
-			import com.lnet.pandora.command.XmlRpcCommandBase;
-			import com.lnet.pandora.command.auth.PartnerLogin;
-			import com.lnet.pandora.command.auth.UserLogin;
-			import com.lnet.pandora.command.station.AddMusic;
-			import com.lnet.pandora.command.station.GetGenreStations;
-			import com.lnet.pandora.command.station.GetPlaylist;
-			import com.lnet.pandora.command.station.GetStation;
-			import com.lnet.pandora.command.test.CheckLicensing;
-			import com.lnet.pandora.command.test.Echo;
-			import com.lnet.pandora.command.user.GetStationList;
-			import com.lnet.pandora.events.ApplicationEvent;
-			import com.lnet.pandora.events.ApplicationEventBus;
-			import com.lnet.pandora.response.auth.PartnerLoginResponse;
-			import com.lnet.pandora.response.auth.UserLoginResponse;
-			import com.lnet.pandora.response.station.GetGenreStationsResponse;
-			import com.lnet.pandora.response.station.GetPlaylistResponse;
-			import com.lnet.pandora.response.station.supportClasses.Category;
-			import com.lnet.pandora.response.station.supportClasses.Station;
-			import com.lnet.pandora.response.station.supportClasses.Track;
-			import com.lnet.pandora.response.user.GetStationListResponse;
 			import com.lnet.pandora.utils.FocusHandler;
 			import com.lnet.pandora.viewmodels.SongListViewModel;
-			
-			import flash.net.URLRequest;
-			
-			import mx.events.FlexEvent;
-			
-			import org.osmf.utils.URL;
 			
 			private var request:URLRequest;
 			private var loader:URLLoader;
@@ -66,6 +33,7 @@
 			private var songListViewModel:SongListViewModel;
 			
 			public function init(nServiceNum:Number=undefined, nServiceStatus:Number=undefined):void {
+				currentState = "login";
 				initMonsterDebugger();
 				initFocus();
 				initViews();
@@ -79,6 +47,8 @@
 			private function initFocus():void {
 				focusHandler = new FocusHandler();
 				focusHandler.createNewStationView = createNewStation;
+				focusHandler.loginView = login;
+				focusManager.setFocus(login.username);
 			}
 			
 			private function initViews():void {
@@ -86,24 +56,24 @@
 				songListView.songListViewModel = songListViewModel;
 			}
 			
-			private function callEcho():void {
-				var echo:Echo = new Echo();
-				echo.message = "Hello, world!";
-				request = new URLRequest( echo.url );
-				request.method = URLRequestMethod.POST;
-				request.contentType = "text/xml";
-				request.data = String( echo );
-				MonsterDebugger.trace("PandoraStandalone::callEcho","request.data::"+String( request.data ));
-				
-				loader = new URLLoader( );
-				loader.addEventListener( Event.COMPLETE, onEchoComplete );
-				loader.load( request );
-			}
-			
-			private function onEchoComplete( e:Event ):void	{
-				MonsterDebugger.trace("PandoraStandalone::onEchoComplete","onEchoComplete:" + e);
-				MonsterDebugger.trace("PandoraStandalone::onEchoComplete","loader.data::"+loader.data);
-			}
+//			private function callEcho():void {
+//				var echo:Echo = new Echo();
+//				echo.message = "Hello, world!";
+//				request = new URLRequest( echo.url );
+//				request.method = URLRequestMethod.POST;
+//				request.contentType = "text/xml";
+//				request.data = String( echo );
+//				MonsterDebugger.trace("PandoraStandalone::callEcho","request.data::"+String( request.data ));
+//				
+//				loader = new URLLoader( );
+//				loader.addEventListener( Event.COMPLETE, onEchoComplete );
+//				loader.load( request );
+//			}
+//			
+//			private function onEchoComplete( e:Event ):void	{
+//				MonsterDebugger.trace("PandoraStandalone::onEchoComplete","onEchoComplete:" + e);
+//				MonsterDebugger.trace("PandoraStandalone::onEchoComplete","loader.data::"+loader.data);
+//			}
 		]]>
 	</fx:Script>
 	
@@ -112,13 +82,17 @@
 					   width="1280" height="720"
 					   backgroundAlpha="1"
 					   backgroundImage="@Embed(source='assets/background.jpg')">
+		<views:LoginView id="login" width="1145" height="603" top="78" left="87" includeIn="login" />
 		<mx:Image source="@Embed(source='assets/logo.png')"
-				  left="87" top="36"/>
+				  left="87" top="36"
+				  excludeFrom="login"/>
 		<views:SongListView id="songListView"
 							width="1280" height="326"
-							textAlign="right" top="197"/>
+							textAlign="right" top="197"
+							excludeFrom="login"/>
 		<views:CreateNewStationView id="createNewStation"
 									width="301" height="93"
-									left="68" top="610"/>
+									left="68" top="610"
+									excludeFrom="login"/>
 	</s:BorderContainer>
 </s:Application>

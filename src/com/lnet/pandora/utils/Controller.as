@@ -15,9 +15,10 @@ package com.lnet.pandora.utils {
 			MonsterDebugger.trace("Controller::Controller","Created!");
 		}
 		
-		public function loginUser():void {
+		public function loginUser(u:String,p:String):void {
 			Session.instance.addEventListener( "PlaylistReady", onPlaylistReady );
-			Session.instance.login( "daniel.froistad@lodgenet.com", "kraken987!JJJ" );
+//			Session.instance.login( "daniel.froistad@lodgenet.com", "kraken987!JJJ" );
+			Session.instance.login( u, p );
 		}
 		
 		private function onPlaylistReady( e:Event ):void {

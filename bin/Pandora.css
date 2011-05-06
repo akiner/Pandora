@@ -48,6 +48,16 @@ s|BorderContainer {
 	font-size: 18;
 }
 
+.loginText {
+	color: #8d8d8d;
+	font-size: 18;
+}
+
+.errorText {
+	color: #aa2121;
+	font-size: 14;
+}
+
 .albumArt {
 	border-color: #006600;
 	border-visible: true;
