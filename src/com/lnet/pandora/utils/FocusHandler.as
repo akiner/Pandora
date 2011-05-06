@@ -1,5 +1,6 @@
 package com.lnet.pandora.utils {
 	import com.demonsters.debugger.MonsterDebugger;
+	import com.lnet.pandora.events.ApplicationEventBus;
 	import com.lnet.pandora.views.CreateNewStationView;
 	import com.lnet.pandora.views.LoginView;
 	
@@ -46,6 +47,9 @@ package com.lnet.pandora.utils {
 					case "createStation":
 						handleKeyPressInCreateStationView();
 						break;
+					case "default":
+						handleKeyPressInDefaultView();
+						break;
 					default:
 						MonsterDebugger.trace("FocusHandler::constructor","Keyboard event not handled!!!");
 						break;
@@ -53,12 +57,22 @@ package com.lnet.pandora.utils {
 			}
 		}
 
+		private function handleKeyPressInDefaultView():void {
+			controller.playNextSong();
+		}
+
 		private function handleKeyPressInLoginView():void {
 			switch(currentKey) {
 				case "select":
-					isTyping = false;
-					controller.loginUser( loginView.username.text, loginView.password.text );
-					FlexGlobals.topLevelApplication.currentState = "default";
+					try{
+						isTyping = false;
+						controller.loginUser( loginView.username.text, loginView.password.text );
+						FlexGlobals.topLevelApplication.currentState = "default";
+						loginView.currentState = "default";
+					}catch(e:Error){
+						loginView.currentState = "error";
+						MonsterDebugger.trace("FocusHandler::handleKeyPressInLoginView","Caught error::"+e);
+					}
 					break;
 				case "downArrow":
 					var nextComponent:IFocusManagerComponent = loginView.focusManager.getNextFocusManagerComponent();

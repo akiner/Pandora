@@ -16,12 +16,17 @@ package com.lnet.pandora.utils {
 		}
 		
 		public function loginUser(u:String,p:String):void {
-			Session.instance.addEventListener( "PlaylistReady", onPlaylistReady );
-//			Session.instance.login( "daniel.froistad@lodgenet.com", "kraken987!JJJ" );
-			Session.instance.login( u, p );
+			try{
+				Session.instance.addEventListener( "PlaylistReady", onPlaylistReady );
+				Session.instance.login( u, p );
+			}catch(e:Error){
+				MonsterDebugger.trace("Controller::loginUser","Unable to login user...");
+				throw new Error("User Login Failed");
+			}
 		}
 		
 		private function onPlaylistReady( e:Event ):void {
+			MonsterDebugger.trace("Controller::onPlaylistReady","Playlist ready!!");
 			nextTrackIndex = 0;
 			playTrack( getNextTrack() );
 		}
@@ -51,10 +56,10 @@ package com.lnet.pandora.utils {
 			//				soundInstance = new Sound();
 			//				soundInstance.load( new URLRequest( track.audioUrl ), new SoundLoaderContext(0, false) );
 			//				soundChannelInstance = soundInstance.play(0,0,null);
-			//				soundChannelInstance.addEventListener( Event.SOUND_COMPLETE, onSoundComplete );
+			//				soundChannelInstance.addEventListener( Event.SOUND_COMPLETE, playNextSong );
 		}
 		
-		private function onSoundComplete( e:Event ):void {
+		public function playNextSong( e:Event=null ):void {
 			playTrack( getNextTrack() );
 		}
 		
