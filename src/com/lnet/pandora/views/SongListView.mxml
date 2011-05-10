@@ -3,7 +3,7 @@
 		  xmlns:s="library://ns.adobe.com/flex/spark" 
 		  xmlns:mx="library://ns.adobe.com/flex/mx"
 		  xmlns:views="com.lnet.pandora.views.*"
-		  creationComplete="init()">
+		  creationComplete="init()" xmlns:layouts="com.lnet.pandora.layouts.*">
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
@@ -44,7 +44,6 @@
 
 			private function removeScrollbars():void {
 				songList.scroller.setStyle("horizontalScrollPolicy","ScrollPolicy.OFF");
-				songList.validateDisplayList();
 				songList.focusEnabled = false;
 			}
 
@@ -57,9 +56,9 @@
 			contentBackgroundAlpha="0"
 			requireSelection="true"
 			creationComplete="removeScrollbars()"
-			right="0">
+			right="117">
 		<s:layout>
-			<views:SongListLayout/>
+			<layouts:SongListLayout/>
 		</s:layout>
 	</s:List>
 </s:Group>

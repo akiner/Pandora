@@ -22,6 +22,7 @@
 			import com.lnet.pandora.events.ApplicationEventBus;
 			import com.lnet.pandora.utils.FocusHandler;
 			import com.lnet.pandora.viewmodels.SongListViewModel;
+			import com.lnet.pandora.viewmodels.StationListViewModel;
 			
 			private var request:URLRequest;
 			private var loader:URLLoader;
@@ -29,6 +30,7 @@
 			private var soundChannelInstance:SoundChannel;
 			private var focusHandler:FocusHandler;
 			private var songListViewModel:SongListViewModel;
+			private var stationListViewModel:StationListViewModel;
 			
 			public function init():void {
 				MonsterDebugger.initialize(this);
@@ -43,22 +45,22 @@
 				focusHandler = new FocusHandler();
 				focusHandler.createNewStationView = createNewStation;
 				focusHandler.loginView = login;
+				focusHandler.songListView = songList;
+				focusHandler.stationListView = stationList;
 				focusManager.setFocus(login.username);
 			}
 			
 			private function initViews():void {
 				songListViewModel = new SongListViewModel();
-				songListView.songListViewModel = songListViewModel;
+				songList.songListViewModel = songListViewModel;
+				
+				stationListViewModel = new StationListViewModel();
+				stationList.stationListViewModel = stationListViewModel;
 			}
 			
 			public function resetDefault(e:Event):void {
 				currentState = "default";
-//				var focus:IFocusManagerComponent = backgroundContainer.skin as IFocusManagerComponent;
-//				focusManager.setFocus(logo as IFo);
-				MonsterDebugger.trace("Pandora::resetDefault","FOCUS before::"+focusManager.getFocus());
-				focusManager.setFocus(focusManager.getNextFocusManagerComponent());
-//				stage.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
-				MonsterDebugger.trace("Pandora::resetDefault","FOCUS after::"+focusManager.getFocus());
+				focusManager.setFocus(stationList.stationList);
 			}
 		]]>
 	</fx:Script>
@@ -73,12 +75,16 @@
 					   depth="0"
 					   width="1280" height="720"
 					   backgroundAlpha="1"
-					   backgroundImage="@Embed(source='assets/background.jpg')">
+					   backgroundImage="@Embed(source='assets/background_2.jpg')">
 		<views:LoginView id="login" width="1145" height="603" top="78" left="87" includeIn="login" />
 		<mx:Image id="logo" source="@Embed(source='assets/logo.png')"
-				  left="87" top="36" tabFocusEnabled="true"
+				  left="87" top="36"
 				  excludeFrom="login"/>
-		<views:SongListView id="songListView"
+		<views:StationListView id="stationList" depth="0"
+							   width="559" height="720"
+							   top="0" left="580"
+							   excludeFrom="login"/>
+		<views:SongListView id="songList" depth="1"
 							width="1280" height="326" top="197"
 							excludeFrom="login"/>
 		<views:CreateNewStationView id="createNewStation"

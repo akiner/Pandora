@@ -1,4 +1,4 @@
-package com.lnet.pandora.views{
+package com.lnet.pandora.layouts{
 	
 	import com.demonsters.debugger.MonsterDebugger;
 	

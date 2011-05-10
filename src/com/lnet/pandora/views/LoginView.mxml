@@ -27,11 +27,11 @@
 		<s:VGroup gap="0" paddingTop="3" tabEnabled="false">
 			<s:TextInput id="username"
 						 tabIndex="1"
-						 text="daniel.froistad@lodgenet.com"
+						 text="tim.deboer@lodgenet.com"
 						 skinClass="com.lnet.pandora.views.LoginTextInputItemRenderer"/>
 			<s:TextInput id="password"
 						 tabIndex="2"
-						 text="kraken987!JJJ"
+						 text="Dylan"
 						 displayAsPassword="true"
 						 skinClass="com.lnet.pandora.views.LoginTextInputItemRenderer"/>
 		</s:VGroup>

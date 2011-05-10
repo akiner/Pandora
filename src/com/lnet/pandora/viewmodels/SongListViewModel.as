@@ -15,12 +15,19 @@ package com.lnet.pandora.viewmodels {
 		private var internalList:IList;
 		
 		public function SongListViewModel() {
-			_songList = new ArrayCollection();
-			internalList = new ArrayCollection();
+			initSongLists();
+			ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.STATION_SELECTED, initSongLists, false, 0, true);
 			ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.SONG_LOADED, updateSongList, false, 0, true);
 		}
 
+		private function initSongLists(event:ApplicationEvent=null):void {
+			_songList = new ArrayCollection();
+			internalList = new ArrayCollection();
+			MonsterDebugger.trace("SongListViewModel::initSongLists","Cleared song lists");
+		}
+
 		private function updateSongList(event:ApplicationEvent):void {
+			MonsterDebugger.trace("SongListViewModel::initSongLists","Updated song lists");
 			internalList.addItem(event.data);
 			songList = internalList as IList;
 			ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.UPDATE_SELECTED_INDEX, event.data));

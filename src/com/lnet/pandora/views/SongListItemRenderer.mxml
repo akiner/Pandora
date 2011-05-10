@@ -4,11 +4,6 @@
 				xmlns:mx="library://ns.adobe.com/flex/mx" 
 				autoDrawBackground="false">
 	
-	<s:states> 
-		<s:State name="default"/> 
-		<s:State name="selected"/>
-	</s:states>
-	
 	<fx:Script>
 		<![CDATA[
 			[Embed(source="assets/bkgd_song_off.png")]
@@ -20,6 +15,11 @@
 			private var backgroundOn:Class;
 		]]>
 	</fx:Script>
+	
+	<s:states> 
+		<s:State name="default"/> 
+		<s:State name="selected"/>
+	</s:states>
 	
 	<s:BorderContainer id="container"
 					   backgroundAlpha="1"

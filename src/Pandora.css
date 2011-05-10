@@ -32,6 +32,11 @@ global {
 	font-weight: bold;
 }
 
+s|List, s|Scroller {
+	vertical-scroll-policy: off;
+	horizontal-scroll-policy: off;
+}
+
 s|BorderContainer {
 	background-alpha: 0;
 	border-visible: false;
