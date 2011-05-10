@@ -12,12 +12,17 @@
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			public static const SEARCH_DEFAULT_TEXT:String = "Begin Typing to Search";
+		]]>
+	</fx:Script>
 	<s:Group>
 		<mx:Image source="@Embed(source='assets/createNewStation.png')" left="10" />
 	</s:Group>
 	<s:TextInput id="stationName"
 				 width="100%"
-				 text="Artist or Song"
+				 text="{SEARCH_DEFAULT_TEXT}"
 				 focusAlpha="0"
 				 skinClass="com.lnet.pandora.views.CreateNewStationTextInputSkin"/>
 	<s:Label text="*Begin typing to search"

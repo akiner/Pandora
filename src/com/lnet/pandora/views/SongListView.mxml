@@ -14,16 +14,23 @@
 			import com.lnet.pandora.events.ApplicationEventBus;
 			import com.lnet.pandora.viewmodels.SongListViewModel;
 			
+			import flashx.textLayout.container.ScrollPolicy;
+			
+			import mx.events.ScrollEvent;
+			
+			import spark.core.NavigationUnit;
+			
 			private var _songListViewModel:SongListViewModel;
 			
 			private function init():void {
-				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.SONG_LOADED, updateSelectedIndex,
+				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.UPDATE_SELECTED_INDEX, updateSelectedIndex,
 					false, 0, true);
 			}
 
 			private function updateSelectedIndex(event:ApplicationEvent):void {
 				songList.selectedItem = event.data;
-				MonsterDebugger.trace("SongListView::updateSelectedIndex","Updating index to::"+songList.selectedIndex);
+				MonsterDebugger.trace("SongListView::updateSelectedIndex","Selected item updated");
+//				songList.ensureIndexIsVisible(songList.selectedIndex);
 			}
 
 			[Bindable]
@@ -35,16 +42,24 @@
 				_songListViewModel = value;
 			}
 
+			private function removeScrollbars():void {
+				songList.scroller.setStyle("horizontalScrollPolicy","ScrollPolicy.OFF");
+				songList.validateDisplayList();
+				songList.focusEnabled = false;
+			}
+
 		]]>
 	</fx:Script>
-	<s:List id="songList" maxWidth="1280"
+	<s:List id="songList" maxWidth="1280" minWidth="596"
 			dataProvider="{songListViewModel.songList}"
 			itemRenderer="com.lnet.pandora.views.SongListItemRenderer"
 			borderAlpha="0" borderVisible="false"
 			contentBackgroundAlpha="0"
-			requireSelection="true" right="0">
+			requireSelection="true"
+			creationComplete="removeScrollbars()"
+			right="0">
 		<s:layout>
-			<s:HorizontalLayout/>
+			<views:SongListLayout/>
 		</s:layout>
 	</s:List>
 </s:Group>

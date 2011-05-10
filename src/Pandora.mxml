@@ -9,11 +9,7 @@
 			   width="1280" height="720"
 			   backgroundColor="0x000000">
 	<fx:Style source="Pandora.css"/>
-	<s:states>
-		<s:State name="default"/>
-		<s:State name="login"/>
-		<s:State name="createStation"/>
-	</s:states>
+	
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
@@ -22,6 +18,8 @@
 		<![CDATA[
 			import com.demonsters.debugger.MonsterDebugger;
 			import com.lnet.pandora.Session;
+			import com.lnet.pandora.events.ApplicationEvent;
+			import com.lnet.pandora.events.ApplicationEventBus;
 			import com.lnet.pandora.utils.FocusHandler;
 			import com.lnet.pandora.viewmodels.SongListViewModel;
 			
@@ -32,16 +30,13 @@
 			private var focusHandler:FocusHandler;
 			private var songListViewModel:SongListViewModel;
 			
-			public function init(nServiceNum:Number=undefined, nServiceStatus:Number=undefined):void {
+			public function init():void {
+				MonsterDebugger.initialize(this);
 				currentState = "login";
-				initMonsterDebugger();
 				initFocus();
 				initViews();
+				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.RESET_FOCUS, resetDefault, false, 0, true);
 				Session.instance.beginSession();
-			}
-			
-			private function initMonsterDebugger():void {
-				MonsterDebugger.initialize(this);
 			}
 			
 			private function initFocus():void {
@@ -56,26 +51,23 @@
 				songListView.songListViewModel = songListViewModel;
 			}
 			
-//			private function callEcho():void {
-//				var echo:Echo = new Echo();
-//				echo.message = "Hello, world!";
-//				request = new URLRequest( echo.url );
-//				request.method = URLRequestMethod.POST;
-//				request.contentType = "text/xml";
-//				request.data = String( echo );
-//				MonsterDebugger.trace("PandoraStandalone::callEcho","request.data::"+String( request.data ));
-//				
-//				loader = new URLLoader( );
-//				loader.addEventListener( Event.COMPLETE, onEchoComplete );
-//				loader.load( request );
-//			}
-//			
-//			private function onEchoComplete( e:Event ):void	{
-//				MonsterDebugger.trace("PandoraStandalone::onEchoComplete","onEchoComplete:" + e);
-//				MonsterDebugger.trace("PandoraStandalone::onEchoComplete","loader.data::"+loader.data);
-//			}
+			public function resetDefault(e:Event):void {
+				currentState = "default";
+//				var focus:IFocusManagerComponent = backgroundContainer.skin as IFocusManagerComponent;
+//				focusManager.setFocus(logo as IFo);
+				MonsterDebugger.trace("Pandora::resetDefault","FOCUS before::"+focusManager.getFocus());
+				focusManager.setFocus(focusManager.getNextFocusManagerComponent());
+//				stage.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+				MonsterDebugger.trace("Pandora::resetDefault","FOCUS after::"+focusManager.getFocus());
+			}
 		]]>
 	</fx:Script>
+	
+	<s:states>
+		<s:State name="default"/>
+		<s:State name="login"/>
+		<s:State name="createStation"/>
+	</s:states>
 	
 	<s:BorderContainer id="backgroundContainer"
 					   depth="0"
@@ -83,12 +75,11 @@
 					   backgroundAlpha="1"
 					   backgroundImage="@Embed(source='assets/background.jpg')">
 		<views:LoginView id="login" width="1145" height="603" top="78" left="87" includeIn="login" />
-		<mx:Image source="@Embed(source='assets/logo.png')"
-				  left="87" top="36"
+		<mx:Image id="logo" source="@Embed(source='assets/logo.png')"
+				  left="87" top="36" tabFocusEnabled="true"
 				  excludeFrom="login"/>
 		<views:SongListView id="songListView"
-							width="1280" height="326"
-							textAlign="right" top="197"
+							width="1280" height="326" top="197"
 							excludeFrom="login"/>
 		<views:CreateNewStationView id="createNewStation"
 									width="301" height="93"

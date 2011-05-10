@@ -4,6 +4,7 @@ package com.lnet.pandora.events {
 	public class ApplicationEvent extends Event {
 		public static const SONG_LOADED:String = "songLoaded";
 		public static const UPDATE_SELECTED_INDEX:String = "updateSelectedIndex";
+		public static const RESET_FOCUS:String = "resetFocus";
 		
 		public var data:Object;
 		public var optionalData:Object;

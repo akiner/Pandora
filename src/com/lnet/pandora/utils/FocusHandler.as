@@ -1,10 +1,10 @@
 package com.lnet.pandora.utils {
 	import com.demonsters.debugger.MonsterDebugger;
+	import com.lnet.pandora.events.ApplicationEvent;
 	import com.lnet.pandora.events.ApplicationEventBus;
 	import com.lnet.pandora.views.CreateNewStationView;
 	import com.lnet.pandora.views.LoginView;
 	
-	import flash.display.InteractiveObject;
 	import flash.events.KeyboardEvent;
 	
 	import mx.core.FlexGlobals;
@@ -19,6 +19,8 @@ package com.lnet.pandora.utils {
 		private var preSearchState:String;
 		private var controller:Controller;
 		
+		public static const SEARCH_DEFAULT_TEXT:String = "Begin Typing to Search";
+		
 		public function FocusHandler() {
 			MonsterDebugger.trace("FocusHandler::FocusHandler","Created!");
 			isTyping = false;
@@ -27,10 +29,9 @@ package com.lnet.pandora.utils {
 		}
 		
 		public function handleKeyPress(event:KeyboardEvent):void {
-			MonsterDebugger.trace("FocusHandler::handleKeyPress","Handling Key Press");
-//			preSearchState = FlexGlobals.topLevelApplication.currentState;
+			MonsterDebugger.trace("FocusHandler::handleKeyPress","Handling Key Press in::"+FlexGlobals.topLevelApplication.currentState);
 			if (userIsTyping(event)) {
-				if (!isTyping && FlexGlobals.topLevelApplication.currentState == "createStation"){
+				if (!isTyping && FlexGlobals.topLevelApplication.currentState == "default"){
 					FlexGlobals.topLevelApplication.focusManager.setFocus(createNewStationView.stationName);
 					initCreateStation(event);
 					
@@ -58,7 +59,16 @@ package com.lnet.pandora.utils {
 		}
 
 		private function handleKeyPressInDefaultView():void {
-			controller.playNextSong();
+			switch(currentKey) {
+				case "select":
+					break;
+				case "rightArrow":
+					controller.playNextSong();
+					MonsterDebugger.trace("FocusHandler::handleKeyPressInDefaultView","Arrowed right");
+					break;
+				default:
+					break;
+			}
 		}
 
 		private function handleKeyPressInLoginView():void {
@@ -66,9 +76,9 @@ package com.lnet.pandora.utils {
 				case "select":
 					try{
 						isTyping = false;
-						controller.loginUser( loginView.username.text, loginView.password.text );
-						FlexGlobals.topLevelApplication.currentState = "default";
-						loginView.currentState = "default";
+						MonsterDebugger.trace("FocusHandler::handleKeyPressInLoginView","Attempting to login user");
+						controller.loginUser(loginView.username.text, loginView.password.text);
+						ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.RESET_FOCUS));
 					}catch(e:Error){
 						loginView.currentState = "error";
 						MonsterDebugger.trace("FocusHandler::handleKeyPressInLoginView","Caught error::"+e);
@@ -90,19 +100,25 @@ package com.lnet.pandora.utils {
 		private function handleKeyPressInCreateStationView():void {
 			switch(currentKey) {
 				case "select":
-					handleCreateNewStation();
+					returnToDefaultState();
+					controller.createStation(createNewStationView.stationName.text);
 					break;
 				case "back":
+					returnToDefaultState();
 					break;
 				default:
 					break;
 			}
 		}
 
-		private function handleCreateNewStation():void {
-			MonsterDebugger.trace("FocusHandler::handleStationSearch","Create new station::");
+		private function returnToDefaultState():void {
+			isTyping = false;
+			createNewStationView.stationName.text = SEARCH_DEFAULT_TEXT;
+			createNewStationView.stationName.cursorManager.removeAllCursors();
+			ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.RESET_FOCUS));
 		}
-		
+
+
 		private function userIsTyping(event:KeyboardEvent):Boolean {
 			if(KeyHandler.isAlphaKey(event.keyCode) || KeyHandler.isNumericKey(event.keyCode)) {
 				return true;
