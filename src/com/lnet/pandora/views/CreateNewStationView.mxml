@@ -17,6 +17,10 @@
 			public static const SEARCH_DEFAULT_TEXT:String = "Begin Typing to Search";
 		]]>
 	</fx:Script>
+	<s:states>
+		<s:State name="default"/>
+		<s:State name="selected"/>
+	</s:states>
 	<s:Group>
 		<mx:Image source="@Embed(source='assets/createNewStation.png')" left="10" />
 	</s:Group>
@@ -27,7 +31,8 @@
 				 skinClass="com.lnet.pandora.views.CreateNewStationTextInputSkin"/>
 	<s:Label text="*Begin typing to search"
 			 styleName="searchLabel"
-			 alpha=".5"
+			 alpha.default=".5"
+			 alpha.selected="1"
 			 width="100%"
 			 textAlign="right"/>
 </s:BorderContainer>

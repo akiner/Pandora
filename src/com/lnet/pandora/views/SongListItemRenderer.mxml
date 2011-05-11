@@ -6,6 +6,8 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import com.demonsters.debugger.MonsterDebugger;
+			
 			[Embed(source="assets/bkgd_song_off.png")]
 			[Bindable]
 			private var backgroundOff:Class;
@@ -13,6 +15,8 @@
 			[Embed(source="assets/bkgd_song_on.png")]
 			[Bindable]
 			private var backgroundOn:Class;
+			
+			private var scrubBarMC:MovieClip;
 		]]>
 	</fx:Script>
 	
@@ -21,6 +25,9 @@
 		<s:State name="selected"/>
 	</s:states>
 	
+	<mx:Image source="@Embed(source='assets/controlBar.png')"
+			  visible.default="false"
+			  visible.selected="true" depth="2" horizontalCenter="0"/>
 	<s:BorderContainer id="container"
 					   backgroundAlpha="1"
 					   backgroundImage.default="{backgroundOff}"

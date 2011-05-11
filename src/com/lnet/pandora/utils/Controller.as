@@ -2,25 +2,30 @@ package com.lnet.pandora.utils {
 	import com.demonsters.debugger.MonsterDebugger;
 	import com.lnet.pandora.Session;
 	import com.lnet.pandora.command.auth.UserLogin;
+	import com.lnet.pandora.command.music.Search;
 	import com.lnet.pandora.command.station.CreateStation;
 	import com.lnet.pandora.command.station.GetPlaylist;
 	import com.lnet.pandora.command.user.GetStationList;
 	import com.lnet.pandora.events.ApplicationEvent;
 	import com.lnet.pandora.events.ApplicationEventBus;
+	import com.lnet.pandora.response.music.SearchResponse;
+	import com.lnet.pandora.response.station.CreateStationResponse;
 	import com.lnet.pandora.response.station.GetPlaylistResponse;
 	import com.lnet.pandora.response.station.supportClasses.Station;
 	import com.lnet.pandora.response.station.supportClasses.Track;
 	
 	import flash.events.Event;
+	import flash.events.IOErrorEvent;
 	import flash.media.Sound;
 	import flash.media.SoundChannel;
 	import flash.media.SoundLoaderContext;
 	import flash.net.URLRequest;
+	import flash.utils.setTimeout;
 	
 	import mx.collections.ArrayCollection;
 	import mx.collections.IList;
 	import mx.rpc.events.FaultEvent;
-
+	
 	public class Controller {
 		private var nextTrackIndex:uint = 0;
 		private var userLoginRequest:UserLogin;
@@ -29,6 +34,8 @@ package com.lnet.pandora.utils {
 		private var createNewStationRequest:CreateStation;
 		private var soundInstance:Sound;
 		private var soundChannelInstance:SoundChannel;
+		private var musicSearchRequest:Search;
+		private var stationList:IList;
 		
 		private var _currentTrackPos:int;
 		private var _selectedStation:Station;
@@ -38,37 +45,42 @@ package com.lnet.pandora.utils {
 			ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.PAUSE_SONG, pauseSong, false, 0, true);
 			ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.PLAY_SONG, playSong, false, 0, true);
 		}
-
+		
 		private function playSong(event:ApplicationEvent):void {
 			MonsterDebugger.trace("Controller::playSong","Play song");
 		}
-
+		
 		private function pauseSong(event:ApplicationEvent):void {
 			MonsterDebugger.trace("Controller::pauseSong","Pause song");
 		}
 		
 		public function loginUser(u:String,p:String):void {
+			userLoginRequest = new UserLogin();
+			userLoginRequest.username = u;
+			userLoginRequest.password = p;
+			
+			userLoginRequest.addEventListener( Event.COMPLETE, onUserLoginComplete );
+			userLoginRequest.addEventListener( FaultEvent.FAULT, onUserLoginFault );
 			try{
-				// configure request
-				userLoginRequest = new UserLogin();
-//				userLoginRequest.username = "daniel.froistad@lodgenet.com";
-//				userLoginRequest.password = "kraken987!JJJ";
-				userLoginRequest.username = u;
-				userLoginRequest.password = p;
-				
-				userLoginRequest.addEventListener( Event.COMPLETE, onUserLoginComplete );
-//				userLoginRequest.addEventListener( Event.FAULT, onUserLoginFault );
-				
 				userLoginRequest.submit();
 			}catch(e:Error){
-				MonsterDebugger.trace("Controller::loginUser","Unable to login user...");
-				throw new Error("User Login Failed");
+				try{
+					userLoginRequest.submit();
+				}catch(e:Error){
+					MonsterDebugger.trace("Controller::loginUser","Unable to login user...");
+					throw new Error("User Login Failed");
+				}
 			}
+		}
+		
+		private function onUserLoginFault(event:FaultEvent):void {
+			MonsterDebugger.trace("Controller::onUserLoginFault","Fault:: " + String( userLoginRequest.fault));
+			ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.LOGIN_ERROR));
 		}
 		
 		private function onUserLoginComplete( e:Event ):void {
 			userLoginRequest.removeEventListener( Event.COMPLETE, onUserLoginComplete );
-			MonsterDebugger.trace("Controller::onUserLoginComplete","e::"+e);
+			ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.RESET_FOCUS));
 			getStationList();
 		}
 		
@@ -78,16 +90,21 @@ package com.lnet.pandora.utils {
 			
 			getStationListRequest.addEventListener( Event.COMPLETE, onStationListComplete );
 			getStationListRequest.addEventListener( FaultEvent.FAULT, onStationListFault );
+			getStationListRequest.addEventListener( IOErrorEvent.IO_ERROR, onIOError );
 			
 			getStationListRequest.submit();
 		}
-
+		
+		private function onIOError(event:IOErrorEvent):void {
+			MonsterDebugger.trace("Controller::onIOError","IOERROR!!!!!!!!!!!!!" + event.text);
+		}
+		
 		private function onStationListFault(event:FaultEvent):void {
 			MonsterDebugger.trace("Controller::onStationListFault","Fault:: " + String( getStationListRequest.fault));
 		}
 		
 		private function onStationListComplete(event:Event):void {
-			var stationList:IList = new ArrayCollection();
+			stationList = new ArrayCollection();
 			
 			for (var i:int = 0; i<getStationListRequest.response.stations.elements.length; i++){
 				var station:Station = getStationListRequest.response.stations.elements[i] as Station;
@@ -99,29 +116,29 @@ package com.lnet.pandora.utils {
 			
 			setSelectedStation(stationList[1]);
 		}
-
+		
 		public function setSelectedStation(station:Station):void {
 			_selectedStation = station;
 			getPlaylist(selectedStation);
 			ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.STATION_SELECTED, station));
 			MonsterDebugger.trace("Controller::setSelectedStation","Station Selected::"+station.stationName);
 		}
-
+		
 		private function getPlaylist(thisStation:Station):void {
 			getPlaylistRequest = new GetPlaylist();
 			getPlaylistRequest.stationToken = thisStation.stationToken;
-		
+			
 			getPlaylistRequest.addEventListener( Event.COMPLETE, onPlaylistComplete );
 			getPlaylistRequest.addEventListener( FaultEvent.FAULT, onPlaylistFault );
-		
+			getPlaylistRequest.addEventListener( IOErrorEvent.IO_ERROR, onIOError );
+			
 			getPlaylistRequest.submit();
 		}
-
-
+		
 		private function onPlaylistFault(event:FaultEvent):void {
 			MonsterDebugger.trace("Controller::onPlaylistFault","Fault:: " + String( getPlaylistRequest.fault));
 		}
-
+		
 		private function onPlaylistComplete(event:Event):void {
 			nextTrackIndex = 0;
 			playTrack(getNextTrack());
@@ -140,35 +157,89 @@ package com.lnet.pandora.utils {
 			
 			if( !track ) return;
 			
-			MonsterDebugger.trace("Controller::playTrack","Playing::"+track.songName);
-			MonsterDebugger.trace("Controller::playTrack","AlbumArt::"+track.albumArtUrl);
-			ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.SONG_LOADED, track));
-			
 			soundInstance = new Sound();
-			soundInstance.load( new URLRequest( track.audioUrl ), new SoundLoaderContext(0, false) );
-			soundChannelInstance = soundInstance.play(0,0,null);
+			
+			var req:URLRequest =  new URLRequest( track.audioUrl );
+			var context:SoundLoaderContext = new SoundLoaderContext(0, false);
+			
+			try {
+				soundInstance.load(req, context);
+				soundChannelInstance = soundInstance.play();
+				ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.SONG_LOADED, track));
+			}
+			catch (err:Error) {
+				MonsterDebugger.trace("Controller::playTrack","err.message::"+err.message);
+			}
+			
+			soundInstance.addEventListener(IOErrorEvent.IO_ERROR, ioSoundError);
 			soundChannelInstance.addEventListener( Event.SOUND_COMPLETE, playNextSong );
+			//			soundChannelInstance.addEventListener(ProgressEvent.PROGRESS, progressHandler);
+		}
+		
+		private function ioSoundError(e:IOErrorEvent):void {
+			MonsterDebugger.trace("PandoraStandalone::ioSoundError","sound channel ioSoundError " + e.text);
+			playNextSong();
 		}
 		
 		public function playNextSong(e:Event=null):void {
 			playTrack(getNextTrack());
 		}
-
-		public function createStation(stationTxt:String):void {
+		
+		public function createNewStation(stationTxt:String):void {
 			MonsterDebugger.trace("Controller::createStation","Attempting to create new station for ::"+stationTxt);
+			
+			musicSearchRequest = new Search();
+			musicSearchRequest.searchText = stationTxt;
+			musicSearchRequest.includeNearMatches = true;
+			
+			musicSearchRequest.addEventListener(Event.COMPLETE, onMusicSearchComplete);
+			musicSearchRequest.addEventListener(FaultEvent.FAULT, onMusicSearchFault);
+			musicSearchRequest.addEventListener( IOErrorEvent.IO_ERROR, onIOError );
+			
+			musicSearchRequest.submit();
+		}
+		
+		private function onMusicSearchComplete(event:Event):void {
+			MonsterDebugger.trace("Controller::onMusicSearchComplete","response::"+musicSearchRequest.response);
+			MonsterDebugger.trace("Controller::onMusicSearchComplete","songs::"+musicSearchRequest.response.songs.elements.length);
+			MonsterDebugger.trace("Controller::onMusicSearchComplete","artists::"+musicSearchRequest.response.artists.elements.length);
+			
+			var responseArray:IList = new ArrayCollection();
+			var searchResponse:SearchResponse = musicSearchRequest.response as SearchResponse;
+			var i:int;
+			
+			//			for (i = 0; i < searchResponse.songs.elements.length; i++){
+			//				responseArray.addItem(searchResponse.songs.elements[i]);
+			//			}
+			
+			for (i = 0; i < searchResponse.artists.elements.length; i++){
+				responseArray.addItem(searchResponse.artists.elements[i]);
+			}
+			
+			responseArray.toArray().sortOn("score");
+			
+			createStation(responseArray[0].musicToken);
+		}
+		
+		private function createStation(token:String):void {
 			createNewStationRequest = new CreateStation();
-			createNewStationRequest.musicToken = stationTxt;
+			createNewStationRequest.musicToken = token;
 			
 			createNewStationRequest.addEventListener( Event.COMPLETE, onCreateStationComplete );
 			createNewStationRequest.addEventListener( FaultEvent.FAULT, onCreateStationFault );
+			createNewStationRequest.addEventListener( IOErrorEvent.IO_ERROR, onIOError );
 			
 			createNewStationRequest.submit();
 		}
-
+		
+		private function onMusicSearchFault(event:FaultEvent):void {
+			MonsterDebugger.trace("Controller::onMusicSearchFault","Fault:: " + String( musicSearchRequest.fault));
+		}
+		
 		private function onCreateStationComplete(event:Event):void {
-			MonsterDebugger.trace("Controller::onCreateStationComplete","Created station!!!!!!!!!!!"+event);
 			MonsterDebugger.trace("Controller::onCreateStationComplete","createNewStationRequest::"+createNewStationRequest.response);
-//			var station:Station = createNewStationRequest.response as Station;
+			var stationResponse:CreateStationResponse = createNewStationRequest.response as CreateStationResponse;
+			getStationList();
 		}
 		
 		private function onCreateStationFault(event:FaultEvent):void {
@@ -186,23 +257,21 @@ package com.lnet.pandora.utils {
 			
 			return track;
 		}
-
-
+		
 		public function get currentTrackPos():int {
 			return _currentTrackPos;
 		}
-
+		
 		public function set currentTrackPos(value:int):void {
 			_currentTrackPos = value;
 		}
-
+		
 		public function get selectedStation():Station {
 			return _selectedStation;
 		}
-
+		
 		public function set selectedStation(value:Station):void {
 			_selectedStation = value;
 		}
-
 	}
 }

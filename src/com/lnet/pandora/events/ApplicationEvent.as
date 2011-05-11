@@ -9,6 +9,7 @@ package com.lnet.pandora.events {
 		public static const RESET_FOCUS:String = "resetFocus";
 		public static const PLAY_SONG:String = "playSong";
 		public static const PAUSE_SONG:String = "pauseSong";
+		public static const LOGIN_ERROR:String = "loginError";
 		
 		public var data:Object;
 		public var optionalData:Object;

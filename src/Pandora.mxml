@@ -34,11 +34,17 @@
 			
 			public function init():void {
 				MonsterDebugger.initialize(this);
-				currentState = "login";
+				initLogin();
 				initFocus();
 				initViews();
 				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.RESET_FOCUS, resetDefault, false, 0, true);
+				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.LOGIN_ERROR, displayLoginError, false, 0, true);
 				Session.instance.beginSession();
+			}
+
+			private function displayLoginError(event:ApplicationEvent):void {
+				initLogin();
+				login.currentState = "error";
 			}
 			
 			private function initFocus():void {
@@ -47,6 +53,10 @@
 				focusHandler.loginView = login;
 				focusHandler.songListView = songList;
 				focusHandler.stationListView = stationList;
+			}
+			
+			public function initLogin():void {
+				currentState = "login";
 				focusManager.setFocus(login.username);
 			}
 			
@@ -85,7 +95,7 @@
 							   top="0" left="580"
 							   excludeFrom="login"/>
 		<views:SongListView id="songList" depth="1"
-							width="1280" height="326" top="197"
+							width="1280" height="326" top="207"
 							excludeFrom="login"/>
 		<views:CreateNewStationView id="createNewStation"
 									width="301" height="93"

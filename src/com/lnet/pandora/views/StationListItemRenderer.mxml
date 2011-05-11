@@ -12,7 +12,7 @@
 	
 	<s:Label text="{data.stationName}"
 			 styleName="whiteLabelLg"
-			 textAlign="right"
+			 textAlign="right" maxWidth="559" maxDisplayedLines="1"
 			 width="559" paddingTop="5" paddingRight="5" height="39">
 		<s:filters>
 			<s:GlowFilter includeIn="selected"

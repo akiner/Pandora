@@ -61,7 +61,7 @@ package com.lnet.pandora.utils {
 				}
 			}
 		}
-
+		
 		private function handleKeyPressInDefaultView():void {
 			switch(currentKey) {
 				case "select":
@@ -81,19 +81,13 @@ package com.lnet.pandora.utils {
 					break;
 			}
 		}
-
+		
 		private function handleKeyPressInLoginView():void {
 			switch(currentKey) {
 				case "select":
-					try{
-						isTyping = false;
-						MonsterDebugger.trace("FocusHandler::handleKeyPressInLoginView","Attempting to login user");
-						controller.loginUser(loginView.username.text, loginView.password.text);
-						ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.RESET_FOCUS));
-					}catch(e:Error){
-						loginView.currentState = "error";
-						MonsterDebugger.trace("FocusHandler::handleKeyPressInLoginView","Caught error::"+e);
-					}
+					MonsterDebugger.trace("FocusHandler::handleKeyPressInLoginView","Attempting to login user");
+					isTyping = false;
+					controller.loginUser(loginView.username.text, loginView.password.text);
 					break;
 				case "downArrow":
 					var nextComponent:IFocusManagerComponent = loginView.focusManager.getNextFocusManagerComponent();
@@ -111,8 +105,8 @@ package com.lnet.pandora.utils {
 		private function handleKeyPressInCreateStationView():void {
 			switch(currentKey) {
 				case "select":
+					controller.createNewStation(createNewStationView.stationName.text);
 					returnToDefaultState();
-					controller.createStation(createNewStationView.stationName.text);
 					break;
 				case "back":
 					returnToDefaultState();
@@ -121,14 +115,15 @@ package com.lnet.pandora.utils {
 					break;
 			}
 		}
-
+		
 		private function returnToDefaultState():void {
 			isTyping = false;
 			createNewStationView.stationName.text = SEARCH_DEFAULT_TEXT;
+			createNewStationView.currentState = "default";
 			ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.RESET_FOCUS));
 		}
-
-
+		
+		
 		private function userIsTyping(event:KeyboardEvent):Boolean {
 			if(KeyHandler.isAlphaKey(event.keyCode) || KeyHandler.isNumericKey(event.keyCode)) {
 				return true;
@@ -142,6 +137,7 @@ package com.lnet.pandora.utils {
 			isTyping = true;
 			FlexGlobals.topLevelApplication.currentState = "createStation";
 			createNewStationView.stationName.text = "";
+			createNewStationView.currentState = "selected";
 			createNewStationView.stationName.insertText(String.fromCharCode(event.charCode));
 			createNewStationView.stationName.cursorManager.showCursor();
 		}
@@ -149,34 +145,34 @@ package com.lnet.pandora.utils {
 		public function get createNewStationView():CreateNewStationView {
 			return _createNewStationView;
 		}
-
+		
 		public function set createNewStationView(value:CreateNewStationView):void {
 			_createNewStationView = value;
 		}
-
+		
 		public function get loginView():LoginView {
 			return _loginView;
 		}
-
+		
 		public function set loginView(value:LoginView):void {
 			_loginView = value;
 		}
-
+		
 		public function get songListView():SongListView {
 			return _songListView;
 		}
-
+		
 		public function set songListView(value:SongListView):void {
 			_songListView = value;
 		}
-
+		
 		public function get stationListView():StationListView {
 			return _stationListView;
 		}
-
+		
 		public function set stationListView(value:StationListView):void {
 			_stationListView = value;
 		}
-
+		
 	}
 }

@@ -25,7 +25,8 @@
     <s:RichEditableText id="textDisplay"
               verticalAlign="middle"
               widthInChars="10"
-			  alpha=".25"
+			  alpha.normal="1"
+			  alpha.disabled=".25"
 			  styleName="searchText"
               left="35" right="1" top="2" bottom="1" />
 </s:SparkSkin>
