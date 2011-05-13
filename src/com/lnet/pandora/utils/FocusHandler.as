@@ -65,7 +65,7 @@ package com.lnet.pandora.utils {
 		private function handleKeyPressInDefaultView():void {
 			switch(currentKey) {
 				case "select":
-					controller.setSelectedStation(stationListView.stationList.selectedItem);
+//					controller.setSelectedStation(stationListView.stationList.selectedItem);
 					break;
 				case "rightArrow":
 					controller.playNextSong();

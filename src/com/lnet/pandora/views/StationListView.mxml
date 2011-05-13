@@ -3,7 +3,7 @@
 		xmlns:s="library://ns.adobe.com/flex/spark" 
 		xmlns:mx="library://ns.adobe.com/flex/mx"
 		xmlns:layouts="com.lnet.pandora.layouts.*"
-		width="559" height="720" creationComplete="init()">
+		width="559" height="720">
 	
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
@@ -18,13 +18,13 @@
 			import mx.collections.ArrayCollection;
 			private var _stationListViewModel:StationListViewModel;
 			
-			private function init():void {
-				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.STATION_SELECTED, selectStation, false, 0, true);
-			}
+//			private function init():void {
+//				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.STATION_SELECTED, selectStation, false, 0, true);
+//			}
 
-			private function selectStation(event:ApplicationEvent):void {
-				stationList.selectedItem = event.data;
-			}
+//			private function selectStation(event:ApplicationEvent):void {
+//				stationList.selectedItem = event.data;
+//			}
 			
 			[Bindable]
 			public function get stationListViewModel():StationListViewModel {
@@ -33,6 +33,11 @@
 
 			public function set stationListViewModel(value:StationListViewModel):void {
 				_stationListViewModel = value;
+			}
+
+			private function selectNewStation():void {
+				ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.SELECT_STATION,
+					stationList.selectedItem));
 			}
 			
 		]]>
@@ -50,6 +55,7 @@
 			borderAlpha="0" borderVisible="false"
 			contentBackgroundAlpha="0"
 			requireSelection="true"
+			change="selectNewStation()"
 			focusAlpha="0"
 			right="0">
 		<s:layout>

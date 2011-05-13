@@ -13,6 +13,7 @@ package com.lnet.pandora.utils {
 	import com.lnet.pandora.response.station.GetPlaylistResponse;
 	import com.lnet.pandora.response.station.supportClasses.Station;
 	import com.lnet.pandora.response.station.supportClasses.Track;
+	import com.lnet.pandora.views.SongView;
 	
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
@@ -34,8 +35,10 @@ package com.lnet.pandora.utils {
 		private var createNewStationRequest:CreateStation;
 		private var soundInstance:Sound;
 		private var soundChannelInstance:SoundChannel;
+		private var soundPosition:Number;
 		private var musicSearchRequest:Search;
 		private var stationList:IList;
+		private var currentTrack:Track;
 		
 		private var _currentTrackPos:int;
 		private var _selectedStation:Station;
@@ -44,14 +47,19 @@ package com.lnet.pandora.utils {
 			MonsterDebugger.trace("Controller::Controller","Created!");
 			ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.PAUSE_SONG, pauseSong, false, 0, true);
 			ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.PLAY_SONG, playSong, false, 0, true);
+			ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.SELECT_STATION, setSelectedStation, false, 0, true); 
 		}
 		
 		private function playSong(event:ApplicationEvent):void {
 			MonsterDebugger.trace("Controller::playSong","Play song");
+			soundChannelInstance = soundInstance.play(soundPosition);
 		}
 		
 		private function pauseSong(event:ApplicationEvent):void {
 			MonsterDebugger.trace("Controller::pauseSong","Pause song");
+			soundPosition = soundChannelInstance.position;
+			soundChannelInstance.stop();
+			
 		}
 		
 		public function loginUser(u:String,p:String):void {
@@ -114,14 +122,15 @@ package com.lnet.pandora.utils {
 			ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.STATION_LIST_LOADED,
 				stationList));
 			
-			setSelectedStation(stationList[1]);
+			ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.SELECT_STATION,
+				stationList[1]));
 		}
 		
-		public function setSelectedStation(station:Station):void {
-			_selectedStation = station;
+		public function setSelectedStation(event:ApplicationEvent):void {
+			_selectedStation = event.data as Station;
 			getPlaylist(selectedStation);
-			ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.STATION_SELECTED, station));
-			MonsterDebugger.trace("Controller::setSelectedStation","Station Selected::"+station.stationName);
+			ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.STATION_SELECTED, selectedStation));
+			MonsterDebugger.trace("Controller::setSelectedStation","Station Selected::"+selectedStation.stationName);
 		}
 		
 		private function getPlaylist(thisStation:Station):void {
@@ -158,6 +167,8 @@ package com.lnet.pandora.utils {
 			if( !track ) return;
 			
 			soundInstance = new Sound();
+			soundInstance.addEventListener(IOErrorEvent.IO_ERROR, ioSoundError);
+			soundInstance.addEventListener(Event.COMPLETE, soundLoaded);
 			
 			var req:URLRequest =  new URLRequest( track.audioUrl );
 			var context:SoundLoaderContext = new SoundLoaderContext(0, false);
@@ -171,9 +182,14 @@ package com.lnet.pandora.utils {
 				MonsterDebugger.trace("Controller::playTrack","err.message::"+err.message);
 			}
 			
-			soundInstance.addEventListener(IOErrorEvent.IO_ERROR, ioSoundError);
 			soundChannelInstance.addEventListener( Event.SOUND_COMPLETE, playNextSong );
 			//			soundChannelInstance.addEventListener(ProgressEvent.PROGRESS, progressHandler);
+		}
+
+		private function soundLoaded(event:Event):void {
+			MonsterDebugger.trace("Controller::soundLoaded","sound length::"+soundInstance.length/1000);
+//			MonsterDebugger.trace("Controller::soundLoaded","track length::"+currentTrack.);
+			MonsterDebugger.trace("Controller::soundLoaded","current position::"+soundChannelInstance.position/1000);
 		}
 		
 		private function ioSoundError(e:IOErrorEvent):void {
@@ -207,10 +223,6 @@ package com.lnet.pandora.utils {
 			var responseArray:IList = new ArrayCollection();
 			var searchResponse:SearchResponse = musicSearchRequest.response as SearchResponse;
 			var i:int;
-			
-			//			for (i = 0; i < searchResponse.songs.elements.length; i++){
-			//				responseArray.addItem(searchResponse.songs.elements[i]);
-			//			}
 			
 			for (i = 0; i < searchResponse.artists.elements.length; i++){
 				responseArray.addItem(searchResponse.artists.elements[i]);
@@ -254,6 +266,8 @@ package com.lnet.pandora.utils {
 				if ( ( track = playlist.items.elements[ i ] as Track ) )
 					break;
 			}
+			
+			currentTrack = track;
 			
 			return track;
 		}

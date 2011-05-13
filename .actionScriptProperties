@@ -14,7 +14,6 @@
   </compiler>
   <applications>
     <application path="Pandora.mxml"/>
-    <application path="PandoraStandalone.mxml"/>
   </applications>
   <modules/>
   <buildCSSFiles/>

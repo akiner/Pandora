@@ -2,11 +2,13 @@
 <s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 				xmlns:s="library://ns.adobe.com/flex/spark" 
 				xmlns:mx="library://ns.adobe.com/flex/mx" 
-				autoDrawBackground="false">
+				autoDrawBackground="false" creationComplete="init()">
 	
 	<fx:Script>
 		<![CDATA[
 			import com.demonsters.debugger.MonsterDebugger;
+			import com.lnet.pandora.events.ApplicationEvent;
+			import com.lnet.pandora.events.ApplicationEventBus;
 			
 			[Embed(source="assets/bkgd_song_off.png")]
 			[Bindable]
@@ -17,6 +19,35 @@
 			private var backgroundOn:Class;
 			
 			private var scrubBarMC:MovieClip;
+			
+			private function init():void {
+				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.PLAY_SONG, removePauseGraphic, 
+					false, 0, true);
+				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.PAUSE_SONG, showPauseGraphic, 
+					false, 0, true);
+			}
+			
+			private function initScrubber():void {
+				scrubBarMC = scrubBarLoader.content as MovieClip;
+			}
+
+			private function removePauseGraphic(event:ApplicationEvent):void {
+				pause.visible = false;
+			}
+
+			private function showPauseGraphic(event:ApplicationEvent):void {
+				pause.visible = true;
+			}
+			
+			private function getAlbumArt(url:String):String{
+				var artURL:String = url;
+				
+				if(url == "" || url == "undefined"){
+					artURL = "assets/albumArtUnavailable.png";
+				}
+				
+				return artURL;
+			}
 		]]>
 	</fx:Script>
 	
@@ -25,15 +56,23 @@
 		<s:State name="selected"/>
 	</s:states>
 	
-	<mx:Image source="@Embed(source='assets/controlBar.png')"
-			  visible.default="false"
-			  visible.selected="true" depth="2" horizontalCenter="0"/>
+	<mx:Image id="pause" visible="false" includeIn="selected"
+			  source="@Embed(source='assets/pause.png')"
+			  depth="3" horizontalCenter="0" />
+	<mx:SWFLoader id="scrubBarLoader"
+				  complete="initScrubber()"
+				  source="assets/scrubBar.swf"
+				  top="20" depth="2"
+				  horizontalCenter="0"
+				  visible.selected="true" visible.default="false"
+				  width="353" height="23"/>
 	<s:BorderContainer id="container"
 					   backgroundAlpha="1"
 					   backgroundImage.default="{backgroundOff}"
 					   backgroundImage.selected="{backgroundOn}"
 					   width.default="446" height.default="312"
-					   width.selected="596" height.selected="312">
+					   width.selected="596" height.selected="312"
+					   top="20">
 		<s:VGroup paddingTop="36" paddingLeft="31">
 			<s:Label id="songTitle" styleName="whiteLabelLg" text="{data.songName}"
 					 maxWidth.default="375" maxWidth.selected="525" maxDisplayedLines="1"/>
@@ -48,7 +87,9 @@
 						 maxWidth.default="340" maxWidth.selected="485" maxDisplayedLines="1"/>
 			</s:HGroup>
 			<s:HGroup gap="0" width="359">
-				<mx:Image id="albumArt" height="187" width="187" source="{data.albumArtUrl}" styleName="albumArt"/>
+				<s:BorderContainer borderVisible="true" borderAlpha="1" borderColor="0x6096cb" borderWeight="2">
+					<mx:Image id="albumArt" height="187" width="187" source="{getAlbumArt(data.albumArtUrl.toString())}" styleName="albumArt"/>
+				</s:BorderContainer>
 				<s:VGroup horizontalAlign="center" paddingTop="10">
 					<mx:Image depth="1" height="43" source="@Embed(source='assets/selectBanner.png')"
 							  visible.default="false" visible.selected="true"/>
