@@ -161,15 +161,15 @@ package com.lnet.pandora.utils {
 			var playlist:GetPlaylistResponse = getPlaylistRequest.response;
 			var track:Track = null;
 			
+			if(!playlist)
+				return track;
+			
 			for( var i:uint = nextTrackIndex++ ; i < playlist.items.elements.length ; i++ ) {
 				if ( ( track = playlist.items.elements[ i ] as Track ) )
 					break;
 			}
 			
-//			currentTrack = track;
 			return track;
-//			MonsterDebugger.trace("Controller::getNextTrack","Dispatching track ready event...");
-//			ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.TRACK_READY_TO_PLAY, currentTrack));
 		}
 		
 		private function playTrack( track:Track ):void {

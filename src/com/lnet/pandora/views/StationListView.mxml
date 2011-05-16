@@ -18,6 +18,9 @@
 			import mx.collections.ArrayCollection;
 			private var _stationListViewModel:StationListViewModel;
 			
+			[Bindable]
+			private var currentlySelectedIndex:int = 0;
+			
 //			private function init():void {
 //				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.STATION_SELECTED, selectStation, false, 0, true);
 //			}
@@ -36,6 +39,7 @@
 			}
 
 			private function selectNewStation():void {
+				currentlySelectedIndex = stationList.selectedIndex;
 				ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.SELECT_STATION,
 					stationList.selectedItem));
 			}
@@ -48,7 +52,7 @@
 					   backgroundAlpha="1"
 					   backgroundImage="@Embed(source='assets/stationLines_background.png')"/>
 	<s:List id="stationList"
-			width="559" height="180" top="36"
+			width="559" height="650" top="36"
 			dataProvider="{stationListViewModel.stationList}"
 			itemRenderer="com.lnet.pandora.views.StationListItemRenderer"
 			borderAlpha="0" borderVisible="false"
@@ -58,7 +62,7 @@
 			focusAlpha="0"
 			right="0">
 		<s:layout>
-			<layouts:StationListLayout gap="7"/>
+			<layouts:StationListLayout selectedIndex="{currentlySelectedIndex}"/>
 		</s:layout>
 	</s:List>
 </s:Group>
