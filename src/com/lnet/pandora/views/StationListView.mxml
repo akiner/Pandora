@@ -62,7 +62,7 @@
 			focusAlpha="0"
 			right="0">
 		<s:layout>
-			<layouts:StationListLayout selectedIndex="{currentlySelectedIndex}"/>
+			<layouts:StationListLayout selectedIndex="{currentlySelectedIndex}" gap="5"/>
 		</s:layout>
 	</s:List>
 </s:Group>
