@@ -78,6 +78,11 @@ s|BorderContainer {
 	font-size: 22;
 }
 
+.timeLabel {
+	font-size: 14;
+	font-weight: bold;
+}
+
 .blueLabelMed {
 	color: #85c1ff;
 	font-size: 22;

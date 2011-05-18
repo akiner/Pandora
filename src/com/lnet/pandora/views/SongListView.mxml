@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		  xmlns:s="library://ns.adobe.com/flex/spark" 
-		  xmlns:mx="library://ns.adobe.com/flex/mx"
-		  xmlns:views="com.lnet.pandora.views.*"
-		  creationComplete="init()" xmlns:layouts="com.lnet.pandora.layouts.*">
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:views="com.lnet.pandora.views.*"
+		 creationComplete="init()" xmlns:layouts="com.lnet.pandora.layouts.*">
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
@@ -14,46 +14,142 @@
 			import com.lnet.pandora.events.ApplicationEventBus;
 			import com.lnet.pandora.viewmodels.SongListViewModel;
 			
-			import flashx.textLayout.container.ScrollPolicy;
-			
-			import mx.events.ScrollEvent;
-			
-			import spark.core.NavigationUnit;
-			
 			private var _songListViewModel:SongListViewModel;
+			private var scrubBarMC:MovieClip;
+			private var soundInstance:Sound;
+			private var soundChannelInstance:SoundChannel;
+			private var soundPosition:Number;
+			private var resetTimer:Timer;
+			private var playheadTimer:Timer;
+			private var scrubBarTimer:Timer;
+			
+			[Bindable]
+			private var currentTimeLabel:String;
 			
 			private function init():void {
+				initTimers();
 				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.UPDATE_SELECTED_INDEX, updateSelectedIndex,
 					false, 0, true);
+				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.PLAY_SONG, removePauseGraphic, 
+					false, 0, true);
+				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.PAUSE_SONG, showPauseGraphic, 
+					false, 0, true);
+				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.SOUND_READY, setupScrubber,
+					false, 0, true)
 			}
-
+			
+			private function initTimers():void {
+				resetTimer = new Timer(250, 1);
+				playheadTimer = new Timer(1000);
+				scrubBarTimer = new Timer(250);
+			}
+			
+			private function setupScrubber(event:ApplicationEvent):void {
+				var thisSoundInstance:Sound = event.data as Sound;
+				var thisSoundChannelInstance:SoundChannel = event.optionalData as SoundChannel;
+				
+				var currentTime:uint = Math.round(thisSoundChannelInstance.position/1000);
+				var totalTime:String = formatTime(thisSoundInstance.length/1000);
+				
+				totalTimeField.text = totalTime;
+			}
+			
 			private function updateSelectedIndex(event:ApplicationEvent):void {
 				songList.selectedItem = event.data;
-				MonsterDebugger.trace("SongListView::updateSelectedIndex","Selected item updated");
+				pause.visible = false;
+				resetTimeFields();
+			}
+			
+			private function removeScrollbars():void {
+				songList.scroller.setStyle("horizontalScrollPolicy","ScrollPolicy.OFF");
+				songList.focusEnabled = false;
+			}
+			
+			private function initScrubber():void {
+				scrubBarMC = scrubBarLoader.content as MovieClip;
+				//				resetTimeFields();
+			}
+			
+			private function resetTimeFields():void {
+				currentTimeField.text = "0:00";
+				totalTimeField.text = "0:00";
+			}
+			
+			private function formatTime(time:uint):String {
+				var timeNum:int = Math.round(time);
+				var minutes:int = timeNum / 60;
+				var seconds:int = timeNum % 60; 
+				var timeString:String;
+				var formattedMinutes:String;
+				var formattedSeconds:String;
+				
+				if(seconds < 10) {
+					formattedSeconds = "0" + seconds;
+				} else {
+					formattedSeconds = String(seconds);
+				}
+				
+//				if(minutes < 10) {
+//					formattedMinutes = "0" + minutes;
+//				} else {
+					formattedMinutes = String(minutes);
+//				}
+				
+				timeString = formattedMinutes + ":" + formattedSeconds;
+				return timeString;
+			}
+			
+			private function removePauseGraphic(event:ApplicationEvent):void {
+				pause.visible = false;
+			}
+			
+			private function showPauseGraphic(event:ApplicationEvent):void {
+				pause.visible = true;
 			}
 			
 			[Bindable]
 			public function get songListViewModel():SongListViewModel {
 				return _songListViewModel;
 			}
-
+			
 			public function set songListViewModel(value:SongListViewModel):void {
 				_songListViewModel = value;
 			}
-
-			private function removeScrollbars():void {
-				songList.scroller.setStyle("horizontalScrollPolicy","ScrollPolicy.OFF");
-				songList.focusEnabled = false;
-			}
-
+			
 		]]>
 	</fx:Script>
+	<s:Group id="controls"
+			 width="353" right="235" depth="1">
+		<mx:Image id="pause" visible="false"
+				  source="@Embed(source='assets/pause.png')"
+				  depth="3" horizontalCenter="0" />
+		<s:BorderContainer backgroundImage="@Embed(source='assets/controlBackground.png')"
+						   width="353" height="23" backgroundAlpha="1" top="20">
+			<s:layout>
+				<s:HorizontalLayout paddingLeft="9" gap="8"/>
+			</s:layout>
+			<s:Label id="currentTimeField" styleName="timeLabel"
+					 depth="3" paddingTop="4"
+					 verticalAlign="middle" height="23"
+					 text="0:00"/>
+			<mx:SWFLoader id="scrubBarLoader"
+						  complete="initScrubber()"
+						  source="assets/scrubBar.swf"
+						  depth="2"
+						  width="258" height="23"/>
+			<s:Label id="totalTimeField" styleName="timeLabel"
+					 depth="3" paddingTop="4"
+					 verticalAlign="middle" height="23"
+					 textAlign="right"
+					 text="0.00"/>
+		</s:BorderContainer>
+	</s:Group>
 	<s:List id="songList" maxWidth="1280" minWidth="596"
 			dataProvider="{songListViewModel.songList}"
 			itemRenderer="com.lnet.pandora.views.SongListItemRenderer"
 			borderAlpha="0" borderVisible="false"
 			contentBackgroundAlpha="0"
-			requireSelection="true"
+			requireSelection="true" depth="0"
 			creationComplete="removeScrollbars()"
 			right="117">
 		<s:layout>
