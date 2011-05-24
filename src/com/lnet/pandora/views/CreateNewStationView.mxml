@@ -28,7 +28,7 @@
 				 width="100%"
 				 text="{SEARCH_DEFAULT_TEXT}"
 				 focusAlpha="0"
-				 skinClass="com.lnet.pandora.views.CreateNewStationTextInputSkin"/>
+				 skinClass="com.lnet.pandora.skins.CreateNewStationTextInputSkin"/>
 	<s:Label text="*Begin typing to search"
 			 styleName="searchLabel"
 			 alpha.default=".5"

@@ -22,7 +22,9 @@
 	
 	<s:states>
 		<s:State name="normal"/>
+		<s:State name="normalWithPrompt"/>
 		<s:State name="disabled"/>
+		<s:State name="disabledWithPrompt"/>
 		<s:State name="selected"/>
 	</s:states>
 	

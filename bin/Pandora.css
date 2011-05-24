@@ -23,6 +23,10 @@
 	embed-as-cff: true;
 }
 
+mx|Alert {
+	color: #000000;
+}
+
 global {
 	content-background-color: #D9D9D9;
 	color: #ffffff;
@@ -80,6 +84,11 @@ s|BorderContainer {
 
 .timeLabel {
 	font-size: 14;
+	font-weight: bold;
+}
+
+.optionsText {
+	font-size: 24;
 	font-weight: bold;
 }
 

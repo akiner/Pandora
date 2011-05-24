@@ -14,6 +14,8 @@ package com.lnet.pandora.events {
 		public static const PAUSE_SONG:String = "pauseSong";
 		public static const LOGIN_ERROR:String = "loginError";
 		public static const SOUND_READY:String = "soundReady";
+		public static const SET_FOCUS_TO_RATING:String = "setFocusToRating";
+		public static const KEY_PRESS_IN_RATING:String = "keyPressInRating";
 		
 		public var data:Object;
 		public var optionalData:Object;

@@ -22,6 +22,7 @@ package com.lnet.pandora.utils {
 	
 	import mx.collections.ArrayCollection;
 	import mx.collections.IList;
+	import mx.controls.Alert;
 	import mx.rpc.events.FaultEvent;
 	
 	public class Controller {
@@ -82,7 +83,7 @@ package com.lnet.pandora.utils {
 			ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.LOGIN_ERROR));
 		}
 		
-		private function onUserLoginComplete( e:Event ):void {
+		private function onUserLoginComplete(e:Event):void {
 			userLoginRequest.removeEventListener(Event.COMPLETE, onUserLoginComplete);
 			ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.RESET_FOCUS));
 			getStationList();
@@ -155,8 +156,8 @@ package com.lnet.pandora.utils {
 			var playlist:GetPlaylistResponse = getPlaylistRequest.response;
 			var track:Track = null;
 			
-//			if(!playlist)
-//				return track;
+			if(!playlist)
+				return track;
 			
 			for( var i:uint = nextTrackIndex++ ; i < playlist.items.elements.length ; i++ ) {
 				if ( ( track = playlist.items.elements[ i ] as Track ) ) // TODO:: determine if there was an ad returned and display
@@ -166,7 +167,7 @@ package com.lnet.pandora.utils {
 			return track;
 		}
 		
-		private function playTrack( track:Track ):void {
+		private function playTrack(track:Track):void {
 			try	{
 				if ( soundChannelInstance )
 					soundChannelInstance.stop();
@@ -198,8 +199,6 @@ package com.lnet.pandora.utils {
 			}
 		}
 		
-		
-
 		private function soundLoaded(event:Event):void {
 			var currentTime:uint = Math.round(soundChannelInstance.position/1000);
 			var totalTime:uint = Math.round(soundInstance.length/1000);
@@ -216,6 +215,7 @@ package com.lnet.pandora.utils {
 			MonsterDebugger.trace("Controller::playTrack","Playing song::"+currentTrackPos);
 			if(currentTrackPos % 3 == 0) {
 				MonsterDebugger.trace("Controller::playTrack","Playing third song - need to grab new playlist");
+				getPlaylist(selectedStation);
 			} else {
 				playTrack(getNextTrack());
 			}
@@ -266,6 +266,7 @@ package com.lnet.pandora.utils {
 		
 		private function onMusicSearchFault(event:FaultEvent):void {
 			MonsterDebugger.trace("Controller::onMusicSearchFault","Fault:: " + String( musicSearchRequest.fault));
+			Alert.show("An unexpected error has occurred while attempting to create your station. Please try again.","ERROR");
 		}
 		
 		private function onCreateStationComplete(event:Event):void {
@@ -276,6 +277,7 @@ package com.lnet.pandora.utils {
 		
 		private function onCreateStationFault(event:FaultEvent):void {
 			MonsterDebugger.trace("Controller::onCreateStationFault","Fault:: " + String( createNewStationRequest.fault));
+			Alert.show("An unexpected error has occurred while attempting to create your station. Please try again.","ERROR");
 		}
 		
 		public function get currentTrackPos():int {

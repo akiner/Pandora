@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+
+ADOBE SYSTEMS INCORPORATED
+Copyright 2008 Adobe Systems Incorporated
+All Rights Reserved.
+
+NOTICE: Adobe permits you to use, modify, and distribute this file
+in accordance with the terms of the license agreement accompanying it.
+
+-->
+
+<s:Skin 
+    xmlns:fx="http://ns.adobe.com/mxml/2009" 
+    xmlns:s="library://ns.adobe.com/flex/spark"
+    xmlns:fb="http://ns.adobe.com/flashbuilder/2009"     
+    alpha.disabled="0.5" xmlns:mx="library://ns.adobe.com/flex/mx">
+    
+    <fx:Metadata>
+        <![CDATA[ 
+        [HostComponent("spark.components.TabBar")]
+        ]]>
+    </fx:Metadata> 
+    
+    <fx:Script  fb:purpose="styling" >
+        <![CDATA[ 
+
+        import mx.core.UIComponent;
+			
+			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {  
+				super.updateDisplayList(unscaledWidth, unscaledHeight);  
+				
+				var image:Class = Class((this as Object).hostComponent.data.imageIcon);  
+				var label:String = (this as Object).hostComponent.data.label;  
+				
+				labelText.text = label;  
+				icon.source = image;  
+				
+				this.width = this.hostComponent.width;  
+				this.minWidth = this.hostComponent.width;  
+			}            
+            
+        ]]>            
+    </fx:Script>
+    
+	<s:states>  
+		<s:State name= "up" />  
+		<s:State name= "over" stateGroups= "overStates" />  
+		<s:State name= "down" stateGroups= "downStates" />  
+		<s:State name= "disabled" stateGroups= "disabledStates" />  
+		<s:State name= "upAndSelected" stateGroups= "selectedStates, selectedUpStates" />  
+		<s:State name= "overAndSelected" stateGroups= "overStates, selectedStates" />  
+		<s:State name= "downAndSelected" stateGroups= "downStates, selectedStates" />  
+		<s:State name= "disabledAndSelected" stateGroups= "selectedUpStates, disabledStates, selectedStates" />  
+	</s:states>  
+    
+    <s:DataGroup id="dataGroup" width="100%" height="100%">
+        <s:layout>
+            <s:ButtonBarHorizontalLayout gap="-1"/>
+        </s:layout>
+        <s:itemRenderer>
+            <fx:Component>
+				<s:BitmapImage id= "icon" resizeMode= "scale" horizontalCenter="0" />
+            </fx:Component>
+			<fx:Component>
+				<s:Label id="labelText"/>
+			</fx:Component>
+        </s:itemRenderer>
+    </s:DataGroup>
+    
+</s:Skin>

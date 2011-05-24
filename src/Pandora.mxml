@@ -21,14 +21,18 @@
 			import com.lnet.pandora.events.ApplicationEvent;
 			import com.lnet.pandora.events.ApplicationEventBus;
 			import com.lnet.pandora.utils.FocusHandler;
+			import com.lnet.pandora.utils.OptionViewFocusHandler;
 			import com.lnet.pandora.viewmodels.SongListViewModel;
 			import com.lnet.pandora.viewmodels.StationListViewModel;
+			
+			import mx.controls.Alert;
 			
 			private var request:URLRequest;
 			private var loader:URLLoader;
 			private var soundInstance:Sound;
 			private var soundChannelInstance:SoundChannel;
 			private var focusHandler:FocusHandler;
+			private var optionsFocusHandler:FocusHandler;
 			private var songListViewModel:SongListViewModel;
 			private var stationListViewModel:StationListViewModel;
 			
@@ -51,6 +55,7 @@
 				focusHandler = new FocusHandler();
 				focusHandler.createNewStationView = createNewStation;
 				focusHandler.loginView = login;
+				focusHandler.optionsPopupView = optionsPopup;
 				focusHandler.songListView = songList;
 				focusHandler.stationListView = stationList;
 			}
@@ -79,6 +84,7 @@
 		<s:State name="default"/>
 		<s:State name="login"/>
 		<s:State name="createStation"/>
+		<s:State name="viewOptions"/>
 	</s:states>
 	
 	<s:BorderContainer id="backgroundContainer"
@@ -90,6 +96,11 @@
 		<mx:Image id="logo" source="@Embed(source='assets/logo.png')"
 				  left="87" top="36"
 				  excludeFrom="login"/>
+		<views:OptionsPopupView id="optionsPopup"
+							visible="false"
+							visible.viewOptions="true"
+							width="535" height="363"
+							top="209" left="47" depth="4"/>
 		<views:StationListView id="stationList" depth="0"
 							   width="559" height="720"
 							   top="0" left="580"

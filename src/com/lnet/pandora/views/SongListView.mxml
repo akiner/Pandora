@@ -19,9 +19,10 @@
 			private var soundInstance:Sound;
 			private var soundChannelInstance:SoundChannel;
 			private var soundPosition:Number;
-			private var resetTimer:Timer;
 			private var playheadTimer:Timer;
 			private var scrubBarTimer:Timer;
+			private var currentTime:uint;
+			private var totalTime:uint;
 			
 			[Bindable]
 			private var currentTimeLabel:String;
@@ -34,25 +35,34 @@
 					false, 0, true);
 				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.PAUSE_SONG, showPauseGraphic, 
 					false, 0, true);
-				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.SOUND_READY, setupScrubber,
+				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.SOUND_READY, initSoundInstances,
 					false, 0, true)
 			}
 			
 			private function initTimers():void {
-				resetTimer = new Timer(250, 1);
 				playheadTimer = new Timer(1000);
 				scrubBarTimer = new Timer(250);
+				playheadTimer.addEventListener(TimerEvent.TIMER, updatePlayhead, false, 0, true);
+				scrubBarTimer.addEventListener(TimerEvent.TIMER, updateScrubber, false, 0, true);
 			}
 			
-			private function setupScrubber(event:ApplicationEvent):void {
-				var thisSoundInstance:Sound = event.data as Sound;
-				var thisSoundChannelInstance:SoundChannel = event.optionalData as SoundChannel;
+			private function initSoundInstances(event:ApplicationEvent):void {
+				soundInstance = event.data as Sound;
+				soundChannelInstance = event.optionalData as SoundChannel;
 				
-				var currentTime:uint = Math.round(thisSoundChannelInstance.position/1000);
-				var totalTime:String = formatTime(thisSoundInstance.length/1000);
+				currentTime =  Math.round(soundChannelInstance.position/1000);
+				totalTime = soundInstance.length/1000;
 				
-				totalTimeField.text = totalTime;
+				totalTimeField.text = formatTime(totalTime);
+				
+				startTimers();
 			}
+
+			private function startTimers():void {
+				playheadTimer.start();
+				scrubBarTimer.start();
+			}
+
 			
 			private function updateSelectedIndex(event:ApplicationEvent):void {
 				songList.selectedItem = event.data;
@@ -67,12 +77,27 @@
 			
 			private function initScrubber():void {
 				scrubBarMC = scrubBarLoader.content as MovieClip;
-				//				resetTimeFields();
+			}
+			
+			private function updatePlayhead(event:TimerEvent):void {
+				currentTime =  Math.round(soundChannelInstance.position/1000);
+				if(currentTime < totalTime)
+					currentTimeField.text = formatTime(currentTime);	
+			}
+			
+			private function updateScrubber(event:TimerEvent):void {
+				var pctPlayed:Number = Math.round((currentTime / totalTime) * 100);
+				if(pctPlayed > 0){
+					scrubBarMC.gotoAndStop(pctPlayed*5);
+				}
 			}
 			
 			private function resetTimeFields():void {
 				currentTimeField.text = "0:00";
 				totalTimeField.text = "0:00";
+				playheadTimer.stop();
+				scrubBarTimer.stop();
+				scrubBarMC.gotoAndStop(0);
 			}
 			
 			private function formatTime(time:uint):String {

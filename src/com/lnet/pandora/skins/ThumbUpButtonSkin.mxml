@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+
+    ADOBE SYSTEMS INCORPORATED
+    Copyright 2008 Adobe Systems Incorporated
+    All Rights Reserved.
+
+    NOTICE: Adobe permits you to use, modify, and distribute this file
+    in accordance with the terms of the license agreement accompanying it.
+
+-->
+
+<s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark" 
+             xmlns:fb="http://ns.adobe.com/flashbuilder/2009" minWidth="21" minHeight="21" alpha.disabled="0.5" xmlns:mx="library://ns.adobe.com/flex/mx">
+    
+    <fx:Metadata>
+        <![CDATA[ 
+        [HostComponent("spark.components.Button")]
+        ]]>
+    </fx:Metadata>
+    
+    <!-- states -->
+    <s:states>
+        <s:State name="up" />
+        <s:State name="over" />
+        <s:State name="down" />
+        <s:State name="disabled" />
+        <s:State name="selected" />
+    </s:states>
+    
+	<mx:Image source.up="@Embed(source='assets/thumbUp.png')"
+			  source.over="@Embed(source='assets/thumbUp_on.png')"
+			  source.down="@Embed(source='assets/thumbUp_on.png')"
+			  source.selected="@Embed(source='assets/thumbUp_check.png')"
+			  source.disabled="@Embed(source='assets/thumbUp.png')" />
+</s:SparkSkin>

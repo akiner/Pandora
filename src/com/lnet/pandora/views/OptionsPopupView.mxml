@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:views="com.lnet.pandora.views.*"
+		 width="535" height="363"
+		 backgroundImage="@Embed(source='assets/options_popup_background.png')" backgroundAlpha="1">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:states>
+		<s:State name="rating"/>
+		<s:State name="station"/>
+		<s:State name="bookmark"/>
+		<s:State name="info"/>
+	</s:states>
+	<s:HGroup gap="10" paddingLeft="20" paddingRight="20" horizontalCenter="0">
+		<s:List id="hiddenOptionsList" depth="0" visible="false" width="0" height="0" />
+		<mx:Image id="ratingButton"
+				  source.rating="@Embed(source='assets/rating_on.png')"
+				  source="@Embed(source='assets/rating_off.png')"/>
+		<mx:Image id="stationButton"
+				  source.station="@Embed(source='assets/station_on.png')"
+				  source="@Embed(source='assets/station_off.png')"/>
+		<mx:Image id="bookmarkButton"
+				  source.bookmark="@Embed(source='assets/bookmark_on.png')"
+				  source="@Embed(source='assets/bookmark_off.png')"/>
+		<mx:Image id="infoButton"
+				  source.info="@Embed(source='assets/info_on.png')"
+				  source="@Embed(source='assets/info_off.png')"/>
+	</s:HGroup>
+	<s:Group id="detail" depth="1"
+			 width="515" height="265">
+		<views:RatingView id="ratingView" visible="false" visible.rating="true"/>
+	</s:Group>
+</s:BorderContainer>

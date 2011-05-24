@@ -4,6 +4,7 @@ package com.lnet.pandora.utils {
 	import com.lnet.pandora.events.ApplicationEventBus;
 	import com.lnet.pandora.views.CreateNewStationView;
 	import com.lnet.pandora.views.LoginView;
+	import com.lnet.pandora.views.OptionsPopupView;
 	import com.lnet.pandora.views.SongListView;
 	import com.lnet.pandora.views.StationListView;
 	
@@ -19,9 +20,12 @@ package com.lnet.pandora.utils {
 		private var _loginView:LoginView;
 		private var _songListView:SongListView;
 		private var _stationListView:StationListView;
+		private var _optionsPopupView:OptionsPopupView;
 		private var isTyping:Boolean;
 		private var preSearchState:String;
 		private var controller:Controller;
+		private var optionViewsArray:Array;
+		private var optionViewIndex:int = 0;
 		
 		public static const SEARCH_DEFAULT_TEXT:String = "Begin Typing to Search";
 		
@@ -29,9 +33,14 @@ package com.lnet.pandora.utils {
 			MonsterDebugger.trace("FocusHandler::FocusHandler","Created!");
 			isTyping = false;
 			controller = new Controller();
+			addStageKeyListener();
+			optionViewsArray = new Array("rating", "station", "bookmark", "info");
+		}
+
+		private function addStageKeyListener():void {
 			FlexGlobals.topLevelApplication.stage.addEventListener(KeyboardEvent.KEY_UP, handleKeyPress, false, 0, true);
 		}
-		
+
 		public function handleKeyPress(event:KeyboardEvent):void {
 			MonsterDebugger.trace("FocusHandler::handleKeyPress","Handling Key Press in::"+FlexGlobals.topLevelApplication.currentState);
 			if (userIsTyping(event)) {
@@ -52,6 +61,9 @@ package com.lnet.pandora.utils {
 					case "createStation":
 						handleKeyPressInCreateStationView();
 						break;
+					case "viewOptions":
+						handleKeyPressInOptionsView();
+						break;
 					case "default":
 						handleKeyPressInDefaultView();
 						break;
@@ -65,12 +77,13 @@ package com.lnet.pandora.utils {
 		private function handleKeyPressInDefaultView():void {
 			switch(currentKey) {
 				case "select":
-//					controller.setSelectedStation(stationListView.stationList.selectedItem);
+					FlexGlobals.topLevelApplication.currentState = "viewOptions";
+					FlexGlobals.topLevelApplication.focusManager.setFocus(optionsPopupView.hiddenOptionsList);
+					ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.SET_FOCUS_TO_RATING));
 					break;
 				case "rightArrow":
+				case "skipForward":
 					controller.playNextSong();
-//					controller.getNextTrack();
-					MonsterDebugger.trace("FocusHandler::handleKeyPressInDefaultView","Arrowed right");
 					break;
 				case "play":
 					ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.PLAY_SONG));
@@ -78,10 +91,78 @@ package com.lnet.pandora.utils {
 				case "pause":
 					ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.PAUSE_SONG));
 					break;
+				case "back":
+					// Pass off to exit service
+					break;
 				default:
 					break;
 			}
 		}
+		
+		private function handleKeyPressInOptionsView():void {
+			switch(currentKey) {
+				case "select":
+				case "downArrow":
+				case "upArrow":
+					switch(optionsPopupView.currentState) {
+						case "rating":
+							MonsterDebugger.trace("FocusHandler::handleKeyPressInOptionsView","Rating View");
+							optionViewIndex = 0;
+							ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.KEY_PRESS_IN_RATING, currentKey));
+							break;
+						case "station":
+							MonsterDebugger.trace("FocusHandler::handleKeyPressInOptionsView","Station View");
+							optionViewIndex = 1;
+							break;
+						case "bookmark":
+							MonsterDebugger.trace("FocusHandler::handleKeyPressInOptionsView","Bookmark View");
+							optionViewIndex = 2;
+							break;
+						case "info":
+							MonsterDebugger.trace("FocusHandler::handleKeyPressInOptionsView","Info View");
+							optionViewIndex = 3;
+							break;
+						default:
+							break;
+					}
+					break;
+				case "back":
+					resetToDefaultView();
+					break;
+				case "rightArrow":
+					navigationOptionViewRight();
+					break;
+				case "leftArrow":
+					navigationOptionViewLeft();
+					break;
+				default:
+					break;
+			}
+		}
+
+		private function navigationOptionViewLeft():void {
+			if(optionViewIndex > 0) {
+				optionViewIndex--;
+			} else {
+				optionViewIndex = optionViewsArray.length - 1;
+			}
+			optionsPopupView.currentState = optionViewsArray[optionViewIndex];
+		}
+
+		private function navigationOptionViewRight():void {
+			if(optionViewIndex < optionViewsArray.length - 1){
+				optionViewIndex++;
+			} else {
+				optionViewIndex = 0;
+			}
+			optionsPopupView.currentState = optionViewsArray[optionViewIndex];
+		}
+
+
+		private function resetToDefaultView():void {
+			ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.RESET_FOCUS));
+		}
+
 		
 		private function handleKeyPressInLoginView():void {
 			switch(currentKey) {
@@ -107,23 +188,22 @@ package com.lnet.pandora.utils {
 			switch(currentKey) {
 				case "select":
 					controller.createNewStation(createNewStationView.stationName.text);
-					returnToDefaultState();
+					exitCreateStationView();
 					break;
 				case "back":
-					returnToDefaultState();
+					exitCreateStationView();
 					break;
 				default:
 					break;
 			}
 		}
 		
-		private function returnToDefaultState():void {
+		private function exitCreateStationView():void {
 			isTyping = false;
 			createNewStationView.stationName.text = SEARCH_DEFAULT_TEXT;
 			createNewStationView.currentState = "default";
-			ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.RESET_FOCUS));
+			resetToDefaultView();
 		}
-		
 		
 		private function userIsTyping(event:KeyboardEvent):Boolean {
 			if(KeyHandler.isAlphaKey(event.keyCode) || KeyHandler.isNumericKey(event.keyCode)) {
@@ -174,6 +254,13 @@ package com.lnet.pandora.utils {
 		public function set stationListView(value:StationListView):void {
 			_stationListView = value;
 		}
-		
+
+		public function get optionsPopupView():OptionsPopupView {
+			return _optionsPopupView;
+		}
+
+		public function set optionsPopupView(value:OptionsPopupView):void {
+			_optionsPopupView = value;
+		}
 	}
 }
