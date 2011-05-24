@@ -7,7 +7,9 @@ package com.lnet.pandora.utils {
 	import com.lnet.pandora.views.OptionsPopupView;
 	import com.lnet.pandora.views.SongListView;
 	import com.lnet.pandora.views.StationListView;
+	import com.lnet.utils.InteractiveSessionManager;
 	
+	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	
 	import mx.core.FlexGlobals;
@@ -93,6 +95,7 @@ package com.lnet.pandora.utils {
 					break;
 				case "back":
 					// Pass off to exit service
+					FlexGlobals.topLevelApplication.dispatchEvent(new Event(InteractiveSessionManager.SERVICE_COMPLETE));
 					break;
 				default:
 					break;

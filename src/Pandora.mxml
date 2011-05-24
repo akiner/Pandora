@@ -24,6 +24,7 @@
 			import com.lnet.pandora.utils.OptionViewFocusHandler;
 			import com.lnet.pandora.viewmodels.SongListViewModel;
 			import com.lnet.pandora.viewmodels.StationListViewModel;
+			import com.lnet.utils.InteractiveSessionManager;
 			
 			import mx.controls.Alert;
 			
@@ -38,6 +39,7 @@
 			
 			public function init():void {
 				MonsterDebugger.initialize(this);
+				InteractiveSessionManager.init();
 				initLogin();
 				initFocus();
 				initViews();
@@ -96,6 +98,11 @@
 		<mx:Image id="logo" source="@Embed(source='assets/logo.png')"
 				  left="87" top="36"
 				  excludeFrom="login"/>
+		<s:BorderContainer width="1280" height="720"
+						   backgroundColor="0x000000"
+						   backgroundAlpha=".4" depth="2"
+						   visible="false"
+						   visible.viewOptions="true"/>
 		<views:OptionsPopupView id="optionsPopup"
 							visible="false"
 							visible.viewOptions="true"
