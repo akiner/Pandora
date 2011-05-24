@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 width="515" height="265" borderAlpha="1" top="67" left="7"
+		 creationComplete="init()">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import com.demonsters.debugger.MonsterDebugger;
+			import com.lnet.pandora.events.ApplicationEvent;
+			import com.lnet.pandora.events.ApplicationEventBus;
+			
+			private var key:String;
+			
+			private function init():void {
+				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.KEY_PRESS_IN_INFO, handleKeyPress);
+			}
+
+			private function handleKeyPress(event:ApplicationEvent):void {
+				key = event.data as String;
+				switch(currentState){
+					case "bio":
+						handleKeyPressInBioView();
+						break;
+					case "why":
+						handleKeyPressInWhyView();
+						break;
+					default:
+						break;
+				}
+			}
+
+			private function handleKeyPressInBioView():void {
+				switch(key){
+					case "downArrow":
+						currentState = "why";
+						break;
+					case "select":
+						break;
+					default:
+						MonsterDebugger.trace("StationView::handleKeyPress","ERROR:: KEY NOT HANDLED");
+						break;
+				}
+			}
+			
+			private function handleKeyPressInWhyView():void {
+				switch(key){
+					case "upArrow":
+						currentState = "bio";
+						break;
+					case "select":
+						break;
+					default:
+						MonsterDebugger.trace("StationView::handleKeyPress","ERROR:: KEY NOT HANDLED");
+						break;
+				}
+			}
+
+		]]>
+	</fx:Script>
+	<s:states>
+		<s:State name="bio"/>
+		<s:State name="why"/>
+	</s:states>
+	<s:layout>
+		<s:VerticalLayout paddingTop="37" horizontalAlign="center" verticalAlign="middle" gap="10"/>
+	</s:layout>
+	<s:Label text="Artist Bio"
+			 styleName="whiteLabelLg" alpha.why=".2">
+		<s:filters>
+			<s:GlowFilter includeIn="bio"
+						  color="#2f97ff"
+						  alpha="0.5"
+						  blurX="11" blurY="11"
+						  inner="false"
+						  strength="6"
+						  quality="1"/>
+		</s:filters>
+	</s:Label>	
+	<mx:Image source="@Embed(source='assets/option_divider.png')"/>
+	<s:Label text="Why Was This Song Selected?"
+			 styleName="whiteLabelLg" alpha.bio=".2">
+		<s:filters>
+			<s:GlowFilter includeIn="why"
+						  color="#2f97ff"
+						  alpha="0.5"
+						  blurX="11" blurY="11"
+						  inner="false"
+						  strength="6"
+						  quality="1"/>
+		</s:filters>
+	</s:Label>
+</s:BorderContainer>

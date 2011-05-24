@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 width="515" height="265" borderAlpha="1" top="67" left="7"
+		 creationComplete="init()">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import com.demonsters.debugger.MonsterDebugger;
+			import com.lnet.pandora.events.ApplicationEvent;
+			import com.lnet.pandora.events.ApplicationEventBus;
+			
+			private var key:String;
+			
+			private function init():void {
+				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.KEY_PRESS_IN_BOOKMARK, handleKeyPress);
+			}
+
+			private function handleKeyPress(event:ApplicationEvent):void {
+				key = event.data as String;
+				switch(currentState){
+					case "artist":
+						handleKeyPressInArtistView();
+						break;
+					case "song":
+						handleKeyPressInSongView();
+						break;
+					default:
+						break;
+				}
+			}
+
+			private function handleKeyPressInArtistView():void {
+				switch(key){
+					case "downArrow":
+						currentState = "song";
+						break;
+					case "select":
+						break;
+					default:
+						MonsterDebugger.trace("StationView::handleKeyPress","ERROR:: KEY NOT HANDLED");
+						break;
+				}
+			}
+			
+			private function handleKeyPressInSongView():void {
+				switch(key){
+					case "upArrow":
+						currentState = "artist";
+						break;
+					case "select":
+						break;
+					default:
+						MonsterDebugger.trace("StationView::handleKeyPress","ERROR:: KEY NOT HANDLED");
+						break;
+				}
+			}
+
+		]]>
+	</fx:Script>
+	<s:states>
+		<s:State name="artist"/>
+		<s:State name="song"/>
+	</s:states>
+	<s:layout>
+		<s:VerticalLayout paddingTop="37" horizontalAlign="center" verticalAlign="middle" gap="10"/>
+	</s:layout>
+	<s:Label text="Bookmark This Artist"
+			 styleName="whiteLabelLg" alpha.song=".2">
+		<s:filters>
+			<s:GlowFilter includeIn="artist"
+						  color="#2f97ff"
+						  alpha="0.5"
+						  blurX="11" blurY="11"
+						  inner="false"
+						  strength="6"
+						  quality="1"/>
+		</s:filters>
+	</s:Label>	
+	<mx:Image source="@Embed(source='assets/option_divider.png')"/>
+	<s:Label text="Bookmark This Song"
+			 styleName="whiteLabelLg" alpha.artist=".2">
+		<s:filters>
+			<s:GlowFilter includeIn="song"
+						  color="#2f97ff"
+						  alpha="0.5"
+						  blurX="11" blurY="11"
+						  inner="false"
+						  strength="6"
+						  quality="1"/>
+		</s:filters>
+	</s:Label>
+</s:BorderContainer>

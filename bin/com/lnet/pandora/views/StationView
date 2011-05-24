@@ -82,11 +82,9 @@
 			  source.thumbDownSelected="@Embed(source='assets/thumbUp.png')"
 			  source.thumbUpOn="@Embed(source='assets/thumbUp_on.png')"
 			  source.thumbUpSelected="@Embed(source='assets/thumbUp_check.png')"/>
-	<s:Label text="I like this track"
-			 styleName="whiteLabelLg" alpha=".2"
-			 includeIn="thumbDownOn,thumbDownSelected" />
+	<s:Label id="thumbUpLabel" includeIn="thumbDownOn,thumbDownSelected" text="I like this track" styleName="optionsText" alpha=".2"/>
 	<mx:Image source="@Embed(source='assets/option_divider.png')"/>
-	<s:Label id="thumbDownLabel" includeIn="thumbUpOn,thumbUpSelected" text="I don't like this track" styleName="whiteLabelLg" alpha=".2"/>
+	<s:Label id="thumbDownLabel" includeIn="thumbUpOn,thumbUpSelected" text="I don't like this track" styleName="optionsText" alpha=".2"/>
 	<mx:Image source.thumbUpOn="@Embed(source='assets/thumbDown.png')"
 			  source.thumbUpSelected="@Embed(source='assets/thumbDown.png')"
 			  source.thumbDownOn="@Embed(source='assets/thumbDown_on.png')"

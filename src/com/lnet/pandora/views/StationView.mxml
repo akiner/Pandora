@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 width="515" height="265" borderAlpha="1" top="67" left="7"
+		 creationComplete="init()">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import com.demonsters.debugger.MonsterDebugger;
+			import com.lnet.pandora.events.ApplicationEvent;
+			import com.lnet.pandora.events.ApplicationEventBus;
+			
+			private var key:String;
+			
+			private function init():void {
+				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.KEY_PRESS_IN_STATION, handleKeyPress);
+			}
+
+			private function handleKeyPress(event:ApplicationEvent):void {
+				key = event.data as String;
+				switch(currentState){
+					case "rename":
+						handleKeyPressInRenameView();
+						break;
+					case "delete":
+						handleKeyPressInThumbDeleteView();
+						break;
+					case "add":
+						handleKeyPressInThumbAddView();
+						break;
+					default:
+						break;
+				}
+			}
+			
+			private function handleKeyPressInRenameView():void {
+				switch(key){
+					case "downArrow":
+						currentState = "delete";
+						break;
+					case "select":
+						break;
+					default:
+						MonsterDebugger.trace("StationView::handleKeyPress","ERROR:: KEY NOT HANDLED");
+						break;
+				}
+			}
+
+			private function handleKeyPressInThumbDeleteView():void {
+				switch(key){
+					case "upArrow":
+						currentState = "rename";
+						break;
+					case "downArrow":
+						currentState = "add";
+						break;
+					case "select":
+						break;
+					default:
+						MonsterDebugger.trace("StationView::handleKeyPress","ERROR:: KEY NOT HANDLED");
+						break;
+				}
+			}
+			
+			private function handleKeyPressInThumbAddView():void {
+				switch(key){
+					case "upArrow":
+						currentState = "delete";
+						break;
+					case "select":
+						break;
+					default:
+						MonsterDebugger.trace("StationView::handleKeyPress","ERROR:: KEY NOT HANDLED");
+						break;
+				}
+			}
+
+		]]>
+	</fx:Script>
+	<s:states>
+		<s:State name="rename"/>
+		<s:State name="delete"/>
+		<s:State name="add"/>
+	</s:states>
+	<s:layout>
+		<s:VerticalLayout paddingTop="37" horizontalAlign="center" verticalAlign="middle" gap="10"/>
+	</s:layout>
+	<s:Label text="Rename This Station"
+			 styleName="whiteLabelLg" alpha.delete=".2" alpha.add=".2">
+		<s:filters>
+			<s:GlowFilter includeIn="rename"
+						  color="#2f97ff"
+						  alpha="0.5"
+						  blurX="11" blurY="11"
+						  inner="false"
+						  strength="6"
+						  quality="1"/>
+		</s:filters>
+	</s:Label>	
+	<mx:Image top="-10" source="@Embed(source='assets/option_divider.png')" includeIn="rename"/>
+	<s:Label text="Delete This Station"
+			 styleName="whiteLabelLg" alpha.rename=".2" alpha.add=".2">
+		<s:filters>
+			<s:GlowFilter includeIn="delete"
+						  color="#2f97ff"
+						  alpha="0.5"
+						  blurX="11" blurY="11"
+						  inner="false"
+						  strength="6"
+						  quality="1"/>
+		</s:filters>
+	</s:Label>
+	<mx:Image source="@Embed(source='assets/option_divider.png')" includeIn="delete"/>
+	<s:Label text="Add Variety to This Station"
+			 styleName="whiteLabelLg" alpha.rename=".2" alpha.delete=".2">
+		<s:filters>
+			<s:GlowFilter includeIn="add"
+						  color="#2f97ff"
+						  alpha="0.5"
+						  blurX="11" blurY="11"
+						  inner="false"
+						  strength="6"
+						  quality="1"/>
+		</s:filters>
+	</s:Label>
+	<mx:Image source="@Embed(source='assets/option_divider.png')" includeIn="add"/>
+</s:BorderContainer>

@@ -32,5 +32,8 @@
 	<s:Group id="detail" depth="1"
 			 width="515" height="265">
 		<views:RatingView id="ratingView" visible="false" visible.rating="true"/>
+		<views:StationView id="stationView" visible="false" visible.station="true"/>
+		<views:BookmarkView id="bookmarkView" visible="false" visible.bookmark="true"/>
+		<views:InfoView id="infoView" visible="false" visible.info="true"/>
 	</s:Group>
 </s:BorderContainer>

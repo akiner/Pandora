@@ -16,6 +16,9 @@ package com.lnet.pandora.events {
 		public static const SOUND_READY:String = "soundReady";
 		public static const SET_FOCUS_TO_RATING:String = "setFocusToRating";
 		public static const KEY_PRESS_IN_RATING:String = "keyPressInRating";
+		public static const KEY_PRESS_IN_STATION:String = "keyPressInStation";
+		public static const KEY_PRESS_IN_BOOKMARK:String = "keyPressInBookmark";
+		public static const KEY_PRESS_IN_INFO:String = "keyPressInInfo";
 		
 		public var data:Object;
 		public var optionalData:Object;

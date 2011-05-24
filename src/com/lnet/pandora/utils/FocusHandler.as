@@ -113,12 +113,15 @@ package com.lnet.pandora.utils {
 						case "station":
 							MonsterDebugger.trace("FocusHandler::handleKeyPressInOptionsView","Station View");
 							optionViewIndex = 1;
+							ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.KEY_PRESS_IN_STATION, currentKey));
 							break;
 						case "bookmark":
 							MonsterDebugger.trace("FocusHandler::handleKeyPressInOptionsView","Bookmark View");
+							ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.KEY_PRESS_IN_BOOKMARK, currentKey));
 							optionViewIndex = 2;
 							break;
 						case "info":
+							ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.KEY_PRESS_IN_INFO, currentKey));
 							MonsterDebugger.trace("FocusHandler::handleKeyPressInOptionsView","Info View");
 							optionViewIndex = 3;
 							break;
