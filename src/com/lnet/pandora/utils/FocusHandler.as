@@ -95,7 +95,8 @@ package com.lnet.pandora.utils {
 					controller.playNextSong();
 					break;
 				case "play":
-					ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.PLAY_SONG));
+					if(!FlexGlobals.topLevelApplication.isPlaying)
+						ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.PLAY_SONG));
 					break;
 				case "pause":
 					ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.PAUSE_SONG));

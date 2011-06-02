@@ -39,6 +39,7 @@
 			private var stationListViewModel:StationListViewModel;
 			private var errorViewModel:ErrorViewModel;
 			public var preErrorState:String;
+			public var isPlaying:Boolean = false;
 			
 			public function init():void {
 				MonsterDebugger.initialize(this);

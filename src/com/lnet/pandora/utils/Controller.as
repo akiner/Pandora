@@ -32,6 +32,7 @@ package com.lnet.pandora.utils {
 	
 	import mx.collections.ArrayCollection;
 	import mx.collections.IList;
+	import mx.core.FlexGlobals;
 	import mx.rpc.events.FaultEvent;
 	
 	public class Controller {
@@ -290,12 +291,14 @@ package com.lnet.pandora.utils {
 		private function playSong(event:ApplicationEvent):void {
 			MonsterDebugger.trace("Controller::playSong","Play song");
 			soundChannelInstance = soundInstance.play(soundPosition);
+			FlexGlobals.topLevelApplication.isPlaying = true;
 		}
 		
 		private function pauseSong(event:ApplicationEvent):void {
 			MonsterDebugger.trace("Controller::pauseSong","Pause song");
 			soundPosition = soundChannelInstance.position;
 			soundChannelInstance.stop();
+			FlexGlobals.topLevelApplication.isPlaying = false;
 		}
 		
 		public function loginUser(u:String,p:String):void {
@@ -443,6 +446,7 @@ package com.lnet.pandora.utils {
 			try {
 				soundInstance.load(req, context);
 				soundChannelInstance = soundInstance.play();
+				FlexGlobals.topLevelApplication.isPlaying = true;
 				soundChannelInstance.addEventListener(Event.SOUND_COMPLETE, playNextSong);
 				ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.SONG_LOADED, track));
 			}
