@@ -4,10 +4,24 @@
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
 		 xmlns:views="com.lnet.pandora.views.*"
 		 width="535" height="363"
-		 backgroundImage="@Embed(source='assets/options_popup_background.png')" backgroundAlpha="1">
+		 backgroundImage="@Embed(source='assets/options_popup_background.png')" backgroundAlpha="1"
+		 creationComplete="init()">
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import com.lnet.pandora.events.ApplicationEvent;
+			import com.lnet.pandora.events.ApplicationEventBus;
+			private function init():void {
+				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.INIT_OPTIONS_MENU, setInitialFocus);
+			}
+
+			private function setInitialFocus(event:ApplicationEvent):void {
+				currentState = "rating";
+			}
+		]]>
+	</fx:Script>
 	<s:states>
 		<s:State name="rating"/>
 		<s:State name="station"/>

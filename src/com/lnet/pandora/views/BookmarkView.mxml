@@ -16,7 +16,12 @@
 			private var key:String;
 			
 			private function init():void {
+				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.INIT_OPTIONS_MENU, setInitialFocus);
 				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.KEY_PRESS_IN_BOOKMARK, handleKeyPress);
+			}
+
+			private function setInitialFocus(event:ApplicationEvent):void {
+				currentState = "artist";
 			}
 
 			private function handleKeyPress(event:ApplicationEvent):void {
@@ -39,6 +44,7 @@
 						currentState = "song";
 						break;
 					case "select":
+						ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.BOOKMARK_ARTIST));
 						break;
 					default:
 						MonsterDebugger.trace("StationView::handleKeyPress","ERROR:: KEY NOT HANDLED");
@@ -52,6 +58,7 @@
 						currentState = "artist";
 						break;
 					case "select":
+						ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.BOOKMARK_SONG));
 						break;
 					default:
 						MonsterDebugger.trace("StationView::handleKeyPress","ERROR:: KEY NOT HANDLED");
@@ -80,7 +87,7 @@
 						  quality="1"/>
 		</s:filters>
 	</s:Label>	
-	<mx:Image source="@Embed(source='assets/option_divider.png')"/>
+	<mx:Image source="@Embed(source='assets/option_divider.png')" includeIn="artist"/>
 	<s:Label text="Bookmark This Song"
 			 styleName="whiteLabelLg" alpha.artist=".2">
 		<s:filters>
@@ -93,4 +100,5 @@
 						  quality="1"/>
 		</s:filters>
 	</s:Label>
+	<mx:Image source="@Embed(source='assets/option_divider.png')" includeIn="song"/>
 </s:BorderContainer>

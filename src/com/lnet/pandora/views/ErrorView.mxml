@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   width="617" height="271"
+				   backgroundImage="@Embed(source='assets/error_background.png')" backgroundAlpha="1">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import com.lnet.pandora.events.ApplicationEvent;
+			import com.lnet.pandora.events.ApplicationEventBus;
+			import com.lnet.pandora.viewmodels.ErrorViewModel;
+			
+			private var _errorViewModel:ErrorViewModel;
+			
+			[Bindable]
+			public function get errorViewModel():ErrorViewModel	{
+				return _errorViewModel;
+			}
+
+			public function set errorViewModel(value:ErrorViewModel):void {
+				_errorViewModel = value;
+			}
+
+		]]>
+	</fx:Script>
+	<s:Label id="errorText"
+			 text="{errorViewModel.errorText}"
+			 styleName="whiteLabelMed"
+			 width="450" textAlign="center"
+			 paddingTop="27" horizontalCenter="0"/>
+</s:BorderContainer>

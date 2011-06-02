@@ -4,7 +4,7 @@
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
 		 width="301" height="93"
 		 backgroundAlpha=".1"
-		 cornerRadius="20">
+		 cornerRadius="20" xmlns:components="org.flashcommander.components.*" creationComplete="init()">
 	<s:layout>
 		<s:VerticalLayout paddingBottom="10" paddingTop="10"
 						  paddingLeft="15" paddingRight="10"/>
@@ -14,7 +14,13 @@
 	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
+			import com.demonsters.debugger.MonsterDebugger;
+			import com.lnet.pandora.Session;
 			public static const SEARCH_DEFAULT_TEXT:String = "Begin Typing to Search";
+			
+			private function init():void {
+				MonsterDebugger.trace("CreateNewStationView::init","http://autocomplete-beta.savagebeast.com/search");
+			}
 		]]>
 	</fx:Script>
 	<s:states>

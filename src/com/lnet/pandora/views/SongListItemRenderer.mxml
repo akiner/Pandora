@@ -6,6 +6,7 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import com.demonsters.debugger.MonsterDebugger;
 			[Embed(source="assets/bkgd_song_off.png")]
 			[Bindable]
 			private var backgroundOff:Class;
@@ -13,6 +14,22 @@
 			[Embed(source="assets/bkgd_song_on.png")]
 			[Bindable]
 			private var backgroundOn:Class;
+			
+			[Embed(source="assets/thumbUp_playing.png")]
+			[Bindable]
+			private var thumbUpPlaying:Class;
+			
+			[Embed(source="assets/thumbDown_playing.png")]
+			[Bindable]
+			private var thumbDownPlaying:Class;
+			
+			[Embed(source="assets/thumbUp_past.png")]
+			[Bindable]
+			private var thumbUpPast:Class;
+			
+			[Embed(source="assets/thumbDown_past.png")]
+			[Bindable]
+			private var thumbDownPast:Class;
 			
 			private function getAlbumArt(url:String):String{
 				var artURL:String = url;
@@ -22,6 +39,28 @@
 				}
 				
 				return artURL;
+			}
+			
+			private function getThumb(rating:int, state:String):Class{
+				var thumbClass:Class;
+				
+				switch(rating) {
+					case -1:
+						if(state != "selected"){
+							thumbClass = thumbDownPast;
+						} else {
+							thumbClass = thumbDownPlaying;
+						}
+						break;
+					case 1:
+						if(state != "selected"){
+							thumbClass = thumbUpPast;
+						} else {
+							thumbClass = thumbUpPlaying;
+						}
+						break;
+				}
+				return thumbClass;
 			}
 		]]>
 	</fx:Script>
@@ -66,6 +105,7 @@
 				</s:VGroup>
 			</s:HGroup>
 		</s:VGroup>
+		<mx:Image id="thumb" source="{getThumb(data.songRating, currentState)}" right="25" bottom="22"/>
 	</s:BorderContainer>
 	
 </s:ItemRenderer>

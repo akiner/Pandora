@@ -3,7 +3,7 @@
 		xmlns:s="library://ns.adobe.com/flex/spark" 
 		xmlns:mx="library://ns.adobe.com/flex/mx"
 		xmlns:layouts="com.lnet.pandora.layouts.*"
-		width="559" height="720" xmlns:views="com.lnet.pandora.views.*">
+		width="559" height="720" xmlns:views="com.lnet.pandora.views.*" creationComplete="init()">
 	
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
@@ -20,22 +20,39 @@
 			import mx.core.FlexGlobals;
 			private var _stationListViewModel:StationListViewModel;
 			
-			[Bindable]
-			private var currentlySelectedIndex:int = 0;
+			private function init():void {
+				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.TUNE_TO_STATION, tuneToStation, false, 0, true);
+			}
+
+			private function tuneToStation(event:ApplicationEvent):void {
+				var currentStationIndex:int = event.data as int;
+				
+				stationList.selectedIndex = currentStationIndex;
+				currentlySelectedIndex = currentStationIndex;
+				
+				dispatchSelectStationEvent();
+			}
+
+			private function selectNewStation():void {
+				currentlySelectedIndex = stationList.selectedIndex;
+				dispatchSelectStationEvent();
+			}
 			
-			[Bindable]
-			public function get stationListViewModel():StationListViewModel {
-				return _stationListViewModel;
+			private function dispatchSelectStationEvent():void {
+				ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.SELECT_STATION,
+					stationList.selectedItem));
 			}
 
 			public function set stationListViewModel(value:StationListViewModel):void {
 				_stationListViewModel = value;
 			}
 
-			private function selectNewStation():void {
-				currentlySelectedIndex = stationList.selectedIndex;
-				ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.SELECT_STATION,
-					stationList.selectedItem));
+			[Bindable]
+			private var currentlySelectedIndex:int = 0;
+			
+			[Bindable]
+			public function get stationListViewModel():StationListViewModel {
+				return _stationListViewModel;
 			}
 
 		]]>

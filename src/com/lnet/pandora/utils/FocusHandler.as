@@ -3,6 +3,7 @@ package com.lnet.pandora.utils {
 	import com.lnet.pandora.events.ApplicationEvent;
 	import com.lnet.pandora.events.ApplicationEventBus;
 	import com.lnet.pandora.views.CreateNewStationView;
+	import com.lnet.pandora.views.ErrorView;
 	import com.lnet.pandora.views.LoginView;
 	import com.lnet.pandora.views.OptionsPopupView;
 	import com.lnet.pandora.views.SongListView;
@@ -23,6 +24,7 @@ package com.lnet.pandora.utils {
 		private var _songListView:SongListView;
 		private var _stationListView:StationListView;
 		private var _optionsPopupView:OptionsPopupView;
+		private var _errorView:ErrorView;
 		private var isTyping:Boolean;
 		private var preSearchState:String;
 		private var controller:Controller;
@@ -69,6 +71,10 @@ package com.lnet.pandora.utils {
 					case "default":
 						handleKeyPressInDefaultView();
 						break;
+					case "error":
+						if(currentKey == "back" || currentKey == "select"){
+							FlexGlobals.topLevelApplication.currentState = FlexGlobals.topLevelApplication.preErrorState;
+						}
 					default:
 						MonsterDebugger.trace("FocusHandler::constructor","Keyboard event not handled!!!");
 						break;
@@ -81,7 +87,8 @@ package com.lnet.pandora.utils {
 				case "select":
 					FlexGlobals.topLevelApplication.currentState = "viewOptions";
 					FlexGlobals.topLevelApplication.focusManager.setFocus(optionsPopupView.hiddenOptionsList);
-					ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.SET_FOCUS_TO_RATING));
+					optionViewIndex = 0;
+					ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.INIT_OPTIONS_MENU));
 					break;
 				case "rightArrow":
 				case "skipForward":
@@ -94,7 +101,7 @@ package com.lnet.pandora.utils {
 					ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.PAUSE_SONG));
 					break;
 				case "back":
-					// Pass off to exit service
+					MonsterDebugger.trace("FocusHandler::handleKeyPressInBrowseView","------------------------EXIT SERVICE--------------------------");
 					FlexGlobals.topLevelApplication.dispatchEvent(new Event(InteractiveSessionManager.SERVICE_COMPLETE));
 					break;
 				default:
@@ -268,5 +275,14 @@ package com.lnet.pandora.utils {
 		public function set optionsPopupView(value:OptionsPopupView):void {
 			_optionsPopupView = value;
 		}
+
+		public function get errorView():ErrorView {
+			return _errorView;
+		}
+
+		public function set errorView(value:ErrorView):void {
+			_errorView = value;
+		}
+
 	}
 }

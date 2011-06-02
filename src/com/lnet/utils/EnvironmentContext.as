@@ -12,6 +12,7 @@ package com.lnet.utils
   import flash.events.EventDispatcher;
   import flash.events.IEventDispatcher;
   import flash.events.IOErrorEvent;
+  import flash.events.SecurityErrorEvent;
   import flash.net.URLLoader;
   import flash.net.URLRequest;
 
@@ -391,11 +392,12 @@ package com.lnet.utils
     {
       appConfigLoader.addEventListener( Event.COMPLETE, onAppConfigLoaded );
       appConfigLoader.addEventListener( IOErrorEvent.IO_ERROR, onAppConfigError );
+      appConfigLoader.addEventListener( SecurityErrorEvent.SECURITY_ERROR, onAppConfigSecurityError );
 
       // TODO: create path by referencing swf url
       // open xml file async
-      //appConfigLoader.load( new URLRequest( "file:///net/peer1/host/content/marina/hotelHdi/amp/2100/service/config/config.xml" ) );
-      appConfigLoader.load( new URLRequest( "config/config.xml" ) );
+      appConfigLoader.load( new URLRequest( "file:///net/solo/host/content/marina/hotelHdi/amp/2100/service/config/config.xml" ) );
+      //appConfigLoader.load( new URLRequest( "config/config.xml" ) );
     }
 
     /**
@@ -529,6 +531,11 @@ package com.lnet.utils
     private function onAppConfigError( event:IOErrorEvent ):void
     {
       MonsterDebugger.trace( "EnvironmentContext::onAppConfigError", "IOError experienced when attempting to load config file." );
+    }
+
+    private function onAppConfigSecurityError( event:SecurityErrorEvent ):void
+    {
+      MonsterDebugger.trace( "EnvironmentContext::onAppConfigSecurityError", "SecurityError experienced when attempting to load config file." );
     }
 
     /*

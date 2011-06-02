@@ -13,63 +13,116 @@
 			import com.lnet.pandora.events.ApplicationEvent;
 			import com.lnet.pandora.events.ApplicationEventBus;
 			
+			import spark.utils.TextFlowUtil;
+			
 			private var key:String;
+			private var textLoader:URLLoader;
+			private var textReq:URLRequest;
 			
 			private function init():void {
-				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.KEY_PRESS_IN_INFO, handleKeyPress);
+				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.INIT_OPTIONS_MENU, setInitialFocus);
+//				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.KEY_PRESS_IN_INFO, handleKeyPress);
+//				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.ARTIST_BIO_LOADED, displayArtistBio);
+				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.TRACK_EXPLANATION_LOADED, trackExplanationLoaded);
 			}
 
-			private function handleKeyPress(event:ApplicationEvent):void {
-				key = event.data as String;
-				switch(currentState){
-					case "bio":
-						handleKeyPressInBioView();
-						break;
-					case "why":
-						handleKeyPressInWhyView();
-						break;
-					default:
-						break;
-				}
+			private function trackExplanationLoaded(event:ApplicationEvent):void {
+				whyDetailText.text = event.data.toString();
+				MonsterDebugger.trace("InfoView::trackExplanationLoaded","Track explanation returned:: "+event.data);
+				focusManager.setFocus(whyDetailText);
+				cursorManager.hideCursor();
 			}
 
-			private function handleKeyPressInBioView():void {
-				switch(key){
-					case "downArrow":
-						currentState = "why";
-						break;
-					case "select":
-						break;
-					default:
-						MonsterDebugger.trace("StationView::handleKeyPress","ERROR:: KEY NOT HANDLED");
-						break;
-				}
-			}
+//			private function displayArtistBio(event:ApplicationEvent):void {
+//				textLoader = new URLLoader();
+//				textReq = new URLRequest(event.data.toString());
+//				
+//				textLoader.addEventListener(Event.COMPLETE, textLoadComplete);
+//				textLoader.load(textReq);
+//			}
 			
-			private function handleKeyPressInWhyView():void {
-				switch(key){
-					case "upArrow":
-						currentState = "bio";
-						break;
-					case "select":
-						break;
-					default:
-						MonsterDebugger.trace("StationView::handleKeyPress","ERROR:: KEY NOT HANDLED");
-						break;
-				}
+//			private function textLoadComplete(event:Event):void	{
+//				MonsterDebugger.trace("InfoView::displayArtistBio","Artist bio returned:: "+textLoader.data);
+//				artistBioText.textFlow = spark.utils.TextFlowUtil.importFromString(textLoader.data.toString());
+//			}
+			
+			private function setInitialFocus(event:ApplicationEvent):void {
+//				currentState = "bio";
+				currentState = "whyDetail";
+				ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.EXPLAIN_TRACK));
+				MonsterDebugger.trace("InfoView::setInitialFocus","reinitialized bio options");
 			}
+
+//			private function handleKeyPress(event:ApplicationEvent):void {
+//				key = event.data as String;
+//				switch(currentState){
+//					case "bio":
+//						handleKeyPressInBioView();
+//						break;
+//					case "why":
+//						handleKeyPressInWhyView();
+//						break;
+//					default:
+//						break;
+//				}
+//			}
+
+//			private function handleKeyPressInBioView():void {
+//				switch(key){
+//					case "downArrow":
+//						currentState = "why";
+//						break;
+//					case "select":
+//						currentState = "bioDetail";
+//						ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.GET_ARTIST_BIO));
+//						break;
+//					default:
+//						MonsterDebugger.trace("StationView::handleKeyPress","ERROR:: KEY NOT HANDLED");
+//						break;
+//				}
+//			}
+			
+//			private function handleKeyPressInWhyView():void {
+//				switch(key){
+//					case "upArrow":
+//						currentState = "bio";
+//						break;
+//					case "select":
+//						currentState = "whyDetail";
+//						ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.EXPLAIN_TRACK));
+//						break;
+//					default:
+//						MonsterDebugger.trace("StationView::handleKeyPress","ERROR:: KEY NOT HANDLED");
+//						break;
+//				}
+//			}
 
 		]]>
 	</fx:Script>
 	<s:states>
 		<s:State name="bio"/>
+		<s:State name="bioDetail" stateGroups="detail"/>
 		<s:State name="why"/>
+		<s:State name="whyDetail" stateGroups="detail"/>
 	</s:states>
 	<s:layout>
 		<s:VerticalLayout paddingTop="37" horizontalAlign="center" verticalAlign="middle" gap="10"/>
 	</s:layout>
-	<s:Label text="Artist Bio"
-			 styleName="whiteLabelLg" alpha.why=".2">
+	<!--<s:BorderContainer id="bioDetailView"
+					   width="100%" height="100%" 
+					   includeIn="bioDetail">
+		<s:Label text="Artist Bio" styleName="whiteLabelLg" left="25" top="-15"/>
+		<s:TextArea id="artistBioText" verticalScrollPolicy="off" width="460" height="200" styleName="whiteLabelSmall" left="40" focusAlpha="0"
+					contentBackgroundAlpha="0" borderVisible="false" borderAlpha="0" top="15"/>
+	</s:BorderContainer>-->
+	<s:BorderContainer id="whyDetailView"
+					   width="100%" height="100%" 
+					   includeIn="whyDetail">
+		<s:Label text="Why Was This Song Selected?" styleName="whiteLabelLg" left="25" top="-15"/>
+		<s:TextArea id="whyDetailText" width="460" height="200" styleName="whiteLabelSmall" left="40" focusAlpha="0"
+					contentBackgroundAlpha="0" borderVisible="false" borderAlpha="0" top="15"/>
+	</s:BorderContainer>
+	<!--<s:Label text="Artist Bio" styleName="whiteLabelLg" alpha.why=".2" excludeFrom="detail">
 		<s:filters>
 			<s:GlowFilter includeIn="bio"
 						  color="#2f97ff"
@@ -80,9 +133,8 @@
 						  quality="1"/>
 		</s:filters>
 	</s:Label>	
-	<mx:Image source="@Embed(source='assets/option_divider.png')"/>
-	<s:Label text="Why Was This Song Selected?"
-			 styleName="whiteLabelLg" alpha.bio=".2">
+	<mx:Image source="@Embed(source='assets/option_divider.png')" includeIn="bio"/>
+	<s:Label text="Why Was This Song Selected?" styleName="whiteLabelLg" alpha.bio=".2" excludeFrom="detail">
 		<s:filters>
 			<s:GlowFilter includeIn="why"
 						  color="#2f97ff"
@@ -93,4 +145,5 @@
 						  quality="1"/>
 		</s:filters>
 	</s:Label>
+	<mx:Image source="@Embed(source='assets/option_divider.png')" includeIn="why"/>-->
 </s:BorderContainer>

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 width="515" height="265" borderAlpha="1" top="67" left="7"
-		 creationComplete="init()">
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   width="515" height="265" borderAlpha="1" top="67" left="7"
+				   creationComplete="init()">
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
@@ -16,20 +16,35 @@
 			private var key:String;
 			
 			private function init():void {
+				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.INIT_OPTIONS_MENU, setInitialFocus);
 				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.KEY_PRESS_IN_STATION, handleKeyPress);
 			}
-
+			
+			private function setInitialFocus(event:ApplicationEvent=null):void {
+				currentState = "rename";
+				if (renameText) renameText.text = "";
+			}
+			
 			private function handleKeyPress(event:ApplicationEvent):void {
 				key = event.data as String;
 				switch(currentState){
 					case "rename":
 						handleKeyPressInRenameView();
 						break;
+					case "renameDetail":
+						handleKeyPressInRenameDetailView();
+						break;
 					case "delete":
-						handleKeyPressInThumbDeleteView();
+						handleKeyPressInDeleteView();
+						break;
+					case "deleteDetail":
+						handleKeyPressInDeleteDetailView();
 						break;
 					case "add":
-						handleKeyPressInThumbAddView();
+						handleKeyPressInAddView();
+						break;
+					case "addDetail":
+						handleKeyPressInAddDetailView();
 						break;
 					default:
 						break;
@@ -42,14 +57,16 @@
 						currentState = "delete";
 						break;
 					case "select":
+						currentState = "renameDetail";
+						focusManager.setFocus(renameText);
 						break;
 					default:
 						MonsterDebugger.trace("StationView::handleKeyPress","ERROR:: KEY NOT HANDLED");
 						break;
 				}
 			}
-
-			private function handleKeyPressInThumbDeleteView():void {
+			
+			private function handleKeyPressInDeleteView():void {
 				switch(key){
 					case "upArrow":
 						currentState = "rename";
@@ -58,6 +75,7 @@
 						currentState = "add";
 						break;
 					case "select":
+						currentState = "deleteDetail";
 						break;
 					default:
 						MonsterDebugger.trace("StationView::handleKeyPress","ERROR:: KEY NOT HANDLED");
@@ -65,12 +83,44 @@
 				}
 			}
 			
-			private function handleKeyPressInThumbAddView():void {
+			private function handleKeyPressInAddView():void {
 				switch(key){
 					case "upArrow":
 						currentState = "delete";
 						break;
 					case "select":
+						currentState = "addDetail";
+						focusManager.setFocus(addVarietyText);
+						break;
+					default:
+						MonsterDebugger.trace("StationView::handleKeyPress","ERROR:: KEY NOT HANDLED");
+						break;
+				}
+			}
+			
+			private function handleKeyPressInRenameDetailView():void {
+				switch(key){
+					case "select":
+						if(renameText.text.length > 0)
+							ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.RENAME_STATION, renameText.text));
+						break;
+					case "back":
+						setInitialFocus();
+						break;
+					default:
+						MonsterDebugger.trace("StationView::handleKeyPress","ERROR:: KEY NOT HANDLED");
+						break;
+				}
+			}
+			
+			private function handleKeyPressInDeleteDetailView():void {
+				switch(key){
+					case "select":
+						ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.DELETE_STATION));
+						break;
+					case "back":
+						currentState = "delete";
+						MonsterDebugger.trace("StationView::handleKeyPressInDeleteDetailView","Remove delete view!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 						break;
 					default:
 						MonsterDebugger.trace("StationView::handleKeyPress","ERROR:: KEY NOT HANDLED");
@@ -78,18 +128,63 @@
 				}
 			}
 
+			private function handleKeyPressInAddDetailView():void {
+				switch(key){
+					case "select":
+						MonsterDebugger.trace("StationView::handleKeyPressInAddDetailView","Dispatch add variety event");
+						if(addVarietyText.text.length > 0)
+							ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.ADD_VARIETY_TO_STATION, addVarietyText.text));
+						break;
+					case "back":
+						currentState = "add";
+						break;
+					default:
+						MonsterDebugger.trace("StationView::handleKeyPress","ERROR:: KEY NOT HANDLED");
+						break;
+				}
+			}
 		]]>
 	</fx:Script>
 	<s:states>
 		<s:State name="rename"/>
 		<s:State name="delete"/>
 		<s:State name="add"/>
+		<s:State name="renameDetail" stateGroups="detail"/>
+		<s:State name="deleteDetail" stateGroups="detail"/>
+		<s:State name="addDetail" stateGroups="detail"/>
 	</s:states>
 	<s:layout>
-		<s:VerticalLayout paddingTop="37" horizontalAlign="center" verticalAlign="middle" gap="10"/>
+		<s:VerticalLayout paddingTop="37" horizontalAlign="center" gap="10" verticalAlign="middle"/>
 	</s:layout>
+	<s:BorderContainer id="renameDetailView"
+					   backgroundImage="@Embed(source='assets/renameStation_background.png')" backgroundAlpha="1"
+					   width="516" height="86" 
+					   includeIn="renameDetail">
+		<s:Label text="Rename this Station" horizontalCenter="0" styleName="whiteLabelLg" paddingTop="8"/>
+		<s:TextInput id="renameText"
+					 focusAlpha="0"
+					 skinClass="com.lnet.pandora.skins.RenameStationTextInputSkin"
+					 width="400" top="40"/>
+	</s:BorderContainer>
+	<s:BorderContainer id="deleteDetailView"
+					   backgroundImage="@Embed(source='assets/deleteStation_background.png')" backgroundAlpha="1"
+					   width="516" height="86"
+					   includeIn="deleteDetail">
+		<s:Label text="Are you sure you want to delete this station?" horizontalCenter="0" styleName="whiteLabelMed" paddingTop="18"/>
+	</s:BorderContainer>
+	<s:BorderContainer id="addDetailView"
+					   backgroundImage="@Embed(source='assets/renameStation_background.png')" backgroundAlpha="1"
+					   width="516" height="86" 
+					   includeIn="addDetail">
+		<s:Label text="Add Variety to this Station" horizontalCenter="0" styleName="whiteLabelLg" paddingTop="8"/>
+		<s:TextInput id="addVarietyText"
+					 focusAlpha="0"
+					 skinClass="com.lnet.pandora.skins.RenameStationTextInputSkin"
+					 width="400" top="40"/>
+	</s:BorderContainer>
 	<s:Label text="Rename This Station"
-			 styleName="whiteLabelLg" alpha.delete=".2" alpha.add=".2">
+			 styleName="whiteLabelLg" alpha.delete=".2" alpha.add=".2"
+			 excludeFrom="detail">
 		<s:filters>
 			<s:GlowFilter includeIn="rename"
 						  color="#2f97ff"
@@ -102,7 +197,7 @@
 	</s:Label>	
 	<mx:Image top="-10" source="@Embed(source='assets/option_divider.png')" includeIn="rename"/>
 	<s:Label text="Delete This Station"
-			 styleName="whiteLabelLg" alpha.rename=".2" alpha.add=".2">
+			 styleName="whiteLabelLg" alpha.rename=".2" alpha.add=".2" excludeFrom="detail">
 		<s:filters>
 			<s:GlowFilter includeIn="delete"
 						  color="#2f97ff"
@@ -115,7 +210,7 @@
 	</s:Label>
 	<mx:Image source="@Embed(source='assets/option_divider.png')" includeIn="delete"/>
 	<s:Label text="Add Variety to This Station"
-			 styleName="whiteLabelLg" alpha.rename=".2" alpha.delete=".2">
+			 styleName="whiteLabelLg" alpha.rename=".2" alpha.delete=".2" excludeFrom="detail">
 		<s:filters>
 			<s:GlowFilter includeIn="add"
 						  color="#2f97ff"

@@ -8,7 +8,7 @@
 			   applicationComplete="init()"
 			   width="1280" height="720"
 			   backgroundColor="0x000000">
-	<fx:Style source="Pandora.css"/>
+	<fx:Style source="assets/Pandora.css"/>
 	
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
@@ -22,6 +22,7 @@
 			import com.lnet.pandora.events.ApplicationEventBus;
 			import com.lnet.pandora.utils.FocusHandler;
 			import com.lnet.pandora.utils.OptionViewFocusHandler;
+			import com.lnet.pandora.viewmodels.ErrorViewModel;
 			import com.lnet.pandora.viewmodels.SongListViewModel;
 			import com.lnet.pandora.viewmodels.StationListViewModel;
 			import com.lnet.utils.InteractiveSessionManager;
@@ -36,6 +37,8 @@
 			private var optionsFocusHandler:FocusHandler;
 			private var songListViewModel:SongListViewModel;
 			private var stationListViewModel:StationListViewModel;
+			private var errorViewModel:ErrorViewModel;
+			public var preErrorState:String;
 			
 			public function init():void {
 				MonsterDebugger.initialize(this);
@@ -50,6 +53,7 @@
 
 			private function displayLoginError(event:ApplicationEvent):void {
 				initLogin();
+				login.error.text = event.data.toString();
 				login.currentState = "error";
 			}
 			
@@ -60,6 +64,7 @@
 				focusHandler.optionsPopupView = optionsPopup;
 				focusHandler.songListView = songList;
 				focusHandler.stationListView = stationList;
+				focusHandler.errorView = error;
 			}
 			
 			public function initLogin():void {
@@ -73,6 +78,9 @@
 				
 				stationListViewModel = new StationListViewModel();
 				stationList.stationListViewModel = stationListViewModel;
+				
+				errorViewModel = new ErrorViewModel();
+				error.errorViewModel = errorViewModel;
 			}
 			
 			public function resetDefault(e:Event):void {
@@ -87,8 +95,13 @@
 		<s:State name="login"/>
 		<s:State name="createStation"/>
 		<s:State name="viewOptions"/>
+		<s:State name="error"/>
 	</s:states>
 	
+		<views:ErrorView id="error" visible="false" visible.error="true"
+						 width="617" height="271" depth="4"
+						 left="362" top="267"
+						 horizontalCenter="0" verticalCenter="0"/>
 	<s:BorderContainer id="backgroundContainer"
 					   depth="0"
 					   width="1280" height="720"
@@ -97,17 +110,23 @@
 		<views:LoginView id="login" width="1145" height="603" top="78" left="87" includeIn="login" />
 		<mx:Image id="logo" source="@Embed(source='assets/logo.png')"
 				  left="87" top="36"
-				  excludeFrom="login"/>
+				  excludeFrom="login" depth="100"/>
 		<s:BorderContainer width="1280" height="720"
 						   backgroundColor="0x000000"
 						   backgroundAlpha=".4" depth="2"
 						   visible="false"
-						   visible.viewOptions="true"/>
+						   visible.viewOptions="true"
+						   visible.error="true"/>
 		<views:OptionsPopupView id="optionsPopup"
 							visible="false"
 							visible.viewOptions="true"
 							width="535" height="363"
 							top="209" left="47" depth="4"/>
+		<s:BorderContainer id="overlay" excludeFrom="login"
+						   backgroundAlpha="1"
+						   backgroundImage="@Embed(source='assets/overlay.png')"
+						   depth="4"
+						   width="1280" height="720"/>
 		<views:StationListView id="stationList" depth="0"
 							   width="559" height="720"
 							   top="0" left="580"
@@ -118,6 +137,7 @@
 		<views:CreateNewStationView id="createNewStation"
 									width="301" height="93"
 									left="68" top="610"
+									depth="100"
 									excludeFrom="login"/>
 	</s:BorderContainer>
 </s:Application>

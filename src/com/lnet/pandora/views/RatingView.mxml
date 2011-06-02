@@ -16,21 +16,24 @@
 			private var key:String;
 			
 			private function init():void {
-				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.SET_FOCUS_TO_RATING, setInitialFocus);
+				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.INIT_OPTIONS_MENU, setInitialFocus);
 				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.KEY_PRESS_IN_RATING, handleKeyPress);
 			}
 
 			private function setInitialFocus(event:ApplicationEvent):void {
-				currentState = "thumbUpOn";
+				currentState = "thumbUp";
 			}
 			
 			private function handleKeyPress(event:ApplicationEvent):void {
 				key = event.data as String;
 				switch(currentState){
-					case "thumbUpOn":
+					case "thumbUp":
 						handleKeyPressInThumbUpView();
 						break;
-					case "thumbDownOn":
+					case "tiredOfIt":
+						handleKeyPressInTiredOfItView();
+						break;
+					case "thumbDown":
 						handleKeyPressInThumbDownView();
 						break;
 					default:
@@ -41,10 +44,28 @@
 			private function handleKeyPressInThumbUpView():void {
 				switch(key){
 					case "downArrow":
-						currentState = "thumbDownOn";
+						currentState = "tiredOfIt";
 						break;
 					case "select":
-						currentState = "thumbUpSelected";
+						currentState = "thumbUp";
+						ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.RATE_SONG, true));
+						break;
+					default:
+						MonsterDebugger.trace("RatingView::handleKeyPress","ERROR:: KEY NOT HANDLED");
+						break;
+				}
+			}
+			
+			private function handleKeyPressInTiredOfItView():void {
+				switch(key){
+					case "upArrow":
+						currentState = "thumbUp";
+						break;
+					case "downArrow":
+						currentState = "thumbDown";
+						break;
+					case "select":
+						ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.SLEEP_SONG));
 						break;
 					default:
 						MonsterDebugger.trace("RatingView::handleKeyPress","ERROR:: KEY NOT HANDLED");
@@ -55,11 +76,10 @@
 			private function handleKeyPressInThumbDownView():void {
 				switch(key){
 					case "upArrow":
-						currentState = "thumbUpOn";
+						currentState = "tiredOfIt";
 						break;
 					case "select":
-						MonsterDebugger.trace("RatingView::handleKeyPressInThumbUpView","I DON'T LIKE THIS SONG!!!");
-						currentState = "thumbDownSelected";
+						ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.RATE_SONG, false));
 						break;
 					default:
 						MonsterDebugger.trace("RatingView::handleKeyPress","ERROR:: KEY NOT HANDLED");
@@ -70,25 +90,32 @@
 		]]>
 	</fx:Script>
 	<s:states>
-		<s:State name="thumbUpOn"/>
-		<s:State name="thumbUpSelected"/>
-		<s:State name="thumbDownOn"/>
-		<s:State name="thumbDownSelected"/>
+		<s:State name="thumbUp"/>
+		<s:State name="tiredOfIt"/>
+		<s:State name="thumbDown"/>
 	</s:states>
 	<s:layout>
 		<s:VerticalLayout paddingTop="37" horizontalAlign="center"/>
 	</s:layout>
-	<mx:Image source.thumbDownOn="@Embed(source='assets/thumbUp.png')"
-			  source.thumbDownSelected="@Embed(source='assets/thumbUp.png')"
-			  source.thumbUpOn="@Embed(source='assets/thumbUp_on.png')"
-			  source.thumbUpSelected="@Embed(source='assets/thumbUp_check.png')"/>
-	<s:Label text="I like this track"
-			 styleName="whiteLabelLg" alpha=".2"
-			 includeIn="thumbDownOn,thumbDownSelected" />
-	<mx:Image source="@Embed(source='assets/option_divider.png')"/>
-	<s:Label id="thumbDownLabel" includeIn="thumbUpOn,thumbUpSelected" text="I don't like this track" styleName="whiteLabelLg" alpha=".2"/>
-	<mx:Image source.thumbUpOn="@Embed(source='assets/thumbDown.png')"
-			  source.thumbUpSelected="@Embed(source='assets/thumbDown.png')"
-			  source.thumbDownOn="@Embed(source='assets/thumbDown_on.png')"
-			  source.thumbDownSelected="@Embed(source='assets/thumbDown_check.png')"/>
+	<mx:Image source.thumbUp="@Embed(source='assets/thumbUp_check.png')"
+			  source.thumbDown="@Embed(source='assets/thumbUp.png')"
+			  source.tiredOfIt="@Embed(source='assets/thumbUp.png')"/>
+	<mx:Image source="@Embed(source='assets/option_divider.png')" includeIn="thumbUp"/>
+	<s:Label text="I am tired of this song"
+			 styleName="whiteLabelLg" alpha.thumbUp=".2" alpha.thumbDown=".2">
+		<s:filters>
+			<s:GlowFilter includeIn="tiredOfIt"
+						  color="#2f97ff"
+						  alpha="0.5"
+						  blurX="11" blurY="11"
+						  inner="false"
+						  strength="6"
+						  quality="1"/>
+		</s:filters>
+	</s:Label>
+	<mx:Image source="@Embed(source='assets/option_divider.png')" includeIn="tiredOfIt"/>
+	<mx:Image source.thumbUp="@Embed(source='assets/thumbDown.png')"
+			  source.tiredOfIt="@Embed(source='assets/thumbDown.png')"
+			  source.thumbDown="@Embed(source='assets/thumbDown_check.png')"/>
+	<mx:Image source="@Embed(source='assets/option_divider.png')" includeIn="thumbDown"/>
 </s:BorderContainer>

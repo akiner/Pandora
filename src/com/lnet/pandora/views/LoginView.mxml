@@ -26,16 +26,13 @@
 				 styleName="errorText"
 				 visible="false"
 				 visible.error="true"
-				 textAlign="center"
-				 text="Invalid email or password. Please try again."/>
+				 textAlign="center"/>
 		<s:VGroup gap="0" paddingTop="3" tabEnabled="false">
 			<s:TextInput id="username"
 						 tabIndex="1"
-						 text="amanda.kiner@lodgenet.com"
 						 skinClass="com.lnet.pandora.views.LoginTextInputItemRenderer"/>
 			<s:TextInput id="password"
 						 tabIndex="2"
-						 text="smile"
 						 displayAsPassword="true"
 						 skinClass="com.lnet.pandora.views.LoginTextInputItemRenderer"/>
 		</s:VGroup>

@@ -11,6 +11,7 @@ package com.lnet.pandora.viewmodels {
 	public class StationListViewModel {
 		
 		private var _stationList:IList;
+		private var _currentStationIndex:int;
 		
 		public function StationListViewModel() {
 			_stationList = new ArrayCollection();
@@ -28,6 +29,14 @@ package com.lnet.pandora.viewmodels {
 
 		public function set stationList(value:IList):void {
 			_stationList = value;
+		}
+
+		public function get currentStationIndex():int {
+			return _currentStationIndex;
+		}
+
+		public function set currentStationIndex(value:int):void {
+			_currentStationIndex = value;
 		}
 	}
 }
