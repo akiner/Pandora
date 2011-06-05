@@ -379,6 +379,7 @@ package com.lnet.pandora.utils {
 				MonsterDebugger.trace("Controller::onStationListComplete","Tune to 1st station in list");
 				ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.TUNE_TO_STATION, 1));
 			}
+			_currentTrackPos = 0;
 		}
 		
 		public function setSelectedStation(event:ApplicationEvent):void {
@@ -406,7 +407,7 @@ package com.lnet.pandora.utils {
 		
 		private function onPlaylistComplete(event:Event):void {
 			MonsterDebugger.trace("Controller::onPlaylistComplete","Playlist Complete - load first track");
-			nextTrackIndex = 0;
+//			nextTrackIndex = 0;
 			playTrack(getNextTrack());
 		}
 		
@@ -416,12 +417,12 @@ package com.lnet.pandora.utils {
 			
 			if (!playlist) return track;
 			
-			for( var i:uint = nextTrackIndex++ ; i < playlist.items.elements.length ; i++ ) {
+			for( var i:uint = currentTrackPos ; i < playlist.items.elements.length ; i++ ) {
 				if ( ( track = playlist.items.elements[ i ] as Track ) ) // TODO:: determine if there was an ad returned and display
 					break;
 			}
-			currentTrack = track;
 			_currentTrackPos ++;
+			currentTrack = track;
 			return track;
 		}
 		
@@ -448,7 +449,7 @@ package com.lnet.pandora.utils {
 				soundChannelInstance = soundInstance.play();
 				FlexGlobals.topLevelApplication.isPlaying = true;
 				soundChannelInstance.addEventListener(Event.SOUND_COMPLETE, playNextSong);
-				ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.SONG_LOADED, track));
+				ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.SONG_LOADED, track, currentTrackPos));
 			}
 			catch (err:Error) {
 				MonsterDebugger.trace("Controller::playTrack","ERROR::"+err.message);

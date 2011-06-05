@@ -65,9 +65,11 @@
 
 			
 			private function updateSelectedIndex(event:ApplicationEvent):void {
-				songList.selectedItem = event.data;
+//				songList.selectedItem = event.data;
+				songList.selectedIndex = 1;
 				pause.visible = false;
 				resetTimeFields();
+				MonsterDebugger.trace("SongListView::updateSelectedIndex","Updating selected item to::"+songList.selectedIndex);
 			}
 			
 			private function removeScrollbars():void {
@@ -174,7 +176,7 @@
 			itemRenderer="com.lnet.pandora.views.SongListItemRenderer"
 			borderAlpha="0" borderVisible="false"
 			contentBackgroundAlpha="0"
-			requireSelection="true" depth="0"
+			allowMultipleSelection="false" requireSelection="true" depth="0"
 			creationComplete="removeScrollbars()"
 			right="117">
 		<s:layout>
