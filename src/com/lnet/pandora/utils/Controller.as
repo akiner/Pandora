@@ -151,7 +151,7 @@ package com.lnet.pandora.utils {
 			musicSearchRequest.searchText = searchText;
 			musicSearchRequest.includeNearMatches = true;
 			
-			musicSearchRequest.addEventListener(Event.COMPLETE, addVarietyToStationHandler, false, 0, true);
+			musicSearchRequest.addEventListener(Event.COMPLETE, onVarietySearchComplete, false, 0, true);
 			musicSearchRequest.addEventListener(FaultEvent.FAULT, onMusicSearchFault, false, 0, true);
 			
 			MonsterDebugger.trace("Controller::addVarietyToStation","Searching for music token to add varietty");
@@ -159,6 +159,9 @@ package com.lnet.pandora.utils {
 		}
 		
 		private function onVarietySearchComplete(event:Event):void {
+			musicSearchRequest.removeEventListener(Event.COMPLETE, onVarietySearchComplete);
+			musicSearchRequest.removeEventListener(FaultEvent.FAULT, onMusicSearchFault);
+			
 			var responseArray:IList = new ArrayCollection();
 			var searchResponse:SearchResponse = musicSearchRequest.response as SearchResponse;
 			var i:int;
@@ -191,7 +194,7 @@ package com.lnet.pandora.utils {
 		}
 		
 		private function onAddVarietyFault(event:FaultEvent):void {
-			MonsterDebugger.trace("Controller::onAddVarietyFault","ERROR::"+event.fault);
+			MonsterDebugger.trace("Controller::onAddVarietyFault","ERROR::"+event);
 			var errorMsg:String = "An unexpected error has occurred while attempting to add music to this station. Please try again."
 			displayErrorToUser(errorMsg);
 		}
@@ -208,6 +211,7 @@ package com.lnet.pandora.utils {
 
 		private function onDeleteComplete(event:Event):void {
 			ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.RESET_FOCUS));
+			createdStationId = null;
 			getStationList();
 			MonsterDebugger.trace("Controller::onDeleteComplete","Delete request complete - reload station list");
 		}
@@ -292,6 +296,8 @@ package com.lnet.pandora.utils {
 			MonsterDebugger.trace("Controller::playSong","Play song");
 			soundChannelInstance = soundInstance.play(soundPosition);
 			FlexGlobals.topLevelApplication.isPlaying = true;
+			ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.SOUND_READY,
+				soundInstance, soundChannelInstance));
 		}
 		
 		private function pauseSong(event:ApplicationEvent):void {
@@ -379,7 +385,6 @@ package com.lnet.pandora.utils {
 				MonsterDebugger.trace("Controller::onStationListComplete","Tune to 1st station in list");
 				ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.TUNE_TO_STATION, 1));
 			}
-			_currentTrackPos = 0;
 		}
 		
 		public function setSelectedStation(event:ApplicationEvent):void {
@@ -407,7 +412,7 @@ package com.lnet.pandora.utils {
 		
 		private function onPlaylistComplete(event:Event):void {
 			MonsterDebugger.trace("Controller::onPlaylistComplete","Playlist Complete - load first track");
-//			nextTrackIndex = 0;
+			nextTrackIndex = 0;
 			playTrack(getNextTrack());
 		}
 		
@@ -417,12 +422,12 @@ package com.lnet.pandora.utils {
 			
 			if (!playlist) return track;
 			
-			for( var i:uint = currentTrackPos ; i < playlist.items.elements.length ; i++ ) {
+			for( var i:uint = nextTrackIndex++ ; i < playlist.items.elements.length ; i++ ) {
 				if ( ( track = playlist.items.elements[ i ] as Track ) ) // TODO:: determine if there was an ad returned and display
 					break;
 			}
-			_currentTrackPos ++;
 			currentTrack = track;
+			_currentTrackPos ++;
 			return track;
 		}
 		
@@ -449,7 +454,7 @@ package com.lnet.pandora.utils {
 				soundChannelInstance = soundInstance.play();
 				FlexGlobals.topLevelApplication.isPlaying = true;
 				soundChannelInstance.addEventListener(Event.SOUND_COMPLETE, playNextSong);
-				ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.SONG_LOADED, track, currentTrackPos));
+				ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.SONG_LOADED, track));
 			}
 			catch (err:Error) {
 				MonsterDebugger.trace("Controller::playTrack","ERROR::"+err.message);
@@ -462,7 +467,7 @@ package com.lnet.pandora.utils {
 			var currentTime:uint = Math.round(soundChannelInstance.position/1000);
 			var totalTime:uint = Math.round(soundInstance.length/1000);
 			ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.SOUND_READY,
-				soundInstance, soundChannelInstance, totalTime));
+				soundInstance, soundChannelInstance));
 		}
 		
 		private function ioSoundError(e:IOErrorEvent):void {

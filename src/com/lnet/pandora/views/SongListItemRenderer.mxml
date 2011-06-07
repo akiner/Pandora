@@ -107,4 +107,5 @@
 		</s:VGroup>
 		<mx:Image id="thumb" source="{getThumb(data.songRating, currentState)}" right="25" bottom="22"/>
 	</s:BorderContainer>
+	
 </s:ItemRenderer>

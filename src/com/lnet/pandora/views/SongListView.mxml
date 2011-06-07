@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		 xmlns:s="library://ns.adobe.com/flex/spark" 
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
 		 xmlns:views="com.lnet.pandora.views.*"
-		 creationComplete="init()" xmlns:layouts="com.lnet.pandora.layouts.*">
+		 xmlns:layouts="com.lnet.pandora.layouts.*"
+		 creationComplete="init()">
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
@@ -49,12 +50,9 @@
 			private function initSoundInstances(event:ApplicationEvent):void {
 				soundInstance = event.data as Sound;
 				soundChannelInstance = event.optionalData as SoundChannel;
-				
 				currentTime =  Math.round(soundChannelInstance.position/1000);
 				totalTime = soundInstance.length/1000;
-				
 				totalTimeField.text = formatTime(totalTime);
-				
 				startTimers();
 			}
 
@@ -62,14 +60,16 @@
 				playheadTimer.start();
 				scrubBarTimer.start();
 			}
-
 			
+			private function pauseTimers():void {
+				playheadTimer.stop();
+				scrubBarTimer.stop();
+			}
+
 			private function updateSelectedIndex(event:ApplicationEvent):void {
-//				songList.selectedItem = event.data;
-				songList.selectedIndex = 1;
+				songList.selectedItem = event.data;
 				pause.visible = false;
 				resetTimeFields();
-				MonsterDebugger.trace("SongListView::updateSelectedIndex","Updating selected item to::"+songList.selectedIndex);
 			}
 			
 			private function removeScrollbars():void {
@@ -128,10 +128,12 @@
 			
 			private function removePauseGraphic(event:ApplicationEvent):void {
 				pause.visible = false;
+//				startTimers();
 			}
 			
 			private function showPauseGraphic(event:ApplicationEvent):void {
 				pause.visible = true;
+				pauseTimers();
 			}
 			
 			[Bindable]
@@ -145,30 +147,20 @@
 			
 		]]>
 	</fx:Script>
-	<s:Group id="controls"
-			 width="353" right="235" depth="1">
-		<mx:Image id="pause" visible="false"
-				  source="@Embed(source='assets/pause.png')"
-				  depth="3" horizontalCenter="0" />
-		<s:BorderContainer backgroundImage="@Embed(source='assets/controlBackground.png')"
-						   width="353" height="23" backgroundAlpha="1" top="20">
+	<s:Group id="controls" right="235" width="353" depth="1">
+		<mx:Image id="pause" visible="false" depth="3" horizontalCenter="0"
+				  source="@Embed(source='assets/pause.png')"/>
+		<s:BorderContainer top="20" width="353" height="23" backgroundAlpha="1"
+						   backgroundImage="@Embed(source='assets/controlBackground.png')">
 			<s:layout>
-				<s:HorizontalLayout paddingLeft="9" gap="8"/>
+				<s:HorizontalLayout gap="8" paddingLeft="9"/>
 			</s:layout>
-			<s:Label id="currentTimeField" styleName="timeLabel"
-					 depth="3" paddingTop="4"
-					 verticalAlign="middle" height="23"
-					 text="0:00"/>
-			<mx:SWFLoader id="scrubBarLoader"
-						  complete="initScrubber()"
-						  source="assets/scrubBar.swf"
-						  depth="2"
-						  width="258" height="23"/>
-			<s:Label id="totalTimeField" styleName="timeLabel"
-					 depth="3" paddingTop="4"
-					 verticalAlign="middle" height="23"
-					 textAlign="right"
-					 text="0.00"/>
+			<s:Label id="currentTimeField" height="23" depth="3" paddingTop="4" styleName="timeLabel"
+					 text="0:00" verticalAlign="middle"/>
+			<mx:SWFLoader id="scrubBarLoader" width="258" height="23" complete="initScrubber()"
+						  depth="2" source="assets/scrubBar.swf"/>
+			<s:Label id="totalTimeField" height="23" depth="3" paddingTop="4" styleName="timeLabel"
+					 text="0.00" textAlign="right" verticalAlign="middle"/>
 		</s:BorderContainer>
 	</s:Group>
 	<s:List id="songList" maxWidth="1280" minWidth="596"
@@ -176,7 +168,7 @@
 			itemRenderer="com.lnet.pandora.views.SongListItemRenderer"
 			borderAlpha="0" borderVisible="false"
 			contentBackgroundAlpha="0"
-			allowMultipleSelection="false" requireSelection="true" depth="0"
+			requireSelection="true" depth="0"
 			creationComplete="removeScrollbars()"
 			right="117">
 		<s:layout>

@@ -3,7 +3,6 @@ package com.lnet.pandora.viewmodels {
 	import com.demonsters.debugger.MonsterDebugger;
 	import com.lnet.pandora.events.ApplicationEvent;
 	import com.lnet.pandora.events.ApplicationEventBus;
-	import com.lnet.pandora.response.station.supportClasses.Track;
 	
 	import mx.collections.ArrayCollection;
 	import mx.collections.IList;
@@ -13,7 +12,7 @@ package com.lnet.pandora.viewmodels {
 	public class SongListViewModel {
 		
 		private var _songList:IList;
-		private var _currentTrack:Track;
+		private var _currentTrack:Object;
 		private var internalList:IList;
 		
 		public function SongListViewModel() {
@@ -28,11 +27,9 @@ package com.lnet.pandora.viewmodels {
 		}
 
 		private function updateSongList(event:ApplicationEvent):void {
-			_currentTrack = event.data as Track;
-			internalList.addItem(currentTrack);
+			internalList.addItem(event.data);
 			songList = internalList as IList;
-//			MonsterDebugger.trace("SongListViewModel.updateSongList","Updating song list - added::"+currentTrack.songName);
-			ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.UPDATE_SELECTED_INDEX, currentTrack));
+			ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.UPDATE_SELECTED_INDEX, event.data));
 		}
 
 		public function get songList():IList {
@@ -41,14 +38,6 @@ package com.lnet.pandora.viewmodels {
 
 		public function set songList(value:IList):void {
 			_songList = value;
-		}
-
-		public function get currentTrack():Track {
-			return _currentTrack;
-		}
-
-		public function set currentTrack(value:Track):void {
-			_currentTrack = value;
 		}
 	}
 }

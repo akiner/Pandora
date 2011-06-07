@@ -13,6 +13,8 @@
 			import com.lnet.pandora.events.ApplicationEvent;
 			import com.lnet.pandora.events.ApplicationEventBus;
 			
+			import mx.core.FlexGlobals;
+			
 			import spark.utils.TextFlowUtil;
 			
 			private var key:String;
@@ -21,7 +23,7 @@
 			
 			private function init():void {
 				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.INIT_OPTIONS_MENU, setInitialFocus);
-//				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.KEY_PRESS_IN_INFO, handleKeyPress);
+				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.KEY_PRESS_IN_INFO, handleKeyPressInWhyView);
 //				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.ARTIST_BIO_LOADED, displayArtistBio);
 				ApplicationEventBus.getInstance().addEventListener(ApplicationEvent.TRACK_EXPLANATION_LOADED, trackExplanationLoaded);
 			}
@@ -29,8 +31,6 @@
 			private function trackExplanationLoaded(event:ApplicationEvent):void {
 				whyDetailText.text = event.data.toString();
 				MonsterDebugger.trace("InfoView::trackExplanationLoaded","Track explanation returned:: "+event.data);
-				focusManager.setFocus(whyDetailText);
-				cursorManager.hideCursor();
 			}
 
 //			private function displayArtistBio(event:ApplicationEvent):void {
@@ -82,20 +82,19 @@
 //				}
 //			}
 			
-//			private function handleKeyPressInWhyView():void {
-//				switch(key){
-//					case "upArrow":
-//						currentState = "bio";
-//						break;
-//					case "select":
-//						currentState = "whyDetail";
-//						ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.EXPLAIN_TRACK));
-//						break;
-//					default:
-//						MonsterDebugger.trace("StationView::handleKeyPress","ERROR:: KEY NOT HANDLED");
-//						break;
-//				}
-//			}
+			private function handleKeyPressInWhyView(event:ApplicationEvent):void {
+				key = event.data as String;
+				MonsterDebugger.trace("InfoView::handleKeyPressInWhyView","Keypress in info view::"+key);
+				switch(key){
+					case "downArrow":
+//						focusManager.setFocus(whyDetailText);
+						FlexGlobals.topLevelApplication.focusManager.setFocus(whyDetailText);
+						break;
+					default:
+						MonsterDebugger.trace("StationView::handleKeyPress","ERROR:: KEY NOT HANDLED");
+						break;
+				}
+			}
 
 		]]>
 	</fx:Script>

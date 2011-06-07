@@ -135,6 +135,7 @@ package com.lnet.pandora.utils {
 							ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.KEY_PRESS_IN_INFO, currentKey));
 							MonsterDebugger.trace("FocusHandler::handleKeyPressInOptionsView","Info View");
 							optionViewIndex = 3;
+								
 							break;
 						default:
 							break;
@@ -172,12 +173,10 @@ package com.lnet.pandora.utils {
 			optionsPopupView.currentState = optionViewsArray[optionViewIndex];
 		}
 
-
 		private function resetToDefaultView():void {
 			ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.RESET_FOCUS));
 		}
 
-		
 		private function handleKeyPressInLoginView():void {
 			switch(currentKey) {
 				case "select":
@@ -284,6 +283,5 @@ package com.lnet.pandora.utils {
 		public function set errorView(value:ErrorView):void {
 			_errorView = value;
 		}
-
 	}
 }

@@ -29,12 +29,10 @@
 				 textAlign="center"/>
 		<s:VGroup gap="0" paddingTop="3" tabEnabled="false">
 			<s:TextInput id="username"
-						 text="amanda.kiner@lodgenet.com"
 						 tabIndex="1"
 						 skinClass="com.lnet.pandora.views.LoginTextInputItemRenderer"/>
 			<s:TextInput id="password"
 						 tabIndex="2"
-						 text="smile"
 						 displayAsPassword="true"
 						 skinClass="com.lnet.pandora.views.LoginTextInputItemRenderer"/>
 		</s:VGroup>
