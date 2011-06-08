@@ -14,6 +14,7 @@
 			import com.lnet.pandora.events.ApplicationEventBus;
 			
 			import mx.core.FlexGlobals;
+			import mx.events.PropertyChangeEvent;
 			
 			import spark.utils.TextFlowUtil;
 			
@@ -49,6 +50,8 @@
 			private function setInitialFocus(event:ApplicationEvent):void {
 //				currentState = "bio";
 				currentState = "whyDetail";
+				scrollerArrow.visible = false;
+				whyDetailText.scroller.verticalScrollBar.value = whyDetailText.scroller.verticalScrollBar.minimum;
 				ApplicationEventBus.getInstance().dispatchEvent(new ApplicationEvent(ApplicationEvent.EXPLAIN_TRACK));
 				MonsterDebugger.trace("InfoView::setInitialFocus","reinitialized bio options");
 			}
@@ -81,21 +84,40 @@
 //						break;
 //				}
 //			}
+			private function turnOffScrollbars():void {
+				whyDetailText.scroller.setStyle("verticalScrollPolicy","off");
+				whyDetailText.scroller.viewport.addEventListener( PropertyChangeEvent.PROPERTY_CHANGE, propertyChangeHandler );
+			}
 			
 			private function handleKeyPressInWhyView(event:ApplicationEvent):void {
 				key = event.data as String;
 				MonsterDebugger.trace("InfoView::handleKeyPressInWhyView","Keypress in info view::"+key);
 				switch(key){
 					case "downArrow":
-//						focusManager.setFocus(whyDetailText);
-						FlexGlobals.topLevelApplication.focusManager.setFocus(whyDetailText);
+						whyDetailText.scroller.verticalScrollBar.value = whyDetailText.scroller.verticalScrollBar.maximum;
+						break;
+					case "upArrow":
+						whyDetailText.scroller.verticalScrollBar.value = whyDetailText.scroller.verticalScrollBar.minimum;
 						break;
 					default:
 						MonsterDebugger.trace("StationView::handleKeyPress","ERROR:: KEY NOT HANDLED");
 						break;
 				}
 			}
-
+			
+			private function propertyChangeHandler(event:PropertyChangeEvent):void {
+				MonsterDebugger.trace("InfoView::propertyChangeHandler","---------------------------------------------> Scroller changed::"+event.property);
+				if(event.property == "contentHeight"){
+					MonsterDebugger.trace("InfoView::trackExplanationLoaded","scroller viewport height:::::::::::::::"+whyDetailText.scroller.viewport.height);
+					MonsterDebugger.trace("InfoView::trackExplanationLoaded","scroller viewport contentHeight:::::::::::::::"+whyDetailText.scroller.viewport.contentHeight);
+					var viewportHeight:int = whyDetailText.scroller.viewport.height;
+					var textHeight:int = whyDetailText.scroller.viewport.contentHeight;
+					if(textHeight > viewportHeight){
+						scrollerArrow.visible = true;
+					}
+				}
+			}
+			
 		]]>
 	</fx:Script>
 	<s:states>
@@ -105,22 +127,25 @@
 		<s:State name="whyDetail" stateGroups="detail"/>
 	</s:states>
 	<s:layout>
-		<s:VerticalLayout paddingTop="37" horizontalAlign="center" verticalAlign="middle" gap="10"/>
+		<s:HorizontalLayout paddingTop="37" horizontalAlign="center" verticalAlign="middle" gap="10"/>
 	</s:layout>
 	<!--<s:BorderContainer id="bioDetailView"
 					   width="100%" height="100%" 
 					   includeIn="bioDetail">
 		<s:Label text="Artist Bio" styleName="whiteLabelLg" left="25" top="-15"/>
 		<s:TextArea id="artistBioText" verticalScrollPolicy="off" width="460" height="200" styleName="whiteLabelSmall" left="40" focusAlpha="0"
-					contentBackgroundAlpha="0" borderVisible="false" borderAlpha="0" top="15"/>
+	contentBackgroundAlpha="0" borderVisible="false" borderAlpha="0" top="15"/>
 	</s:BorderContainer>-->
-	<s:BorderContainer id="whyDetailView"
-					   width="100%" height="100%" 
-					   includeIn="whyDetail">
-		<s:Label text="Why Was This Song Selected?" styleName="whiteLabelLg" left="25" top="-15"/>
-		<s:TextArea id="whyDetailText" width="460" height="200" styleName="whiteLabelSmall" left="40" focusAlpha="0"
-					contentBackgroundAlpha="0" borderVisible="false" borderAlpha="0" top="15"/>
-	</s:BorderContainer>
+	<s:VGroup>
+		<s:BorderContainer id="whyDetailView"
+						   width="100%" height="100%" 
+						   includeIn="whyDetail">
+			<s:Label text="Why Was This Song Selected?" styleName="whiteLabelLg" left="25" top="-15"/>
+			<s:TextArea id="whyDetailText" width="460" height="198" styleName="whiteLabelSmall"
+					 left="40" top="15" focusAlpha="0" contentBackgroundAlpha="0" editable="false" borderVisible="false" creationComplete="turnOffScrollbars()"/>
+		</s:BorderContainer>
+	</s:VGroup>
+	<mx:Image id="scrollerArrow" visible="false" source="@Embed(source='assets/scroller.png')" depth="100" left="100"/>
 	<!--<s:Label text="Artist Bio" styleName="whiteLabelLg" alpha.why=".2" excludeFrom="detail">
 		<s:filters>
 			<s:GlowFilter includeIn="bio"

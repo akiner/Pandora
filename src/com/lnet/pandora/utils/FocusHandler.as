@@ -192,6 +192,10 @@ package com.lnet.pandora.utils {
 					var prevComponent:IFocusManagerComponent = loginView.focusManager.getNextFocusManagerComponent();
 					loginView.focusManager.setFocus(prevComponent);    
 					break;
+				case "dotCom":
+					MonsterDebugger.trace("FocusHandler::handleKeyPressInLoginView","Should be inserting dot com");
+					loginView.username.insertText(".com");
+					break;
 				default:
 					break;
 			}

@@ -17,9 +17,7 @@ package com.lnet.pandora.utils {
 				case 37:
 					keyToReturn = "leftArrow";
 					break;
-				case 13:
-					keyToReturn = "select"; // This is for keyboard nav only - not used for remote
-					break;
+				case 13: // This is for keyboard nav only - not used for remote
 				case 125:
 					keyToReturn = "select";
 					break;
@@ -37,6 +35,10 @@ package com.lnet.pandora.utils {
 					break;
 				case 120:
 					keyToReturn = "skipForward";
+					break;
+				case 145:
+//				case 144: // For keyboard testing only - mapped to num lock key
+					keyToReturn = "dotCom"
 					break;
 				default:
 					MonsterDebugger.trace("KeyHandler::keyPressed","Key not currently being handled::"+keyCode);
